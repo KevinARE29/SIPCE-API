@@ -1,0 +1,17 @@
+version: '3'
+services:
+  db:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: '${TYPEORM_USERNAME}'
+      POSTGRES_PASSWORD: '${TYPEORM_PASSWORD}'
+      POSTGRES_DB: '${TYPEORM_DATABASE}'
+  microservice:
+    build: .
+    command: npm run start:prod
+    volumes:
+      - .:/app
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
