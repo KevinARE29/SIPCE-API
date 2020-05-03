@@ -1,4 +1,4 @@
-# [Project Name] - Universidad de El Salvador
+# [Project Name Test CI] - Universidad de El Salvador
 
 <div align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
