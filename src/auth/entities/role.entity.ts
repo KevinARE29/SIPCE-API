@@ -2,6 +2,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Permission } from './permission.entity';
+import { User } from 'src/users/entities/users.entity';
 
 @Entity()
 export class Role {
@@ -9,7 +10,7 @@ export class Role {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 63 })
+  @Column('varchar', { length: 64 })
   name!: string;
 
   @ManyToMany(
@@ -18,4 +19,10 @@ export class Role {
   )
   @JoinTable()
   permissions!: Permission[];
+
+  @ManyToMany(
+    () => User,
+    user => user.roles,
+  )
+  users!: User[];
 }

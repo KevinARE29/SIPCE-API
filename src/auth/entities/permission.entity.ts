@@ -1,7 +1,8 @@
 /* istanbul ignore file */
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from './role.entity';
+import { User } from 'src/users/entities/users.entity';
 
 @Entity()
 export class Permission {
@@ -9,10 +10,10 @@ export class Permission {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 127 })
+  @Column('varchar', { length: 128 })
   name!: string;
 
-  @Column('varchar', { length: 63 })
+  @Column('varchar', { length: 64 })
   codeName!: string;
 
   @ManyToMany(
@@ -20,4 +21,10 @@ export class Permission {
     role => role.permissions,
   )
   roles!: Role[];
+
+  @ManyToMany(
+    () => Permission,
+    permission => permission.users,
+  )
+  users!: User[];
 }
