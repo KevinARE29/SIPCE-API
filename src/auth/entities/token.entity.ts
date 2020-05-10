@@ -15,8 +15,8 @@ export class Token {
   @Column('varchar', { name: 'refresh_token', length: 512 })
   refreshToken!: string;
 
-  @Column({ name: 'exp' })
-  exp!: Date;
+  @Column()
+  exp!: number;
 
   @ManyToOne(
     () => User,

@@ -26,13 +26,16 @@ export class User {
   @Column('varchar', { length: 128 })
   name!: string;
 
+  @Column('varchar', { length: 128 })
+  password!: string;
+
   @Column('varchar', { length: 128, unique: true })
   email!: string;
 
   @Column('varchar', { length: 256, nullable: true })
   image!: string;
 
-  @Column('varchar', { length: 512, unique: true })
+  @Column('varchar', { length: 512, unique: true, nullable: true })
   resetPasswordToken!: string;
 
   @CreateDateColumn({ name: 'created_at' })
