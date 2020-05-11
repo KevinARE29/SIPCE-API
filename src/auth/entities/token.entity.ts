@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/entities/users.entity';
 
@@ -21,6 +21,8 @@ export class Token {
   @ManyToOne(
     () => User,
     user => user.tokens,
+    { nullable: false },
   )
+  @JoinColumn({ name: 'user_id' })
   user!: User;
 }

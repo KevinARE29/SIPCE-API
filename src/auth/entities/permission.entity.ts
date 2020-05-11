@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from './role.entity';
 import { User } from 'src/users/entities/users.entity';
@@ -14,7 +14,7 @@ export class Permission {
   name!: string;
 
   @Column('varchar', { length: 64 })
-  codeName!: string;
+  codename!: string;
 
   @ManyToMany(
     () => Role,
