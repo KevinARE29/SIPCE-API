@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Post, Delete, HttpCode, Body } from '@nestjs/common';
+import { Controller, UseGuards, Post, Delete, HttpCode, Body, Get } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
 import { AuthService } from '../services/auth.service';
@@ -8,6 +8,9 @@ import { ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { LoginDto } from '../dtos/login.dto';
 import { BearerToken } from '../decorators/bearer-token.decorator';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
+import { PermissionGuard } from '../guards/permission.guard';
+import { Permissions } from '../decorators/permissions.decorator';
+import { PoliticResponse } from '../docs/politic-response.doc';
 
 @ApiTags('Auth Endpoints')
 @Controller('auth')
@@ -33,5 +36,13 @@ export class AuthController {
   @HttpCode(200)
   refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokenResponse> {
     return this.authService.refreshToken(refreshTokenDto);
+  }
+
+  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @Permissions('retrieve_politics')
+  @Get('politics')
+  async getPolitics(): Promise<PoliticResponse> {
+    const politics = await this.authService.getPolitics();
+    return { data: politics };
   }
 }

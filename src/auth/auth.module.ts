@@ -7,9 +7,14 @@ import { AuthController } from './controllers/auth.controller';
 import { TokenRepository } from './repositories/token.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { PoliticRepository } from './repositories/politic.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TokenRepository]), forwardRef(() => UsersModule), PassportModule],
+  imports: [
+    TypeOrmModule.forFeature([TokenRepository, PoliticRepository]),
+    forwardRef(() => UsersModule),
+    PassportModule,
+  ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],

@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Migration1589166837399 implements MigrationInterface {
-  name = 'Migration1589166837399';
+export class Migration1589185546923 implements MigrationInterface {
+  name = 'Migration1589185546923';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -18,6 +18,10 @@ export class Migration1589166837399 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE TABLE "permission" ("id" SERIAL NOT NULL, "name" character varying(128) NOT NULL, "codename" character varying(64) NOT NULL, CONSTRAINT "PK_3b8b97af9d9d8807e41e6f48362" PRIMARY KEY ("id"))`,
+      undefined,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "politic" ("id" SERIAL NOT NULL, "min_length" integer, "capital_letter" boolean, "lower_case" boolean, "special_char" boolean, "numeric_char" boolean, "type_special" character varying(512), CONSTRAINT "PK_91e8af9b343dfec7bfad01167c7" PRIMARY KEY ("id"))`,
       undefined,
     );
     await queryRunner.query(
@@ -109,6 +113,7 @@ export class Migration1589166837399 implements MigrationInterface {
     await queryRunner.query(`DROP INDEX "IDX_8a4d5521c1ced158c13438df3d"`, undefined);
     await queryRunner.query(`DROP INDEX "IDX_2305dfa7330dd7f8e211f4f35d"`, undefined);
     await queryRunner.query(`DROP TABLE "user_permission"`, undefined);
+    await queryRunner.query(`DROP TABLE "politic"`, undefined);
     await queryRunner.query(`DROP TABLE "permission"`, undefined);
     await queryRunner.query(`DROP TABLE "role"`, undefined);
     await queryRunner.query(`DROP TABLE "user"`, undefined);
