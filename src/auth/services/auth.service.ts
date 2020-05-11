@@ -8,6 +8,7 @@ import { getTokens } from '../utils/token.utils';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 import { verify } from 'jsonwebtoken';
 import { ITokenPayload } from '../interfaces/token-payload.interface';
+import { Permission } from '../entities/permission.entity';
 
 @Injectable()
 export class AuthService {
@@ -21,12 +22,19 @@ export class AuthService {
   async validateUser(username: string, password: string): Promise<IAuthenticatedUser | null> {
     const user = await this.usersService.findByUserName(username);
     if (user && this.usersService.compareHash(password, user.password)) {
+      const userPermissions = [] as Array<Permission>;
+      user.roles.forEach(rol => {
+        userPermissions.push(...rol.permissions);
+      });
+      user.permissions.forEach(permission => userPermissions.push(permission));
+
+      const permissionIds = userPermissions.map(permission => permission.id);
+      const permissions = [...new Set(permissionIds)];
       const authenticatedUser = {
         id: user.id,
         username: user.username,
         email: user.email,
-        roles: user.roles,
-        permissions: user.permissions,
+        permissions,
       };
       return authenticatedUser;
     }
@@ -34,12 +42,10 @@ export class AuthService {
   }
 
   async login(user: IAuthenticatedUser): Promise<TokenResponse> {
-    const payload = { sub: user.id, email: user.email, role: 'Admin' };
+    const payload = { sub: user.username, email: user.email, permissions: user.permissions };
     const tokens = getTokens(payload, this.configService);
     const { accessToken, refreshToken, exp } = tokens.data;
-
-    await this.tokenRepository.save({ user, accessToken, refreshToken, exp });
-
+    await this.tokenRepository.save({ user: { id: user.id }, accessToken, refreshToken, exp });
     return tokens;
   }
 
@@ -59,7 +65,11 @@ export class AuthService {
       if (!token) {
         throw Error;
       }
-      const payload = { sub: oldRefreshToken.sub, email: oldRefreshToken.email, role: oldRefreshToken.role };
+      const payload = {
+        sub: oldRefreshToken.sub,
+        email: oldRefreshToken.email,
+        permissions: oldRefreshToken.permissions,
+      };
       const tokens = getTokens(payload, this.configService);
 
       const updatedToken = {
