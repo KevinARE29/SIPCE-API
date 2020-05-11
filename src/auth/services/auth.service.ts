@@ -50,6 +50,10 @@ export class AuthService {
   }
 
   async logout(accessToken: string) {
+    const token = await this.tokenRepository.findOne({ where: { accessToken } });
+    if (!token) {
+      throw new UnauthorizedException('Token not found in DB');
+    }
     await this.tokenRepository.delete({ accessToken });
   }
 
