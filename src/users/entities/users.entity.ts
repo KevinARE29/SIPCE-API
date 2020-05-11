@@ -10,9 +10,9 @@ import {
   JoinTable,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Token } from 'src/auth/entities/token.entity';
-import { Permission } from 'src/auth/entities/permission.entity';
-import { Role } from 'src/auth/entities/role.entity';
+import { Token } from '../../auth/entities/token.entity';
+import { Permission } from '../../auth/entities/permission.entity';
+import { Role } from '../../auth/entities/role.entity';
 
 @Entity()
 export class User {
