@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/entities/users.entity';
 
@@ -15,12 +15,14 @@ export class Token {
   @Column('varchar', { name: 'refresh_token', length: 512 })
   refreshToken!: string;
 
-  @Column({ name: 'exp' })
-  exp!: Date;
+  @Column()
+  exp!: number;
 
   @ManyToOne(
     () => User,
     user => user.tokens,
+    { nullable: false },
   )
+  @JoinColumn({ name: 'user_id' })
   user!: User;
 }

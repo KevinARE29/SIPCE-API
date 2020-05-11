@@ -26,13 +26,16 @@ export class User {
   @Column('varchar', { length: 128 })
   name!: string;
 
+  @Column('varchar', { length: 128 })
+  password!: string;
+
   @Column('varchar', { length: 128, unique: true })
   email!: string;
 
   @Column('varchar', { length: 256, nullable: true })
   image!: string;
 
-  @Column('varchar', { length: 512, unique: true })
+  @Column('varchar', { name: 'reset_password_token', length: 512, unique: true, nullable: true })
   resetPasswordToken!: string;
 
   @CreateDateColumn({ name: 'created_at' })
@@ -54,13 +57,21 @@ export class User {
     () => Permission,
     permission => permission.users,
   )
-  @JoinTable()
+  @JoinTable({
+    name: 'user_permission',
+    joinColumns: [{ name: 'user_id' }],
+    inverseJoinColumns: [{ name: 'permission_id' }],
+  })
   permissions!: Permission[];
 
   @ManyToMany(
     () => Role,
     role => role.users,
   )
-  @JoinTable()
+  @JoinTable({
+    name: 'user_role',
+    joinColumns: [{ name: 'user_id' }],
+    inverseJoinColumns: [{ name: 'role_id' }],
+  })
   roles!: Role[];
 }
