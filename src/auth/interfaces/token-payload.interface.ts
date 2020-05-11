@@ -1,7 +1,7 @@
 export interface ITokenPayload {
   sub: string;
   email: string;
-  role: string;
+  permissions: number[];
   iat?: number;
   exp?: number;
 }

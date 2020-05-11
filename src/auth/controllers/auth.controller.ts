@@ -7,7 +7,6 @@ import { User } from '../../users/decorators/user.decorator';
 import { ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { LoginDto } from '../dtos/login.dto';
 import { BearerToken } from '../decorators/bearer-token.decorator';
-import { SessionGuard } from '../guards/session.guard';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 
 @ApiTags('Auth Endpoints')
@@ -22,7 +21,7 @@ export class AuthController {
     return this.authService.login(user);
   }
 
-  @UseGuards(SessionGuard)
+  @UseGuards(AuthGuard('jwt'))
   @HttpCode(204)
   @ApiBearerAuth()
   @Delete('logout')
