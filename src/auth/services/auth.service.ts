@@ -52,4 +52,7 @@ export class AuthService {
       },
     };
   }
+  async logout(accessToken: string) {
+    await this.tokenRepository.delete({ accessToken });
+  }
 }
