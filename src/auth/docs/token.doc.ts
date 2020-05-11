@@ -4,5 +4,5 @@ export class Token {
   @ApiProperty()
   accessToken!: string;
   refreshToken!: string;
-  exp!: number;
+  exp?: number;
 }

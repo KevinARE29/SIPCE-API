@@ -1,11 +1,13 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, Inject, forwardRef, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../../users/services/users.service';
 import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
-import { sign, verify } from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { TokenResponse } from '../docs/token-response.doc';
-import { IRefreshTokenPayload } from '../interfaces/refresh-token-payload.interface';
 import { TokenRepository } from '../repositories/token.repository';
+import { getTokens } from '../utils/token.utils';
+import { RefreshTokenDto } from '../dtos/refresh-token.dto';
+import { verify } from 'jsonwebtoken';
+import { ITokenPayload } from '../interfaces/token-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -30,29 +32,43 @@ export class AuthService {
   }
 
   async login(user: IAuthenticatedUser): Promise<TokenResponse> {
-    const accessTokenSecret = this.configService.get<string>('JWT_SECRET_ACCESS_TOKEN') || 'access';
-    const refreshTokenSecret = this.configService.get<string>('JWT_SECRET_REFRESH_TOKEN') || 'refresh';
-    const accessTokenExp = this.configService.get<string>('ACCESS_TOKEN_EXPIRATION') || 1800000; // 20 min
-    const refreshTokenExp = this.configService.get<string>('REFRESH_TOKEN_EXPIRATION') || 7200000; // 2 hours
-
-    const accessToken = sign({ sub: user.username, email: user.email, role: 'Admin' }, accessTokenSecret, {
-      expiresIn: accessTokenExp,
-    });
-    const refreshToken = sign({ sub: user.username }, refreshTokenSecret, { expiresIn: refreshTokenExp });
-    const decRefreshToken = verify(refreshToken, refreshTokenSecret) as IRefreshTokenPayload;
-    const exp = decRefreshToken.exp;
+    const payload = { sub: user.username, email: user.email, role: 'Admin' };
+    const tokens = getTokens(payload, this.configService);
+    const { accessToken, refreshToken, exp } = tokens.data;
 
     await this.tokenRepository.save({ user, accessToken, refreshToken, exp });
 
-    return {
-      data: {
-        accessToken,
-        refreshToken,
-        exp,
-      },
-    };
+    return tokens;
   }
+
   async logout(accessToken: string) {
     await this.tokenRepository.delete({ accessToken });
+  }
+
+  async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<TokenResponse> {
+    try {
+      const refreshTokenSecret = this.configService.get<string>('JWT_SECRET_REFRESH_TOKEN') || 'refresh';
+      const oldRefreshToken = verify(refreshTokenDto.refreshToken, refreshTokenSecret) as ITokenPayload;
+
+      const token = await this.tokenRepository.findOne({
+        where: { refreshToken: refreshTokenDto.refreshToken },
+        relations: ['user'],
+      });
+      if (!token) {
+        throw Error;
+      }
+      const payload = { sub: oldRefreshToken.sub, email: oldRefreshToken.email, role: oldRefreshToken.role };
+      const tokens = getTokens(payload, this.configService);
+
+      const updatedToken = {
+        ...token,
+        ...tokens.data,
+      };
+      await this.tokenRepository.save(updatedToken);
+
+      return tokens;
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 }

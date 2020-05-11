@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Post, Delete, HttpCode } from '@nestjs/common';
+import { Controller, UseGuards, Post, Delete, HttpCode, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
 import { AuthService } from '../services/auth.service';
@@ -8,6 +8,7 @@ import { ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { LoginDto } from '../dtos/login.dto';
 import { BearerToken } from '../decorators/bearer-token.decorator';
 import { SessionGuard } from '../guards/session.guard';
+import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 
 @ApiTags('Auth Endpoints')
 @Controller('auth')
@@ -27,5 +28,11 @@ export class AuthController {
   @Delete('logout')
   logout(@BearerToken() accessToken: string): Promise<any> {
     return this.authService.logout(accessToken);
+  }
+
+  @Post('refresh-token')
+  @HttpCode(200)
+  refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokenResponse> {
+    return this.authService.refreshToken(refreshTokenDto);
   }
 }
