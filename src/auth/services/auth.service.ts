@@ -9,6 +9,8 @@ import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 import { verify } from 'jsonwebtoken';
 import { ITokenPayload } from '../interfaces/token-payload.interface';
 import { Permission } from '../entities/permission.entity';
+import { PoliticRepository } from '../repositories/politic.repository';
+import { Politic } from '../docs/politic.doc';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +19,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     private readonly tokenRepository: TokenRepository,
+    private readonly politicRepository: PoliticRepository,
   ) {}
 
   async validateUser(username: string, password: string): Promise<IAuthenticatedUser | null> {
@@ -86,5 +89,10 @@ export class AuthService {
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }
+  }
+  async getPolitics(): Promise<Politic> {
+    const politic = await this.politicRepository.findOneOrFail();
+
+    return politic;
   }
 }
