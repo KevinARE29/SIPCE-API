@@ -25,6 +25,8 @@ export class AuthService {
         id: user.id,
         username: user.username,
         email: user.email,
+        roles: user.roles,
+        permissions: user.permissions,
       };
       return authenticatedUser;
     }
@@ -32,7 +34,7 @@ export class AuthService {
   }
 
   async login(user: IAuthenticatedUser): Promise<TokenResponse> {
-    const payload = { sub: user.username, email: user.email, role: 'Admin' };
+    const payload = { sub: user.id, email: user.email, role: 'Admin' };
     const tokens = getTokens(payload, this.configService);
     const { accessToken, refreshToken, exp } = tokens.data;
 
