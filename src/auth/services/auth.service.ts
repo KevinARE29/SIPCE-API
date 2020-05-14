@@ -102,7 +102,7 @@ export class AuthService {
     return politic;
   }
 
-  async politicUpdate(idDto: number, politicDto: PolitcDto): Promise<PoliticResponse> {
+  async updatePolitic(idDto: number, politicDto: PolitcDto): Promise<PoliticResponse> {
     const politic = await this.getPolitics(idDto);
 
     const updatedPolitic = await this.politicRepository.save({

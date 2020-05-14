@@ -53,7 +53,7 @@ export class AuthController {
   @ApiBearerAuth()
   @Permissions('update_politics')
   @Put('politics/:politicId')
-  async politicUpdate(@Param() idDto: PoliticIdDto, @Body() politicDto: PolitcDto): Promise<PoliticResponse> {
-    return this.authService.politicUpdate(idDto.politicId, politicDto);
+  async updatePolitic(@Param() idDto: PoliticIdDto, @Body() politicDto: PolitcDto): Promise<PoliticResponse> {
+    return this.authService.updatePolitic(idDto.politicId, politicDto);
   }
 }
