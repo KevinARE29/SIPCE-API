@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Inject, forwardRef, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { UsersService } from '../../users/services/users.service';
 import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
 import { ConfigService } from '@nestjs/config';
@@ -11,6 +11,10 @@ import { ITokenPayload } from '../interfaces/token-payload.interface';
 import { Permission } from '../entities/permission.entity';
 import { PoliticRepository } from '../repositories/politic.repository';
 import { Politic } from '../docs/politic.doc';
+import { PolitcDto } from '../dtos/politics.dto';
+import { PoliticResponse } from '../docs/politic-response.doc';
+import { plainToClass } from 'class-transformer';
+import { Politic as PoliticEntity } from '../entities/politic.entity';
 
 @Injectable()
 export class AuthService {
@@ -90,9 +94,22 @@ export class AuthService {
       throw new UnauthorizedException('Invalid or expired token');
     }
   }
-  async getPolitics(): Promise<Politic> {
-    const politic = await this.politicRepository.findOneOrFail();
-
+  async getPolitics(idDto?: number): Promise<PoliticEntity> {
+    const politic = await this.politicRepository.findOne(idDto || 1);
+    if (!politic) {
+      throw new NotFoundException(`Politic with id ${idDto} not found`);
+    }
     return politic;
+  }
+
+  async politicUpdate(idDto: number, politicDto: PolitcDto): Promise<PoliticResponse> {
+    const politic = await this.getPolitics(idDto);
+
+    const updatedPolitic = await this.politicRepository.save({
+      ...politic,
+      ...politicDto,
+    });
+
+    return { data: plainToClass(Politic, updatedPolitic, { excludeExtraneousValues: true }) };
   }
 }

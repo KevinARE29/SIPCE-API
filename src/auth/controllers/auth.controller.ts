@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Post, Delete, HttpCode, Body, Get } from '@nestjs/common';
+import { Controller, UseGuards, Post, Delete, HttpCode, Body, Get, Put, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
 import { AuthService } from '../services/auth.service';
@@ -11,6 +11,8 @@ import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 import { PermissionGuard } from '../guards/permission.guard';
 import { Permissions } from '../decorators/permissions.decorator';
 import { PoliticResponse } from '../docs/politic-response.doc';
+import { PolitcDto } from '../dtos/politics.dto';
+import { PoliticIdDto } from '../dtos/politic-id.dto';
 
 @ApiTags('Auth Endpoints')
 @Controller('auth')
@@ -39,10 +41,19 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @ApiBearerAuth()
   @Permissions('retrieve_politics')
   @Get('politics')
   async getPolitics(): Promise<PoliticResponse> {
     const politics = await this.authService.getPolitics();
     return { data: politics };
+  }
+
+  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @ApiBearerAuth()
+  @Permissions('update_politics')
+  @Put('politics/:politicId')
+  async politicUpdate(@Param() idDto: PoliticIdDto, @Body() politicDto: PolitcDto): Promise<PoliticResponse> {
+    return this.authService.politicUpdate(idDto.politicId, politicDto);
   }
 }
