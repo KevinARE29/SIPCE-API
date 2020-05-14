@@ -7,7 +7,7 @@ export class Politic {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: 'int', name: 'min_length', nullable: true })
+  @Column({ type: 'int', name: 'min_length', nullable: false })
   minLength!: number;
 
   @Column({ type: 'boolean', name: 'capital_letter', nullable: true })
