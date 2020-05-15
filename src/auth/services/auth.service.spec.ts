@@ -4,8 +4,7 @@ import { UsersService } from '../../users/services/users.service';
 import { ConfigService } from '@nestjs/config';
 import { PoliticRepository } from '../repositories/politic.repository';
 import { TokenRepository } from '../repositories/token.repository';
-import { NotFoundException } from '@nestjs/common';
-import { Politic } from '../entities/politic.entity';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 
 const mockPolitic = {
   id: 1,
@@ -25,6 +24,8 @@ const mockUpdatedPoliticDto = {
   ...mockUpdatePoliticDto,
 };
 
+const mockTokens = { accessToken: 'accessFake', refreshToken: 'refreshFake', exp: 'expFake' };
+
 const mockPoliticRepository = () => ({
   findOne: jest.fn(),
   save: jest.fn(),
@@ -32,7 +33,18 @@ const mockPoliticRepository = () => ({
 
 const mockUserService = () => ({});
 const mockConfigService = () => ({});
-const mockTokenRepository = () => ({});
+const mockTokenRepository = () => ({
+  findOne: jest.fn(),
+  save: jest.fn(),
+  delete: jest.fn(),
+});
+
+jest.mock('../utils/token.util', () => ({
+  ...jest.requireActual('../utils/token.util'),
+  getTokens: () => ({
+    data: mockTokens,
+  }),
+}));
 
 describe('Auth Service', () => {
   let authService: AuthService;
@@ -52,11 +64,11 @@ describe('Auth Service', () => {
       ],
     }).compile();
 
-    authService = module.get<AuthService>(AuthService);
-    usersService = module.get<UsersService>(UsersService);
-    configService = module.get<ConfigService>(ConfigService);
-    tokenRepository = module.get<TokenRepository>(TokenRepository);
-    politicRepository = module.get<PoliticRepository>(PoliticRepository);
+    authService = module.get(AuthService);
+    usersService = module.get(UsersService);
+    configService = module.get(ConfigService);
+    tokenRepository = module.get(TokenRepository);
+    politicRepository = module.get(PoliticRepository);
   });
   it('Should be defined', () => {
     expect(authService).toBeDefined();
@@ -64,6 +76,28 @@ describe('Auth Service', () => {
     expect(configService).toBeDefined();
     expect(tokenRepository).toBeDefined();
     expect(politicRepository).toBeDefined();
+  });
+
+  describe('Login', () => {
+    it('Should login an user', async () => {
+      (tokenRepository.save as jest.Mock).mockResolvedValue(null);
+      expect(tokenRepository.save).not.toHaveBeenCalled();
+      const result = await authService.login({ id: 1, username: 'user', email: 'user@email.com', permissions: [] });
+      expect(result).toEqual({ data: mockTokens });
+      expect(tokenRepository.save).toHaveBeenCalled();
+    });
+  });
+
+  describe('Logout', () => {
+    it('Should logout an user', async () => {
+      (tokenRepository.findOne as jest.Mock).mockResolvedValue(mockTokens);
+      const result = await authService.logout(mockTokens.accessToken);
+      expect(result).toEqual(undefined);
+    });
+    it('Should throw an error when the token does not exist', async () => {
+      (tokenRepository.findOne as jest.Mock).mockResolvedValue(null);
+      expect(authService.logout(mockTokens.accessToken)).rejects.toThrowError(UnauthorizedException);
+    });
   });
 
   describe('Get Politics', () => {

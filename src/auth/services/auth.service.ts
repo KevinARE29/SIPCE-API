@@ -4,7 +4,7 @@ import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
 import { ConfigService } from '@nestjs/config';
 import { TokenResponse } from '../docs/token-response.doc';
 import { TokenRepository } from '../repositories/token.repository';
-import { getTokens } from '../utils/token.utils';
+import { getTokens } from '../utils/token.util';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 import { verify } from 'jsonwebtoken';
 import { ITokenPayload } from '../interfaces/token-payload.interface';
