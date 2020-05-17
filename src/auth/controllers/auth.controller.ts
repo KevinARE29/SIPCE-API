@@ -1,10 +1,10 @@
 import { Controller, UseGuards, Post, Delete, HttpCode, Body, Get, Put, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
 import { AuthService } from '../services/auth.service';
 import { TokenResponse } from '../docs/token-response.doc';
 import { User } from '../../users/decorators/user.decorator';
-import { ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { LoginDto } from '../dtos/login.dto';
 import { BearerToken } from '../decorators/bearer-token.decorator';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';

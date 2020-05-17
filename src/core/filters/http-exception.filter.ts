@@ -1,6 +1,6 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, ValidationError } from '@nestjs/common';
-import { IExceptionResponse } from '../interfaces/exception-response.interface';
 import { QueryFailedError } from 'typeorm';
+import { IExceptionResponse } from '../interfaces/exception-response.interface';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -22,6 +22,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       error = 'Unprocessable Entity';
       message = exception.message;
     } else {
+      // eslint-disable-next-line no-console
       console.error(exception);
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       error = 'Internal Server Error';

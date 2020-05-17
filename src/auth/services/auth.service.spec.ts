@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { UsersService } from '../../users/services/users.service';
-import { ConfigService } from '@nestjs/config';
 import { PoliticRepository } from '../repositories/politic.repository';
 import { TokenRepository } from '../repositories/token.repository';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 
 const mockPolitic = {
   id: 1,

@@ -1,10 +1,9 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
-import { ClassSerializerInterceptor } from '@nestjs/common';
-import { AllExceptionsFilter } from './core/filters/http-exception.filter';
+import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import * as helmet from 'helmet';
+import { AllExceptionsFilter } from './core/filters/http-exception.filter';
+import { AppModule } from './app.module';
 
 const PORT = process.env.PORT || 3000;
 

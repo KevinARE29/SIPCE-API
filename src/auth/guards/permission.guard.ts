@@ -6,6 +6,7 @@ import { Permission } from '../entities/permission.entity';
 @Injectable()
 export class PermissionGuard implements CanActivate {
   constructor(private readonly reflector: Reflector, private readonly userRepository: UserRepository) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const permissions = this.reflector.get<string[]>('permissions', context.getHandler());
     if (!permissions) {

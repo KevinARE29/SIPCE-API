@@ -1,6 +1,6 @@
-import { ITokenPayload } from '../interfaces/token-payload.interface';
 import { ConfigService } from '@nestjs/config';
 import { sign, verify } from 'jsonwebtoken';
+import { ITokenPayload } from '../interfaces/token-payload.interface';
 import { TokenResponse } from '../docs/token-response.doc';
 
 export function getTokens(payload: ITokenPayload, configService: ConfigService): TokenResponse {
@@ -12,7 +12,7 @@ export function getTokens(payload: ITokenPayload, configService: ConfigService):
   const accessToken = sign(payload, accessTokenSecret, { expiresIn: accessTokenExp });
   const refreshToken = sign(payload, refreshTokenSecret, { expiresIn: refreshTokenExp });
   const decRefreshToken = verify(refreshToken, refreshTokenSecret) as ITokenPayload;
-  const exp = decRefreshToken.exp;
+  const { exp } = decRefreshToken;
 
   return {
     data: {
