@@ -20,8 +20,10 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalFilters(new AllExceptionsFilter());
   const options = new DocumentBuilder()
-    .setTitle('[Project Name]')
-    .setDescription('[Add Description]')
+    .setTitle('SIPCE API')
+    .setDescription(
+      'API para el Sistema Informático para el control y seguimiento del historial conductual y expediente psicológico de los estudiantes del colegio Liceo Salvadoreño',
+    )
     .addBearerAuth()
     .setVersion('1.0')
     .build();

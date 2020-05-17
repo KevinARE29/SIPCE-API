@@ -1,10 +1,10 @@
-# [Project Name] - Universidad de El Salvador
+# SIPCE API - Universidad de El Salvador
 
 <div align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </div>
 
-[Description of the API]
+API para el Sistema Informático para el control y seguimiento del historial conductual y expediente psicológico de los estudiantes del colegio Liceo Salvadoreño
 
 ## Prerrequisites
 
@@ -70,8 +70,9 @@
 
 ## API Documentation
 
-The API Swagger Documentation is available through the /docs path.
+Swagger Documentation: Available through the /docs path.
+Postman Documentation: [Postman Docs](https://documenter.getpostman.com/view/11301441/SzmmUEd3)
 
 ## Heroku Deployed API.
 
-https://[path].herokuapp.com/docs/
+[SIPCE API](https://dev-sipce-api.herokuapp.com/docs/)
