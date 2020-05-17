@@ -1,6 +1,7 @@
 import { Controller, UseGuards, Post, Delete, HttpCode, Body, Get, Put, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ContentTypeGuard } from 'src/core/guards/content-type.guard';
 import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
 import { AuthService } from '../services/auth.service';
 import { TokenResponse } from '../docs/token-response.doc';
@@ -13,20 +14,21 @@ import { Permissions } from '../decorators/permissions.decorator';
 import { PoliticResponse } from '../docs/politic-response.doc';
 import { PolitcDto } from '../dtos/politics.dto';
 import { PoliticIdDto } from '../dtos/politic-id.dto';
+import { SessionGuard } from '../guards/session.guard';
 
 @ApiTags('Auth Endpoints')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(ContentTypeGuard, AuthGuard('local'))
   @Post('login')
   @ApiBody({ type: LoginDto })
   login(@User() user: IAuthenticatedUser): Promise<TokenResponse> {
     return this.authService.login(user);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), SessionGuard)
   @HttpCode(204)
   @ApiBearerAuth()
   @Delete('logout')
@@ -34,13 +36,14 @@ export class AuthController {
     return this.authService.logout(accessToken);
   }
 
+  @UseGuards(ContentTypeGuard)
   @Post('refresh-token')
   @HttpCode(200)
   refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokenResponse> {
     return this.authService.refreshToken(refreshTokenDto);
   }
 
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @UseGuards(AuthGuard('jwt'), SessionGuard, PermissionGuard)
   @ApiBearerAuth()
   @Permissions('retrieve_politics')
   @Get('politics')
@@ -49,7 +52,7 @@ export class AuthController {
     return { data: politics };
   }
 
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @UseGuards(ContentTypeGuard, AuthGuard('jwt'), SessionGuard, PermissionGuard)
   @ApiBearerAuth()
   @Permissions('update_politics')
   @Put('politics/:politicId')
