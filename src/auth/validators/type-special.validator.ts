@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments } from 'class-validator';
 
@@ -6,7 +7,6 @@ const specialChars = '!#$%&()*+,-./:<=>?@[]^_{|}~';
 @ValidatorConstraint({ name: 'typeSpecialValidator', async: false })
 export class TypeSpecialValidator implements ValidatorConstraintInterface {
   validate(text: string, args: ValidationArguments) {
-    // eslint-disable-next-line no-restricted-syntax
     for (const char of text.split('')) {
       if (!specialChars.includes(char)) {
         return false;
