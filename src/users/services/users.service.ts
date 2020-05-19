@@ -33,4 +33,8 @@ export class UsersService {
     }
     return user;
   }
+
+  updateResetPswToken(resetPasswordToken: string, user: User): Promise<User> {
+    return this.userRepository.save({ ...user, resetPasswordToken });
+  }
 }

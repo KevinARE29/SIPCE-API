@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { MailsService } from '../../mails/mails.service';
 import { AuthService } from '../services/auth.service';
 import { UsersService } from '../../users/services/users.service';
 import { PoliticRepository } from '../repositories/politic.repository';
@@ -33,6 +34,7 @@ const mockPoliticRepository = () => ({
 
 const mockUserService = () => ({});
 const mockConfigService = () => ({});
+const mockMailsService = () => ({});
 const mockTokenRepository = () => ({
   findOne: jest.fn(),
   save: jest.fn(),
@@ -52,6 +54,7 @@ describe('Auth Service', () => {
   let configService: ConfigService;
   let politicRepository: PoliticRepository;
   let tokenRepository: TokenRepository;
+  let mailsService: MailsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -61,6 +64,7 @@ describe('Auth Service', () => {
         { provide: ConfigService, useFactory: mockConfigService },
         { provide: TokenRepository, useFactory: mockTokenRepository },
         { provide: PoliticRepository, useFactory: mockPoliticRepository },
+        { provide: MailsService, useFactory: mockMailsService },
       ],
     }).compile();
 
@@ -69,6 +73,7 @@ describe('Auth Service', () => {
     configService = module.get(ConfigService);
     tokenRepository = module.get(TokenRepository);
     politicRepository = module.get(PoliticRepository);
+    mailsService = module.get(MailsService);
   });
   it('Should be defined', () => {
     expect(authService).toBeDefined();
@@ -76,6 +81,7 @@ describe('Auth Service', () => {
     expect(configService).toBeDefined();
     expect(tokenRepository).toBeDefined();
     expect(politicRepository).toBeDefined();
+    expect(mailsService).toBeDefined();
   });
 
   describe('Login', () => {

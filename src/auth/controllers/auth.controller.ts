@@ -15,6 +15,7 @@ import { PoliticResponse } from '../docs/politic-response.doc';
 import { PolitcDto } from '../dtos/politics.dto';
 import { PoliticIdDto } from '../dtos/politic-id.dto';
 import { SessionGuard } from '../guards/session.guard';
+import { ForgotPswDto } from '../dtos/forgot-psw.dto';
 
 @ApiTags('Auth Endpoints')
 @Controller('auth')
@@ -41,6 +42,13 @@ export class AuthController {
   @HttpCode(200)
   refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokenResponse> {
     return this.authService.refreshToken(refreshTokenDto);
+  }
+
+  @UseGuards(ContentTypeGuard)
+  @Post('forgot-password')
+  @HttpCode(200)
+  forgotPsw(@Body() forgotPswDto: ForgotPswDto): Promise<any> {
+    return this.authService.forgotPsw(forgotPswDto.email);
   }
 
   @UseGuards(AuthGuard('jwt'), SessionGuard, PermissionGuard)

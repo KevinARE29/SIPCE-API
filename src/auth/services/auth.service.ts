@@ -1,12 +1,20 @@
-import { Injectable, Inject, forwardRef, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  forwardRef,
+  UnauthorizedException,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { verify } from 'jsonwebtoken';
 import { plainToClass } from 'class-transformer';
+import { MailsService } from '../../mails/mails.service';
 import { UsersService } from '../../users/services/users.service';
 import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
 import { TokenResponse } from '../docs/token-response.doc';
 import { TokenRepository } from '../repositories/token.repository';
-import { getTokens } from '../utils/token.util';
+import { getTokens, getPswToken } from '../utils/token.util';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 import { ITokenPayload } from '../interfaces/token-payload.interface';
 import { Permission } from '../entities/permission.entity';
@@ -24,6 +32,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly tokenRepository: TokenRepository,
     private readonly politicRepository: PoliticRepository,
+    private readonly mailsService: MailsService,
   ) {}
 
   async validateUser(username: string, password: string): Promise<IAuthenticatedUser | null> {
@@ -92,6 +101,36 @@ export class AuthService {
       return tokens;
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
+    }
+  }
+
+  async forgotPsw(email: string): Promise<void> {
+    const from = this.configService.get<string>('EMAIL_USER');
+    const templateId = this.configService.get<string>('RESET_PSW_SENDGRID_TEMPLATE_ID');
+    const frontUrl = this.configService.get<string>('FRONT_URL');
+    if (!(from && templateId && frontUrl)) {
+      throw new InternalServerErrorException('Missing Email Configuration');
+    }
+
+    const user = await this.usersService.findByEmail(email);
+    const resetPswToken = getPswToken(email, this.configService);
+    await this.usersService.updateResetPswToken(resetPswToken, user);
+
+    const emailToSend = {
+      from,
+      to: email,
+      templateId,
+      dynamicTemplateData: {
+        name: user.name,
+        url: `${frontUrl}/reset-psw?resetPasswordToken=${resetPswToken}`,
+      },
+    };
+    try {
+      await this.mailsService.sendEmail(emailToSend);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err);
+      throw new InternalServerErrorException('Error while sending the email');
     }
   }
 

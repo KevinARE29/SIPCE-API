@@ -1,6 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailsModule } from '../mails/mails.module';
 import { UsersModule } from '../users/users.module';
 import { AuthService } from './services/auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
@@ -14,6 +15,7 @@ import { PoliticRepository } from './repositories/politic.repository';
     TypeOrmModule.forFeature([TokenRepository, PoliticRepository]),
     forwardRef(() => UsersModule),
     PassportModule,
+    MailsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],

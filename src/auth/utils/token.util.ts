@@ -22,3 +22,10 @@ export function getTokens(payload: ITokenPayload, configService: ConfigService):
     },
   };
 }
+
+export function getPswToken(email: string, configService: ConfigService): string {
+  const resetPswSecret = configService.get<string>('JWT_SECRET_PASSWORD_RESET') || 'passwordReset';
+  const resetPswExp = configService.get<string>('PASSWORD_RESET_EXPIRATION') || 86400000; // 24 h
+
+  return sign({ email }, resetPswSecret, { expiresIn: resetPswExp });
+}
