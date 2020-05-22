@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsBoolean, IsString, Min, Validate, IsOptional, IsInt } from 'class-validator';
 import { validator } from 'src/core/messages/validator.message';
 import { TypeSpecialValidator } from '../validators/type-special.validator';
+import { MinLengthValidator } from '../validators/min-length.validator';
 
 export class PolitcDto {
   @IsOptional()
-  @IsInt({ message: validator.isInt })
-  @Min(4, { message: validator.isMin })
+  @Validate(MinLengthValidator)
   minLength?: number;
 
   @IsOptional()

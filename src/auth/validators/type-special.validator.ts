@@ -6,7 +6,7 @@ const specialChars = '!#$%&()*+,-./:<=>?@[]^_{|}~';
 
 @ValidatorConstraint({ name: 'typeSpecialValidator', async: false })
 export class TypeSpecialValidator implements ValidatorConstraintInterface {
-  validate(text: string, args: ValidationArguments) {
+  validate(text: any, args: ValidationArguments) {
     if (typeof text !== 'string') {
       return false;
     }
