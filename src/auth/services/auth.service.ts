@@ -67,10 +67,11 @@ export class AuthService {
 
   async logout(accessToken: string) {
     const token = await this.tokenRepository.findOne({ where: { accessToken } });
+
     if (!token) {
-      throw new UnauthorizedException('Token not found in DB');
+      throw new UnauthorizedException('Token no encontrado en la Base de Datos');
     }
-    await this.tokenRepository.delete({ accessToken });
+    await this.tokenRepository.remove(token);
   }
 
   async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<TokenResponse> {
@@ -100,7 +101,7 @@ export class AuthService {
 
       return tokens;
     } catch {
-      throw new UnauthorizedException('Invalid or expired token');
+      throw new UnauthorizedException('Token inválido o expirado');
     }
   }
 
@@ -109,7 +110,7 @@ export class AuthService {
     const templateId = this.configService.get<string>('RESET_PSW_SENDGRID_TEMPLATE_ID');
     const frontUrl = this.configService.get<string>('FRONT_URL');
     if (!(from && templateId && frontUrl)) {
-      throw new InternalServerErrorException('Missing Email Configuration');
+      throw new InternalServerErrorException('Error en la configuración de Emails');
     }
 
     const user = await this.usersService.findByEmail(email);
@@ -130,14 +131,14 @@ export class AuthService {
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error(err);
-      throw new InternalServerErrorException('Error while sending the email');
+      throw new InternalServerErrorException('Error enviando el email');
     }
   }
 
   async getPolitics(idDto?: number): Promise<PoliticEntity> {
     const politic = await this.politicRepository.findOne(idDto || 1);
     if (!politic) {
-      throw new NotFoundException(`Politic with id ${idDto} not found`);
+      throw new NotFoundException(`Politica con id ${idDto} no encontrada`);
     }
     return politic;
   }

@@ -4,7 +4,7 @@ export const BearerToken = createParamDecorator((data: string, ctx: ExecutionCon
   const req = ctx.switchToHttp().getRequest();
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    throw new UnauthorizedException('Missing token');
+    throw new UnauthorizedException('Token no encontrado en los headers');
   }
   const bearerToken = authHeader.split(' ')[1];
   return bearerToken;

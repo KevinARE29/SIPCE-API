@@ -16,7 +16,7 @@ export class SessionGuard implements CanActivate {
     const accessToken = authHeader.split(' ')[1];
     const token = await this.tokenRepository.findOne({ where: { accessToken } });
     if (!token) {
-      throw new UnauthorizedException('Token not found in DB');
+      throw new UnauthorizedException('Token no encontrado en la Base de Datos');
     }
     return true;
   }
