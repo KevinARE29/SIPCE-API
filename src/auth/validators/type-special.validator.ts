@@ -7,6 +7,9 @@ const specialChars = '!#$%&()*+,-./:<=>?@[]^_{|}~';
 @ValidatorConstraint({ name: 'typeSpecialValidator', async: false })
 export class TypeSpecialValidator implements ValidatorConstraintInterface {
   validate(text: string, args: ValidationArguments) {
+    if (typeof text !== 'string') {
+      return false;
+    }
     for (const char of text.split('')) {
       if (!specialChars.includes(char)) {
         return false;
@@ -16,6 +19,6 @@ export class TypeSpecialValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `The typeSpecial should be in ${specialChars}`;
+    return `typeSpecial: Debe estar en ${specialChars}`;
   }
 }

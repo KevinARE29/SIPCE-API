@@ -1,31 +1,32 @@
-import { IsNotEmpty, IsNumber, IsBoolean, IsString, Min, Validate, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsBoolean, IsString, Min, Validate, IsOptional, IsInt } from 'class-validator';
+import { validator } from 'src/core/messages/validator.message';
 import { TypeSpecialValidator } from '../validators/type-special.validator';
 
 export class PolitcDto {
   @IsOptional()
-  @IsNumber()
-  @Min(4)
+  @IsInt({ message: validator.isInt })
+  @Min(4, { message: validator.isMin })
   minLength?: number;
 
   @IsOptional()
-  @IsBoolean()
+  @IsBoolean({ message: validator.isBoolean })
   capitalLetter?: boolean;
 
   @IsOptional()
-  @IsBoolean()
+  @IsBoolean({ message: validator.isBoolean })
   lowerCase?: boolean;
 
   @IsOptional()
-  @IsBoolean()
+  @IsBoolean({ message: validator.isBoolean })
   specialChart?: boolean;
 
   @IsOptional()
-  @IsBoolean()
+  @IsBoolean({ message: validator.isBoolean })
   numericChart?: boolean;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: validator.isString })
+  @IsNotEmpty({ message: validator.isNotEmpty })
   @Validate(TypeSpecialValidator)
   typeSpecial?: string;
 }
