@@ -38,7 +38,7 @@ const mockMailsService = () => ({});
 const mockTokenRepository = () => ({
   findOne: jest.fn(),
   save: jest.fn(),
-  delete: jest.fn(),
+  remove: jest.fn(),
 });
 
 jest.mock('../utils/token.util', () => ({
