@@ -8,13 +8,13 @@ export class MinLengthValidator implements ValidatorConstraintInterface {
     if (typeof minLength !== 'number') {
       return false;
     }
-    if (!(minLength === 0 || minLength >= 4)) {
+    if (!( minLength == 0||minLength >= 6)) {
       return false;
     }
     return true;
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `minLength: Debe ser 0 o un número entero mayor o igual que 4`;
+    return `minLength: Debe ser entero  mayor o igual  a 6`;
   }
 }
