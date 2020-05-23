@@ -8,7 +8,7 @@ export class MinLengthValidator implements ValidatorConstraintInterface {
     if (typeof minLength !== 'number') {
       return false;
     }
-    if (!( minLength == 0||minLength >= 6)) {
+    if (!(minLength === 0||minLength >= 6)) {
       return false;
     }
     return true;
