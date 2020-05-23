@@ -1,10 +1,10 @@
-# [Project Name] - Universidad de El Salvador
+# SIPCE API - Universidad de El Salvador
 
 <div align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </div>
 
-[Description of the API]
+API para el Sistema Informático para el control y seguimiento del historial conductual y expediente psicológico de los estudiantes del colegio Liceo Salvadoreño
 
 ## Prerrequisites
 
@@ -25,27 +25,32 @@
 
 <center>
 
-| Environment Variable Key      | Environment Variable Value                                                   |
-| ----------------------------- | ---------------------------------------------------------------------------- |
-| PORT                          | 3000                                                                         |
-| JWT_SECRET_ACCESS_TOKEN       | [Your JWT_SECRET_ACCESS_TOKEN]                                               |
-| JWT_SECRET_REFRESH_TOKEN      | [Your JWT_SECRET_REFRESH_TOKEN]                                              |
-| JWT_SECRET_PASSWORD_RESET     | [Your JWT_SECRET_PASSWORD_RESET]                                             |
-| ACCESS_TOKEN_EXPIRATION       | [Your ACCESS_TOKEN_EXPIRATION]                                               |
-| REFRESH_TOKEN_EXPIRATION      | [Your REFRESH_TOKEN_EXPIRATION]                                              |
-| PASSWORD_RESET_EXPIRATION     | [Your PASSWORD_RESET_EXPIRATION]                                             |
-| TYPEORM_CONNECTION            | postgres                                                                     |
-| TYPEORM_HOST                  | ['db' for start with docker-compose or 'localhost' for start without docker] |
-| TYPEORM_USERNAME              | [YOUR DB USERNAME]                                                           |
-| TYPEORM_PASSWORD              | [YOUR DB PASSWORD]                                                           |
-| TYPEORM_DATABASE              | [DATABASE NAME]                                                              |
-| TYPEORM_PORT                  | 5432                                                                         |
-| TYPEORM_SYNCHRONIZE           | false                                                                        |
-| TYPEORM_ENTITIES              | src/**/entities/\*.js,dist/**/entities/\*.js                                 |
-| TYPEORM_MIGRATIONS_TABLE_NAME | migrations                                                                   |
-| TYPEORM_MIGRATIONS            | migrations/\*.js, dist/migrations/\_.js                                      |
-| TYPEORM_MIGRATIONS_DIR        | migrations                                                                   |
-| TYPEORM_MIGRATIONS_RUN        | true                                                                         |
+| Environment Variable Key       | Environment Variable Value                                                   |
+| ------------------------------ | ---------------------------------------------------------------------------- |
+| PORT                           | 3000                                                                         |
+| API_URL                        | [The API URL]                                                                |
+| FRONT_URL                      | [The Frontend URL]                                                           |
+| JWT_SECRET_ACCESS_TOKEN        | [Your JWT_SECRET_ACCESS_TOKEN]                                               |
+| JWT_SECRET_REFRESH_TOKEN       | [Your JWT_SECRET_REFRESH_TOKEN]                                              |
+| JWT_SECRET_PASSWORD_RESET      | [Your JWT_SECRET_PASSWORD_RESET]                                             |
+| ACCESS_TOKEN_EXPIRATION        | [Your ACCESS_TOKEN_EXPIRATION]                                               |
+| REFRESH_TOKEN_EXPIRATION       | [Your REFRESH_TOKEN_EXPIRATION]                                              |
+| PASSWORD_RESET_EXPIRATION      | [Your PASSWORD_RESET_EXPIRATION]                                             |
+| TYPEORM_CONNECTION             | postgres                                                                     |
+| TYPEORM_HOST                   | ['db' for start with docker-compose or 'localhost' for start without docker] |
+| TYPEORM_USERNAME               | [YOUR DB USERNAME]                                                           |
+| TYPEORM_PASSWORD               | [YOUR DB PASSWORD]                                                           |
+| TYPEORM_DATABASE               | [DATABASE NAME]                                                              |
+| TYPEORM_PORT                   | 5432                                                                         |
+| TYPEORM_SYNCHRONIZE            | false                                                                        |
+| TYPEORM_ENTITIES               | src/**/entities/\*.js,dist/**/entities/\*.js                                 |
+| TYPEORM_MIGRATIONS_TABLE_NAME  | migrations                                                                   |
+| TYPEORM_MIGRATIONS             | migrations/\*.js, dist/migrations/\_.js                                      |
+| TYPEORM_MIGRATIONS_DIR         | migrations                                                                   |
+| TYPEORM_MIGRATIONS_RUN         | true                                                                         |
+| SENDGRID_API_KEY               | [The Sendgrid API Key]                                                       |
+| RESET_PSW_SENDGRID_TEMPLATE_ID | [Template ID for Reset Password]                                             |
+| EMAIL_USER=                    | [The no reply email]                                                         |
 
 </center>
 
@@ -70,8 +75,9 @@
 
 ## API Documentation
 
-The API Swagger Documentation is available through the /docs path.
+Swagger Documentation: Available through the /docs path.
+Postman Documentation: [Postman Docs](https://documenter.getpostman.com/view/11301441/SzmmUEd3)
 
 ## Heroku Deployed API.
 
-https://[path].herokuapp.com/docs/
+[SIPCE API](https://dev-sipce-api.herokuapp.com/docs/)

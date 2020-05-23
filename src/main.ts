@@ -1,10 +1,9 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
-import { ClassSerializerInterceptor } from '@nestjs/common';
-import { AllExceptionsFilter } from './core/filters/http-exception.filter';
+import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import * as helmet from 'helmet';
+import { AllExceptionsFilter } from './core/filters/http-exception.filter';
+import { AppModule } from './app.module';
 
 const PORT = process.env.PORT || 3000;
 
@@ -12,8 +11,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
   app.enableCors({
-    origin: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
     credentials: true,
   });
   app.setGlobalPrefix('api/v1');
@@ -21,8 +23,10 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalFilters(new AllExceptionsFilter());
   const options = new DocumentBuilder()
-    .setTitle('[Project Name]')
-    .setDescription('[Add Description]')
+    .setTitle('SIPCE API')
+    .setDescription(
+      'API para el Sistema Informático para el control y seguimiento del historial conductual y expediente psicológico de los estudiantes del colegio Liceo Salvadoreño',
+    )
     .addBearerAuth()
     .setVersion('1.0')
     .build();
