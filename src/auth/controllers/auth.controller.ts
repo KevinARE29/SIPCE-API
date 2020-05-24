@@ -46,7 +46,7 @@ export class AuthController {
 
   @UseGuards(ContentTypeGuard)
   @Post('forgot-password')
-  @HttpCode(200)
+  @HttpCode(204)
   forgotPsw(@Body() forgotPswDto: ForgotPswDto): Promise<any> {
     return this.authService.forgotPsw(forgotPswDto.email);
   }
