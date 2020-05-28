@@ -1,19 +1,14 @@
-import { Injectable, Inject, forwardRef, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { IsNull } from 'typeorm';
 import { UserRepository } from '../repositories/users.repository';
 import { User } from '../entities/users.entity';
-import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable()
 export class UsersService {
   private saltRounds = 10;
 
-  constructor(
-    private readonly userRepository: UserRepository,
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   getHash(password: string): string {
     return bcrypt.hashSync(password, this.saltRounds);
