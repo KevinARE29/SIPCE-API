@@ -58,7 +58,7 @@ export class AuthService {
   }
 
   async login(user: IAuthenticatedUser): Promise<TokenResponse> {
-    const payload = { sub: user.username, email: user.email, permissions: user.permissions };
+    const payload = { id: user.id, sub: user.username, email: user.email, permissions: user.permissions };
     const tokens = getTokens(payload, this.configService);
     const { accessToken, refreshToken, exp } = tokens.data;
     await this.tokenRepository.save({ user: { id: user.id }, accessToken, refreshToken, exp });
@@ -87,6 +87,7 @@ export class AuthService {
         throw Error;
       }
       const payload = {
+        id: oldRefreshToken.id,
         sub: oldRefreshToken.sub,
         email: oldRefreshToken.email,
         permissions: oldRefreshToken.permissions,

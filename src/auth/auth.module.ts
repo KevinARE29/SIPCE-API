@@ -19,6 +19,6 @@ import { PoliticRepository } from './repositories/politic.repository';
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService],
+  exports: [AuthService, TypeOrmModule],
 })
 export class AuthModule {}
