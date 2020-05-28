@@ -9,6 +9,7 @@ import { AuthController } from './controllers/auth.controller';
 import { TokenRepository } from './repositories/token.repository';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { PoliticRepository } from './repositories/politic.repository';
+import { TokensService } from './services/token.service';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { PoliticRepository } from './repositories/politic.repository';
     MailsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService, TypeOrmModule],
+  providers: [AuthService, TokensService, LocalStrategy, JwtStrategy],
+  exports: [AuthService, TokensService, TypeOrmModule],
 })
 export class AuthModule {}
