@@ -114,6 +114,9 @@ export class AuthService {
     }
 
     const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      return;
+    }
     const resetPswToken = getPswToken(email, this.configService);
     await this.usersService.updateResetPswToken(resetPswToken, user);
 
