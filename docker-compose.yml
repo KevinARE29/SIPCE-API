@@ -6,6 +6,8 @@ services:
       POSTGRES_USER: '${TYPEORM_USERNAME}'
       POSTGRES_PASSWORD: '${TYPEORM_PASSWORD}'
       POSTGRES_DB: '${TYPEORM_DATABASE}'
+    ports:
+      - '5434:5432'
   microservice:
     build: .
     command: npm run start:dev

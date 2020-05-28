@@ -50,7 +50,7 @@ API para el Sistema Informático para el control y seguimiento del historial con
 | TYPEORM_MIGRATIONS_RUN         | true                                                                         |
 | SENDGRID_API_KEY               | [The Sendgrid API Key]                                                       |
 | RESET_PSW_SENDGRID_TEMPLATE_ID | [Template ID for Reset Password]                                             |
-| EMAIL_USER=                    | [The no reply email]                                                         |
+| EMAIL_USER                     | [The no reply email]                                                         |
 
 </center>
 

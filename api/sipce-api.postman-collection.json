@@ -1,0 +1,752 @@
+{
+	"info": {
+		"_postman_id": "7435664f-961d-45f2-b9dc-57c1dbdd922f",
+		"name": "SIPCE-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f7a6adcd-9b8d-4fd8-acc1-2be4e912c1e6",
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c338e823-e8d0-4b0a-9d9f-e138fba0b09d",
+								"exec": [
+									"/*const url = pm.environment.get(\"url\");",
+									"const testRequest = {",
+									"    url: url + 'auth/login',",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json',",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({ username: pm.environment.get(\"username\"), password: pm.environment.get(\"password\") })",
+									"  }",
+									"};",
+									"pm.sendRequest(testRequest, function (err, res) {",
+									"    pm.environment.set(\"accessToken\", res.json().data.accessToken);",
+									"});*/"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/logout",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f7a6adcd-9b8d-4fd8-acc1-2be4e912c1e6",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"accessToken\", jsonData.data.accessToken);",
+									"pm.environment.set(\"refreshToken\", jsonData.data.refreshToken);",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/login",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login - 200 OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/login",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Cowboy"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Dns-Prefetch-Control",
+									"value": "off"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=15552000; includeSubDomains"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Xss-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "526"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"20e-1v0IHi9KQoawkPST8S11TQYX01M\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 May 2020 07:06:42 GMT"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 vegur"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmcml2YXMiLCJlbWFpbCI6ImZlcm5hbmRvcml2YXNhcmV2YWxvMjdAZ21haWwuY29tIiwicGVybWlzc2lvbnMiOlsyLDFdLCJpYXQiOjE1ODk0NDAwMDIsImV4cCI6MTU4OTQ0MTgwMn0._-Bi8lgfWpLuhoj8PEJadCcxsjalMQya3mJmgc41Tm8\",\n        \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmcml2YXMiLCJlbWFpbCI6ImZlcm5hbmRvcml2YXNhcmV2YWxvMjdAZ21haWwuY29tIiwicGVybWlzc2lvbnMiOlsyLDFdLCJpYXQiOjE1ODk0NDAwMDIsImV4cCI6MTU4OTQ0NzIwMn0.mjmrxURUZTHm3ZVP3YXeLsbk9yvdRqtYFXH5XZn4Qs8\",\n        \"exp\": 1589447202\n    }\n}"
+						},
+						{
+							"name": "Login - 401 Unauthorized",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"password\": \"{{password}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/login",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Cowboy"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Dns-Prefetch-Control",
+									"value": "off"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=15552000; includeSubDomains"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Xss-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"2b-hGShxOkieaAVDloBubJVM+h58D8\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 May 2020 07:18:47 GMT"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 vegur"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 401,\n    \"message\": \"Unauthorized\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Forgot Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f7a6adcd-9b8d-4fd8-acc1-2be4e912c1e6",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"kevinare295@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/forgot-password",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"forgot-password"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login - 200 OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/login",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Cowboy"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Dns-Prefetch-Control",
+									"value": "off"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=15552000; includeSubDomains"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Xss-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "526"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"20e-1v0IHi9KQoawkPST8S11TQYX01M\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 May 2020 07:06:42 GMT"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 vegur"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmcml2YXMiLCJlbWFpbCI6ImZlcm5hbmRvcml2YXNhcmV2YWxvMjdAZ21haWwuY29tIiwicGVybWlzc2lvbnMiOlsyLDFdLCJpYXQiOjE1ODk0NDAwMDIsImV4cCI6MTU4OTQ0MTgwMn0._-Bi8lgfWpLuhoj8PEJadCcxsjalMQya3mJmgc41Tm8\",\n        \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmcml2YXMiLCJlbWFpbCI6ImZlcm5hbmRvcml2YXNhcmV2YWxvMjdAZ21haWwuY29tIiwicGVybWlzc2lvbnMiOlsyLDFdLCJpYXQiOjE1ODk0NDAwMDIsImV4cCI6MTU4OTQ0NzIwMn0.mjmrxURUZTHm3ZVP3YXeLsbk9yvdRqtYFXH5XZn4Qs8\",\n        \"exp\": 1589447202\n    }\n}"
+						},
+						{
+							"name": "Login - 401 Unauthorized",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"password\": \"{{password}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}auth/login",
+									"host": [
+										"{{url}}auth"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Cowboy"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Dns-Prefetch-Control",
+									"value": "off"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=15552000; includeSubDomains"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Xss-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "Etag",
+									"value": "W/\"2b-hGShxOkieaAVDloBubJVM+h58D8\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 May 2020 07:18:47 GMT"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 vegur"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 401,\n    \"message\": \"Unauthorized\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "530fb58b-29e7-4ab4-a159-bc624c6410ea",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"accessToken\", jsonData.data.accessToken);",
+									"pm.environment.set(\"refreshToken\", jsonData.data.refreshToken);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/refresh-token",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Políticas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fbd3eeec-59d6-40c8-958f-0ebfd0377423",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const politicsSchema = {",
+									"    \"properties\": {",
+									"       \"id\" : { \"type\": \"integer\" },",
+									"       \"minLength\": { \"type\": \"string\" },",
+									"       \"capitalLetter\": { \"type\": \"boolean\" },",
+									"       \"lowerCase\": { \"type\": \"boolean\" },",
+									"       \"specialChart\": { \"type\": \"boolean\" },",
+									"       \"numericChart\": { \"type\": \"boolean\" },",
+									"       \"typeSpecial\": { \"type\": \"string\" }",
+									"",
+									"    }",
+									"};",
+									"",
+									"const responseSchema = {",
+									"   \"properties\": {",
+									"       \"data\": { \"$ref\": \"politicsSchema\" },",
+									"   }",
+									"};",
+									"",
+									"",
+									"pm.test('Schema response is valid', function() {",
+									"    pm.expect(tv4.validate(pm.response.json(), responseSchema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}auth/politics",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"politics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Políticas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3ee6739d-4ea1-4671-a6a5-91eebfe6f358",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const politicsSchema = {",
+									"    \"properties\": {",
+									"       // \"id\" : { \"type\": \"integer\" },",
+									"       \"minLength\": { \"type\": \"string\" },",
+									"       \"capitalLetter\": { \"type\": \"boolean\" },",
+									"       \"lowerCase\": { \"type\": \"boolean\" },",
+									"       \"specialChart\": { \"type\": \"boolean\" },",
+									"       \"numericChart\": { \"type\": \"boolean\" },",
+									"       \"typeSpecial\": { \"type\": \"string\" }",
+									"",
+									"    }",
+									"};",
+									"",
+									"const responseSchema = {",
+									"   \"properties\": {",
+									"       \"data\": { \"$ref\": \"politicsSchema\" },",
+									"   }",
+									"};",
+									"",
+									"",
+									"pm.test('Schema response is valid', function() {",
+									"    pm.expect(tv4.validate(pm.response.json(), responseSchema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"minLength\": 0,\n    \"capitalLetter\": true,\n    \"lowerCase\": true,\n    \"specialChart\": false,\n    \"numericChart\": true,\n    \"typeSpecial\": \"$#%\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/politics/1",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"politics",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Consejería",
+			"item": [],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Sanciones",
+			"item": [],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
