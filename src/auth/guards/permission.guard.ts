@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRepository } from '../../users/repositories/users.repository';
+import { UserRepository } from '@users/repositories/users.repository';
 import { Permission } from '../entities/permission.entity';
 
 @Injectable()
