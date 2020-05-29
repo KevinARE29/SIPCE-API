@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TokensService } from '@auth/services/token.service';
-import { UsersService } from '../../users/services/users.service';
+import { UsersService } from '@users/services/users.service';
 import { UserRepository } from '../repositories/users.repository';
 import { User } from '../entities/users.entity';
 
