@@ -5,6 +5,8 @@ import * as helmet from 'helmet';
 import { AllExceptionsFilter } from './core/filters/http-exception.filter';
 import { AppModule } from './app.module';
 
+require('module-alias/register');
+
 const PORT = process.env.PORT || 3000;
 
 async function bootstrap() {

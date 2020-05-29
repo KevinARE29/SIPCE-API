@@ -11,7 +11,12 @@
     "baseUrl": "./",
     "incremental": true,
     "strict": true,
-    "resolveJsonModule": true
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "paths": {
+      "@auth/*": ["src/auth/*"],
+      "@users/*": ["src/users/*"]
+    }
   },
   "exclude": ["node_modules", "dist"]
 }
