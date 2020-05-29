@@ -98,7 +98,9 @@
   },
   "_moduleAliases": {
     "@auth": "dist/src/auth",
-    "@users": "dist/src/users"
+    "@users": "dist/src/users",
+    "@core": "dist/src/core",
+    "@mails": "dist/src/mails"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -109,7 +111,9 @@
     "rootDir": "src",
     "moduleNameMapper": {
       "^@auth(.*)$": "<rootDir>/auth$1",
-      "^@users(.*)$": "<rootDir>/users$1"
+      "^@users(.*)$": "<rootDir>/users$1",
+      "^@core(.*)$": "<rootDir>/core$1",
+      "^@mails(.*)$": "<rootDir>/mails$1"
     },
     "testRegex": ".spec.ts$",
     "transform": {

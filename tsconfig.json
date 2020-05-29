@@ -15,7 +15,9 @@
     "resolveJsonModule": true,
     "paths": {
       "@auth/*": ["src/auth/*"],
-      "@users/*": ["src/users/*"]
+      "@users/*": ["src/users/*"],
+      "@core/*": ["src/core/*"],
+      "@mails/*": ["src/mails/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

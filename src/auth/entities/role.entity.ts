@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from '@users/entities/users.entity';
 import { Permission } from './permission.entity';
-import { User } from '../../users/entities/users.entity';
 
 @Entity()
 export class Role {

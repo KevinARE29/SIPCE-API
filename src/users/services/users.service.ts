@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { IsNull } from 'typeorm';
-import { ResetPswDto } from 'src/auth/dtos/reset-psw.dto';
-import { UpdatePswDto } from 'src/auth/dtos/update-psw.dto';
-import { TokensService } from 'src/auth/services/token.service';
-import { User } from '../entities/users.entity';
-import { UserRepository } from '../repositories/users.repository';
+import { ResetPswDto } from '@auth/dtos/reset-psw.dto';
+import { UpdatePswDto } from '@auth/dtos/update-psw.dto';
+import { TokensService } from '@auth/services/token.service';
+import { User } from '@users/entities/users.entity';
+import { UserRepository } from '@users/repositories/users.repository';
 
 @Injectable()
 export class UsersService {

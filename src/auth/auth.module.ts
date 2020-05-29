@@ -1,8 +1,8 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MailsModule } from '../mails/mails.module';
-import { UsersModule } from '../users/users.module';
+import { MailsModule } from '@mails/mails.module';
+import { UsersModule } from '@users/users.module';
 import { AuthService } from './services/auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthController } from './controllers/auth.controller';

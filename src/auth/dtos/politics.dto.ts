@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsBoolean, IsString, Validate, IsOptional } from 'class-validator';
-import { validator } from 'src/core/messages/validator.message';
+import { validator } from '@core/messages/validator.message';
 import { TypeSpecialValidator } from '../validators/type-special.validator';
 import { MinLengthValidator } from '../validators/min-length.validator';
 

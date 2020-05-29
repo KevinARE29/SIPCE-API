@@ -1,7 +1,7 @@
 import { IsPositive, IsInt } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { validator } from 'src/core/messages/validator.message';
+import { validator } from '@core/messages/validator.message';
 
 export class PoliticIdDto {
   @ApiProperty()
