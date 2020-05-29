@@ -41,7 +41,7 @@ export class TokensService {
     try {
       return verify(resetPasswordToken, resetPswSecret) as IPswTokenPayload;
     } catch {
-      throw new ConflictException(`Invalid reset password token ${resetPasswordToken}`);
+      throw new ConflictException('Invalid Reset Password Token');
     }
   }
 }

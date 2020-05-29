@@ -36,7 +36,7 @@ export class User {
   image!: string;
 
   @Column('varchar', { name: 'reset_password_token', length: 512, unique: true, nullable: true })
-  resetPasswordToken!: string;
+  resetPasswordToken!: string | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

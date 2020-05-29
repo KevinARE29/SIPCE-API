@@ -119,8 +119,8 @@ export class AuthService {
     if (!user) {
       return;
     }
-    const resetPswToken = this.tokensService.getPswToken(user.id);
-    await this.usersService.updateResetPswToken(resetPswToken, user);
+    const resetPasswordToken = this.tokensService.getPswToken(user.id);
+    await this.usersService.updateUser(user, { resetPasswordToken });
 
     const emailToSend = {
       from,
@@ -128,7 +128,7 @@ export class AuthService {
       templateId,
       dynamicTemplateData: {
         name: user.name,
-        url: `${frontUrl}/reset-psw?resetPasswordToken=${resetPswToken}`,
+        url: `${frontUrl}/reset-psw?resetPasswordToken=${resetPasswordToken}`,
       },
     };
     try {

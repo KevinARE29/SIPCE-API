@@ -1,7 +1,8 @@
-import { Controller, UseGuards, Post, Delete, HttpCode, Body, Get, Put, Param } from '@nestjs/common';
+import { Controller, UseGuards, Post, Delete, HttpCode, Body, Get, Put, Param, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ContentTypeGuard } from 'src/core/guards/content-type.guard';
+import { UsersService } from 'src/users/services/users.service';
 import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
 import { AuthService } from '../services/auth.service';
 import { TokenResponse } from '../docs/token-response.doc';
@@ -16,11 +17,13 @@ import { PolitcDto } from '../dtos/politics.dto';
 import { PoliticIdDto } from '../dtos/politic-id.dto';
 import { SessionGuard } from '../guards/session.guard';
 import { ForgotPswDto } from '../dtos/forgot-psw.dto';
+import { UpdatePswDto } from '../dtos/update-psw.dto';
+import { ResetPswDto } from '../dtos/reset-psw.dto';
 
 @ApiTags('Authentication Endpoints')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly usersService: UsersService) {}
 
   @UseGuards(ContentTypeGuard, AuthGuard('local'))
   @ApiBody({ type: LoginDto })
@@ -91,5 +94,17 @@ export class AuthController {
   @Put('politics/:politicId')
   updatePolitic(@Param() idDto: PoliticIdDto, @Body() politicDto: PolitcDto): Promise<PoliticResponse> {
     return this.authService.updatePolitic(idDto.politicId, politicDto);
+  }
+
+  @UseGuards(ContentTypeGuard)
+  @ApiOperation({
+    summary: 'Restableciomiento de una contraseña',
+    description:
+      'Use este endpoint para que un usuario pueda restablecer su contraseña usando su reset password token vigente',
+  })
+  @Post('reset-password')
+  @HttpCode(204)
+  resetPsw(@Query() resetPswDto: ResetPswDto, @Body() updatePswDto: UpdatePswDto): Promise<void> {
+    return this.usersService.resetPsw(resetPswDto, updatePswDto);
   }
 }
