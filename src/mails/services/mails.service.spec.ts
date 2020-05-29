@@ -12,9 +12,10 @@ const mockEmail = {
   dynamicTemplateData: {},
 };
 
-describe('TagsService', () => {
+describe('Mails Service', () => {
   let mailsService: MailsService;
   let configService: ConfigService;
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [MailsService, ConfigService],
@@ -23,6 +24,7 @@ describe('TagsService', () => {
     mailsService = module.get(MailsService);
     configService = module.get(ConfigService);
   });
+
   it('Should be defined', () => {
     expect(mailsService).toBeDefined();
     expect(configService).toBeDefined();

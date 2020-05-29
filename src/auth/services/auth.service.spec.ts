@@ -41,6 +41,7 @@ const mockTokenRepository = () => ({
   save: jest.fn(),
   remove: jest.fn(),
 });
+
 const mockTokensService = () => ({
   getTokens: jest.fn().mockReturnValue({ data: mockTokens }),
 });
@@ -75,6 +76,7 @@ describe('Auth Service', () => {
     politicRepository = module.get(PoliticRepository);
     mailsService = module.get(MailsService);
   });
+
   it('Should be defined', () => {
     expect(authService).toBeDefined();
     expect(usersService).toBeDefined();
