@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { setApiKey, send } from '@sendgrid/mail';
 import { ClientResponse } from '@sendgrid/client/src/response';
-import { IEmail } from './interfaces/email.interface';
+import { IEmail } from '../interfaces/email.interface';
 
 @Injectable()
 export class MailsService {

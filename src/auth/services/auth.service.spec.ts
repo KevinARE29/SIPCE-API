@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { MailsService } from '@mails/mails.service';
+import { MailsService } from '@mails/services/mails.service';
 import { UsersService } from '@users/services/users.service';
 import { AuthService } from '../services/auth.service';
 import { PoliticRepository } from '../repositories/politic.repository';
