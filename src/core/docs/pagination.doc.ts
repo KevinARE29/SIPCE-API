@@ -4,18 +4,13 @@ export class Pagination {
   @ApiProperty()
   totalPages!: number;
 
-  @ApiProperty()
   perPage!: number;
 
-  @ApiProperty()
   totalItems!: number;
 
-  @ApiProperty()
   page!: number;
 
-  @ApiProperty()
-  nextPage!: number | null;
+  nextPage?: number;
 
-  @ApiProperty()
-  previousPage!: number | null;
+  previousPage?: number;
 }

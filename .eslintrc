@@ -25,6 +25,8 @@
     "import/prefer-default-export": "off",
     "no-useless-constructor": "off",
     "import/no-extraneous-dependencies": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "array-callback-return": "off",
+    "consistent-return": "off"
   }
 }
