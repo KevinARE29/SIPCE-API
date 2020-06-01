@@ -15,7 +15,8 @@ export class EtlService {
   async syncStudents(user: IAuthenticatedUser): Promise<void> {
     const { Pump } = datapumps;
     const pump = new Pump();
-    const mysqlConnection = createConnection('mysql://kevin:K4R3473@localhost/sahoja_local')
+    // Extraction
+    const mysqlConnection = createConnection('mysql://sql9344499:ntdfgG62z4@sql9.freemysqlhosting.net/sql9344499')
       .query('SELECT * from roles')
       .stream();
     const { PostgresqlMixin } = datapumps.mixin;
@@ -26,13 +27,15 @@ export class EtlService {
       .from(mysqlConnection)
       .mixin(PostgresqlMixin(postgresqlClient))
       .process(async (role: any) => {
-        console.log('ENTRA', role);
-        await pump.query(`SELECT * FROM role WHERE id = ${role.ROLE_ID}`).then((res: any) => {
-          console.log(res.rows[0]);
+        console.log('From Origin DB', role);
+        await pump.query(`SELECT * FROM role WHERE id = ${role.role_id}`).then((res: any) => {
+          // Transformation
+          console.log('From Destination DB', res.rows[0]);
+          // Load
           if (res.rowCount) {
-            console.log('UPDATE EXISTING');
+            pump.query(`UPDATE role SET name = '${role.nombre}' WHERE id = ${role.role_id}`);
           } else {
-            console.log('INSERT NEW');
+            pump.query(`INSERT INTO role (id, name) VALUES (${role.role_id}, '${role.nombre}')`);
           }
         });
       })
