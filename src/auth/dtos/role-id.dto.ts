@@ -1,8 +1,8 @@
 import { Type } from 'class-transformer';
 import { IsId } from '@core/decorators/id.decorator';
 
-export class PoliticIdDto {
+export class RoleIdDto {
   @IsId()
   @Type(() => Number)
-  politicId!: number;
+  roleId!: number;
 }
