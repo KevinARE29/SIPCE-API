@@ -13,16 +13,19 @@ import { TokensService } from './services/token.service';
 import { RoleController } from './controllers/role.controller';
 import { RoleService } from './services/role.service';
 import { RoleRepository } from './repositories/role.repository';
+import { PermissionController } from './controllers/permission.controller';
+import { PermissionService } from './services/permission.service';
+import { PermissionRepository } from './repositories/permission.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TokenRepository, PoliticRepository, RoleRepository]),
+    TypeOrmModule.forFeature([TokenRepository, PoliticRepository, RoleRepository, PermissionRepository]),
     forwardRef(() => UsersModule),
     PassportModule,
     MailsModule,
   ],
-  controllers: [AuthController, RoleController],
-  providers: [AuthService, TokensService, RoleService, LocalStrategy, JwtStrategy],
+  controllers: [AuthController, RoleController, PermissionController],
+  providers: [AuthService, TokensService, RoleService, PermissionService, LocalStrategy, JwtStrategy],
   exports: [AuthService, TokensService, TypeOrmModule],
 })
 export class AuthModule {}
