@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RoleRepository } from '@auth/repositories/roles.repository';
+import { RoleRepository } from '@auth/repositories/role.repository';
 import { PageDto } from '@core/dtos/page.dto';
 import { getPagination } from '@core/utils/pagination.util';
 import { plainToClass } from 'class-transformer';

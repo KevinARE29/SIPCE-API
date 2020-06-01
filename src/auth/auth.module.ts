@@ -12,7 +12,7 @@ import { PoliticRepository } from './repositories/politic.repository';
 import { TokensService } from './services/token.service';
 import { RoleController } from './controllers/role.controller';
 import { RoleService } from './services/role.service';
-import { RoleRepository } from './repositories/roles.repository';
+import { RoleRepository } from './repositories/role.repository';
 
 @Module({
   imports: [
