@@ -5,7 +5,7 @@ import { RoleService } from '@auth/services/role.service';
 import { PermissionGuard } from '@auth/guards/permission.guard';
 import { Permissions } from '@auth/decorators/permissions.decorator';
 import { SessionGuard } from '@auth/guards/session.guard';
-import { RolesResponse } from '@auth/docs/roles-response-doc';
+import { RolesResponse } from '@auth/docs/roles-response.doc';
 import { PageDto } from '@core/dtos/page.dto';
 import { RoleFilterDto } from '@auth/dtos/role-filter.dto';
 

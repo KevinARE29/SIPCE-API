@@ -4,7 +4,7 @@ import { PageDto } from '@core/dtos/page.dto';
 import { getPagination } from '@core/utils/pagination.util';
 import { plainToClass } from 'class-transformer';
 import { Roles } from '@auth/docs/roles.doc';
-import { RolesResponse } from '@auth/docs/roles-response-doc';
+import { RolesResponse } from '@auth/docs/roles-response.doc';
 import { RoleFilterDto } from '@auth/dtos/role-filter.dto';
 
 @Injectable()
