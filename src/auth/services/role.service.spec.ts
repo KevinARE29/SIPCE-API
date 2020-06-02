@@ -20,6 +20,7 @@ const mockCreateRoleDto = {
 const mockRoleRepository = () => ({
   getAllRoles: jest.fn(),
   save: jest.fn(),
+  getRoleByIdOrThrow: jest.fn(),
 });
 
 const mockPermissionRepository = () => ({
@@ -68,6 +69,16 @@ describe('Role Service', () => {
     it('Should throw a not found error if at least one permission is not found in the DB', () => {
       (permissionRepository.findByIds as jest.Mock).mockResolvedValue([]);
       expect(roleService.createRole(mockCreateRoleDto)).rejects.toThrowError(NotFoundException);
+    });
+
+    it('Should Get a specific role', async () => {
+      (roleRepository.getRoleByIdOrThrow as jest.Mock).mockResolvedValue(mockCreateRoleDto);
+      const result = await roleService.getSingleRole(1);
+      expect(result).toEqual({ data: mockCreateRoleDto });
+    });
+    it('Should throw a not found error if the role does not exists', () => {
+      (roleRepository.getRoleByIdOrThrow as jest.Mock).mockResolvedValue(null);
+      expect(roleService.getSingleRole(1)).rejects.toThrowError(NotFoundException);
     });
   });
 });
