@@ -10,7 +10,7 @@ export class Role {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 64 })
+  @Column('varchar', { length: 64, unique: true })
   name!: string;
 
   @ManyToMany(
