@@ -24,7 +24,7 @@ export class RoleService {
     return { data: plainToClass(Roles, roles, { excludeExtraneousValues: true }), pagination };
   }
 
-  async createRole(createRoleDto: CreateRoleDto): Promise<any> {
+  async createRole(createRoleDto: CreateRoleDto): Promise<RoleResponse> {
     const permissions = await this.permissionRepository.findByIds(createRoleDto.permissions);
     if (permissions.length !== createRoleDto.permissions.length) {
       throw new NotFoundException('Permisos no encontrados');
@@ -34,5 +34,10 @@ export class RoleService {
         excludeExtraneousValues: true,
       }),
     };
+  }
+
+  async getSingleRole(roleId: number): Promise<RoleResponse> {
+    const role = await this.roleRepository.getRoleByIdOrThrow(roleId);
+    return { data: plainToClass(Role, role, { excludeExtraneousValues: true }) };
   }
 }

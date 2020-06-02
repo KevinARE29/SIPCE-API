@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Query, Post, Body } from '@nestjs/common';
+import { Controller, UseGuards, Get, Query, Post, Body, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { RoleService } from '@auth/services/role.service';
@@ -11,6 +11,7 @@ import { RoleFilterDto } from '@auth/dtos/role-filter.dto';
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { RoleResponse } from '@auth/docs/role-response.doc';
 import { CreateRoleDto } from '@auth/dtos/create-role.dto';
+import { RoleIdDto } from '@auth/dtos/role-id.dto';
 
 @ApiTags('Authentication Endpoints')
 @Controller('auth/roles')
@@ -39,5 +40,17 @@ export class RoleController {
   @Post('')
   createRole(@Body() createRoleDto: CreateRoleDto): Promise<RoleResponse> {
     return this.roleService.createRole(createRoleDto);
+  }
+
+  @UseGuards(AuthGuard('jwt'), SessionGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Ver detalle de Rol',
+    description: 'Use este endpoint para ver el detalle de un rol específico',
+  })
+  @Permissions('view_role')
+  @Get(':roleId')
+  getSingleRole(@Param() idDto: RoleIdDto): Promise<RoleResponse> {
+    return this.roleService.getSingleRole(idDto.roleId);
   }
 }
