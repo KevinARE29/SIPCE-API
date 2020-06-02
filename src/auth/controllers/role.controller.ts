@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Query, Post, Body, Param } from '@nestjs/common';
+import { Controller, UseGuards, Get, Query, Post, Body, Param, Put } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { RoleService } from '@auth/services/role.service';
@@ -12,6 +12,7 @@ import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { RoleResponse } from '@auth/docs/role-response.doc';
 import { CreateRoleDto } from '@auth/dtos/create-role.dto';
 import { RoleIdDto } from '@auth/dtos/role-id.dto';
+import { UpdateRoleDto } from '@auth/dtos/update-role.dto';
 
 @ApiTags('Authentication Endpoints')
 @Controller('auth/roles')
@@ -52,5 +53,17 @@ export class RoleController {
   @Get(':roleId')
   getSingleRole(@Param() idDto: RoleIdDto): Promise<RoleResponse> {
     return this.roleService.getSingleRole(idDto.roleId);
+  }
+
+  @UseGuards(AuthGuard('jwt'), SessionGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Actualizar Rol',
+    description: 'Use este endpoint para actualizar un rol específico',
+  })
+  @Permissions('update_role')
+  @Put(':roleId')
+  updateRole(@Param() idDto: RoleIdDto, @Body() updateRoleDto: UpdateRoleDto): Promise<RoleResponse> {
+    return this.roleService.updateRole(idDto.roleId, updateRoleDto);
   }
 }
