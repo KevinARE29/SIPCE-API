@@ -98,7 +98,7 @@ export class AuthController {
 
   @UseGuards(ContentTypeGuard)
   @ApiOperation({
-    summary: 'Restableciomiento de una contraseña',
+    summary: 'Restablecimiento de una contraseña',
     description:
       'Use este endpoint para que un usuario pueda restablecer su contraseña usando su reset password token vigente',
   })

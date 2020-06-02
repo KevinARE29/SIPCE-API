@@ -31,7 +31,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   app.setGlobalPrefix('api/v1');
   const options = new DocumentBuilder()
-    .setTitle('SIPCE API')
+    .setTitle('SIAPCE API')
     .setDescription(
       'API para el Sistema Informático para el control y seguimiento del historial conductual y expediente psicológico de los estudiantes del colegio Liceo Salvadoreño',
     )
