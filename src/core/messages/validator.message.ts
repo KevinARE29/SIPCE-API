@@ -7,4 +7,5 @@ export const validator = {
   isJwt: '$property: Debe ser un JSON Web Token válido',
   isBoolean: '$property: Debe ser un booleano',
   isMin: '$property: Debe ser mayor o igual a $constraint1',
+  isMax: '$property: Debe ser menor o igual a $constraint1',
 };
