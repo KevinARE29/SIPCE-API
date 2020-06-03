@@ -20,6 +20,7 @@ const mockCreateRoleDto = {
 const mockRoleRepository = () => ({
   getAllRoles: jest.fn(),
   save: jest.fn(),
+  delete: jest.fn(),
   getRoleByIdOrThrow: jest.fn(),
 });
 
@@ -95,6 +96,17 @@ describe('Role Service', () => {
     it('Should throw a not found error if at least one permission is not found in the DB', () => {
       (permissionRepository.findByIds as jest.Mock).mockResolvedValue([]);
       expect(roleService.updateRole(10, mockCreateRoleDto)).rejects.toThrowError(NotFoundException);
+    });
+
+    it('Should Delete a specific role', async () => {
+      (roleRepository.getRoleByIdOrThrow as jest.Mock).mockResolvedValue(mockCreateRoleDto);
+      expect(roleRepository.delete).not.toHaveBeenCalled();
+      await roleService.deleteRole(10);
+      expect(roleRepository.delete).toHaveBeenCalled();
+    });
+    it('Should throw a conflict error if the role is read only', async () => {
+      (roleRepository.getRoleByIdOrThrow as jest.Mock).mockResolvedValue(mockCreateRoleDto);
+      expect(roleService.deleteRole(1)).rejects.toThrowError(ConflictException);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Query, Post, Body, Param, Put } from '@nestjs/common';
+import { Controller, UseGuards, Get, Query, Post, Body, Param, Put, Delete, HttpCode } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { RoleService } from '@auth/services/role.service';
@@ -55,7 +55,7 @@ export class RoleController {
     return this.roleService.getSingleRole(idDto.roleId);
   }
 
-  @UseGuards(AuthGuard('jwt'), SessionGuard, PermissionGuard)
+  @UseGuards(ContentTypeGuard, AuthGuard('jwt'), SessionGuard, PermissionGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Actualizar Rol',
@@ -65,5 +65,18 @@ export class RoleController {
   @Put(':roleId')
   updateRole(@Param() idDto: RoleIdDto, @Body() updateRoleDto: UpdateRoleDto): Promise<RoleResponse> {
     return this.roleService.updateRole(idDto.roleId, updateRoleDto);
+  }
+
+  @UseGuards(AuthGuard('jwt'), SessionGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Eliminar Rol',
+    description: 'Use este endpoint para eliminar un rol específico',
+  })
+  @Permissions('delete_role')
+  @HttpCode(204)
+  @Delete(':roleId')
+  deleteRole(@Param() idDto: RoleIdDto): Promise<void> {
+    return this.roleService.deleteRole(idDto.roleId);
   }
 }

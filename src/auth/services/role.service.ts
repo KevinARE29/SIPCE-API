@@ -62,4 +62,12 @@ export class RoleService {
       }),
     };
   }
+
+  async deleteRole(roleId: number): Promise<void> {
+    if (isInReadOnlyRoles(roleId)) {
+      throw new ConflictException('Rol de solo lectura');
+    }
+    await this.roleRepository.getRoleByIdOrThrow(roleId);
+    this.roleRepository.delete(roleId);
+  }
 }
