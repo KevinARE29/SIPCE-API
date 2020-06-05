@@ -19,10 +19,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:gen": "nest build && ts-node ./node_modules/typeorm/cli.js migration:generate -n migration",
-    "migration:create": "ts-node ./node_modules/typeorm/cli.js migration:create -n migration",
-    "migration:run": "nest build && ts-node ./node_modules/typeorm/cli.js migration:run",
-    "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert"
+    "migration:gen": "nest build && typeorm migration:generate -n migration",
+    "migration:create": "typeorm migration:create -n migration",
+    "migration:run": "nest build && typeorm migration:run",
+    "migration:revert": "typeorm migration:revert"
   },
   "husky": {
     "hooks": {

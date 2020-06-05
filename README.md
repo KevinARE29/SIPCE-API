@@ -44,7 +44,7 @@ API para el Sistema Informático para el control y seguimiento del historial con
 | TYPEORM_PORT                   | 5432                                                                         |
 | TYPEORM_SYNCHRONIZE            | false                                                                        |
 | TYPEORM_ENTITIES               | src/**/entities/\*.js,dist/**/entities/\*.js                                 |
-| TYPEORM_MIGRATIONS_TABLE_NAME  | migrations                                                                   |
+| TYPEORM_MIGRATIONS_TABLE_NAME  | migration                                                                    |
 | TYPEORM_MIGRATIONS             | migrations/\*.js, dist/migrations/\_.js                                      |
 | TYPEORM_MIGRATIONS_DIR         | migrations                                                                   |
 | TYPEORM_MIGRATIONS_RUN         | true                                                                         |
