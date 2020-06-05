@@ -1,12 +1,8 @@
-import { IsPositive, IsInt } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { validator } from 'src/core/messages/validator.message';
+import { IsId } from '@core/decorators/id.decorator';
 
 export class PoliticIdDto {
-  @ApiProperty()
+  @IsId()
   @Type(() => Number)
-  @IsInt({ message: validator.isInt })
-  @IsPositive({ message: validator.isPositive })
   politicId!: number;
 }

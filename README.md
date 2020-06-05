@@ -1,4 +1,4 @@
-# SIPCE API - Universidad de El Salvador
+# SIAPCE API - Universidad de El Salvador
 
 <div align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
@@ -80,4 +80,4 @@ Postman Documentation: [Postman Docs](https://documenter.getpostman.com/view/113
 
 ## Heroku Deployed API.
 
-[SIPCE API](https://dev-sipce-api.herokuapp.com/docs/)
+[SIAPCE API](https://dev-sipce-api.herokuapp.com/docs/)

@@ -9,12 +9,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { verify } from 'jsonwebtoken';
 import { plainToClass } from 'class-transformer';
-import { MailsService } from '../../mails/mails.service';
-import { UsersService } from '../../users/services/users.service';
-import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
+import { MailsService } from '@mails/services/mails.service';
+import { UsersService } from '@users/services/users.service';
+import { IAuthenticatedUser } from '@users/interfaces/users.interface';
 import { TokenResponse } from '../docs/token-response.doc';
 import { TokenRepository } from '../repositories/token.repository';
-import { getTokens, getPswToken } from '../utils/token.util';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 import { ITokenPayload } from '../interfaces/token-payload.interface';
 import { Permission } from '../entities/permission.entity';
@@ -23,12 +22,14 @@ import { Politic } from '../docs/politic.doc';
 import { PolitcDto } from '../dtos/politics.dto';
 import { PoliticResponse } from '../docs/politic-response.doc';
 import { Politic as PoliticEntity } from '../entities/politic.entity';
+import { TokensService } from '../services/token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    private readonly tokensService: TokensService,
     private readonly configService: ConfigService,
     private readonly tokenRepository: TokenRepository,
     private readonly politicRepository: PoliticRepository,
@@ -58,8 +59,8 @@ export class AuthService {
   }
 
   async login(user: IAuthenticatedUser): Promise<TokenResponse> {
-    const payload = { sub: user.username, email: user.email, permissions: user.permissions };
-    const tokens = getTokens(payload, this.configService);
+    const payload = { id: user.id, sub: user.username, email: user.email, permissions: user.permissions };
+    const tokens = this.tokensService.getTokens(payload);
     const { accessToken, refreshToken, exp } = tokens.data;
     await this.tokenRepository.save({ user: { id: user.id }, accessToken, refreshToken, exp });
     return tokens;
@@ -87,11 +88,12 @@ export class AuthService {
         throw Error;
       }
       const payload = {
+        id: oldRefreshToken.id,
         sub: oldRefreshToken.sub,
         email: oldRefreshToken.email,
         permissions: oldRefreshToken.permissions,
       };
-      const tokens = getTokens(payload, this.configService);
+      const tokens = this.tokensService.getTokens(payload);
 
       const updatedToken = {
         ...token,
@@ -114,8 +116,11 @@ export class AuthService {
     }
 
     const user = await this.usersService.findByEmail(email);
-    const resetPswToken = getPswToken(email, this.configService);
-    await this.usersService.updateResetPswToken(resetPswToken, user);
+    if (!user) {
+      return;
+    }
+    const resetPasswordToken = this.tokensService.getPswToken(user.id);
+    await this.usersService.updateUser(user, { resetPasswordToken });
 
     const emailToSend = {
       from,
@@ -123,7 +128,7 @@ export class AuthService {
       templateId,
       dynamicTemplateData: {
         name: user.name,
-        url: `${frontUrl}/reset-psw?resetPasswordToken=${resetPswToken}`,
+        url: `${frontUrl}/reset-psw?resetPasswordToken=${resetPasswordToken}`,
       },
     };
     try {

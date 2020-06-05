@@ -1,18 +1,17 @@
-import { Injectable, NotFoundException, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UserRepository } from '../repositories/users.repository';
-import { User } from '../entities/users.entity';
-import { AuthService } from '../../auth/services/auth.service';
+import { IsNull } from 'typeorm';
+import { ResetPswDto } from '@auth/dtos/reset-psw.dto';
+import { UpdatePswDto } from '@auth/dtos/update-psw.dto';
+import { TokensService } from '@auth/services/token.service';
+import { User } from '@users/entities/users.entity';
+import { UserRepository } from '@users/repositories/users.repository';
 
 @Injectable()
 export class UsersService {
   private saltRounds = 10;
 
-  constructor(
-    private readonly userRepository: UserRepository,
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly userRepository: UserRepository, private readonly tokensService: TokensService) {}
 
   getHash(password: string): string {
     return bcrypt.hashSync(password, this.saltRounds);
@@ -22,19 +21,42 @@ export class UsersService {
     return bcrypt.compareSync(password, hash);
   }
 
-  findByUserName(username: string): Promise<User | undefined> {
-    return this.userRepository.findUserByUsername(username);
-  }
-
-  async findByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { email } });
+  async findByIdOrThrow(id: number): Promise<User> {
+    const user = await this.userRepository.findOne(id, { where: { deletedAt: IsNull() } });
     if (!user) {
-      throw new NotFoundException(`Usuario con email ${email} no encontrado`);
+      throw new NotFoundException(`User with id ${id} not found`);
     }
     return user;
   }
 
-  updateResetPswToken(resetPasswordToken: string, user: User): Promise<User> {
-    return this.userRepository.save({ ...user, resetPasswordToken });
+  findByUserName(username: string): Promise<User | undefined> {
+    return this.userRepository.findUserByUsername(username);
+  }
+
+  findByEmail(email: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { email, deletedAt: IsNull() } });
+  }
+
+  updateUser(user: User, updateUserDto: ResetPswDto | UpdatePswDto) {
+    return this.userRepository.save({ ...user, ...updateUserDto });
+  }
+
+  updatePsw(user: User, newPsw: string): Promise<User> {
+    const password = this.getHash(newPsw);
+    return this.updateUser(user, { password });
+  }
+
+  async resetPsw(resetPswDto: ResetPswDto, updatePswDto: UpdatePswDto): Promise<void> {
+    const pswTokenPayload = this.tokensService.getPswTokenPayload(resetPswDto.resetPasswordToken);
+    const user = await this.findByIdOrThrow(pswTokenPayload.id);
+    if (user.resetPasswordToken !== resetPswDto.resetPasswordToken) {
+      throw new ConflictException('Invalid Reset Password Token');
+    }
+    const password = this.getHash(updatePswDto.password);
+    this.userRepository.save({
+      ...user,
+      password,
+      resetPasswordToken: null,
+    });
   }
 }

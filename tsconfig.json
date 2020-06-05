@@ -11,7 +11,14 @@
     "baseUrl": "./",
     "incremental": true,
     "strict": true,
-    "resolveJsonModule": true
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "paths": {
+      "@auth/*": ["src/auth/*"],
+      "@users/*": ["src/users/*"],
+      "@core/*": ["src/core/*"],
+      "@mails/*": ["src/mails/*"]
+    }
   },
   "exclude": ["node_modules", "dist"]
 }

@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { MailsService } from '../../mails/mails.service';
+import { MailsService } from '@mails/services/mails.service';
+import { UsersService } from '@users/services/users.service';
 import { AuthService } from '../services/auth.service';
-import { UsersService } from '../../users/services/users.service';
 import { PoliticRepository } from '../repositories/politic.repository';
 import { TokenRepository } from '../repositories/token.repository';
+import { TokensService } from './token.service';
 
 const mockPolitic = {
   id: 1,
@@ -17,7 +18,7 @@ const mockUpdatePoliticDto = {
   lowerCase: true,
   specialChart: false,
   numericChart: true,
-  typeSpecial: ' {}[]-;,:?',
+  typeSpecial: '{}[]-;,:?',
 };
 
 const mockUpdatedPoliticDto = {
@@ -41,17 +42,15 @@ const mockTokenRepository = () => ({
   remove: jest.fn(),
 });
 
-jest.mock('../utils/token.util', () => ({
-  ...jest.requireActual('../utils/token.util'),
-  getTokens: () => ({
-    data: mockTokens,
-  }),
-}));
+const mockTokensService = () => ({
+  getTokens: jest.fn().mockReturnValue({ data: mockTokens }),
+});
 
 describe('Auth Service', () => {
   let authService: AuthService;
   let usersService: UsersService;
   let configService: ConfigService;
+  let tokensService: TokensService;
   let politicRepository: PoliticRepository;
   let tokenRepository: TokenRepository;
   let mailsService: MailsService;
@@ -62,6 +61,7 @@ describe('Auth Service', () => {
         AuthService,
         { provide: UsersService, useFactory: mockUserService },
         { provide: ConfigService, useFactory: mockConfigService },
+        { provide: TokensService, useFactory: mockTokensService },
         { provide: TokenRepository, useFactory: mockTokenRepository },
         { provide: PoliticRepository, useFactory: mockPoliticRepository },
         { provide: MailsService, useFactory: mockMailsService },
@@ -71,14 +71,17 @@ describe('Auth Service', () => {
     authService = module.get(AuthService);
     usersService = module.get(UsersService);
     configService = module.get(ConfigService);
+    tokensService = module.get(TokensService);
     tokenRepository = module.get(TokenRepository);
     politicRepository = module.get(PoliticRepository);
     mailsService = module.get(MailsService);
   });
+
   it('Should be defined', () => {
     expect(authService).toBeDefined();
     expect(usersService).toBeDefined();
     expect(configService).toBeDefined();
+    expect(tokensService).toBeDefined();
     expect(tokenRepository).toBeDefined();
     expect(politicRepository).toBeDefined();
     expect(mailsService).toBeDefined();

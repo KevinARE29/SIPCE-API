@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../../users/entities/users.entity';
+import { User } from '@users/entities/users.entity';
 
 @Entity()
 export class Token {

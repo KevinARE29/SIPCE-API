@@ -1,26 +1,29 @@
-import { Controller, UseGuards, Post, Delete, HttpCode, Body, Get, Put, Param } from '@nestjs/common';
+import { Controller, UseGuards, Post, Delete, HttpCode, Body, Get, Put, Param, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { ContentTypeGuard } from 'src/core/guards/content-type.guard';
-import { IAuthenticatedUser } from '../../users/interfaces/users.interface';
-import { AuthService } from '../services/auth.service';
-import { TokenResponse } from '../docs/token-response.doc';
-import { User } from '../../users/decorators/user.decorator';
-import { LoginDto } from '../dtos/login.dto';
-import { BearerToken } from '../decorators/bearer-token.decorator';
-import { RefreshTokenDto } from '../dtos/refresh-token.dto';
-import { PermissionGuard } from '../guards/permission.guard';
-import { Permissions } from '../decorators/permissions.decorator';
-import { PoliticResponse } from '../docs/politic-response.doc';
-import { PolitcDto } from '../dtos/politics.dto';
-import { PoliticIdDto } from '../dtos/politic-id.dto';
-import { SessionGuard } from '../guards/session.guard';
-import { ForgotPswDto } from '../dtos/forgot-psw.dto';
+import { ContentTypeGuard } from '@core/guards/content-type.guard';
+import { UsersService } from '@users/services/users.service';
+import { IAuthenticatedUser } from '@users/interfaces/users.interface';
+import { AuthService } from '@auth/services/auth.service';
+import { TokenResponse } from '@auth/docs/token-response.doc';
+import { User } from '@users/decorators/user.decorator';
+import { LoginDto } from '@auth/dtos/login.dto';
+import { BearerToken } from '@auth/decorators/bearer-token.decorator';
+import { RefreshTokenDto } from '@auth/dtos/refresh-token.dto';
+import { PermissionGuard } from '@auth/guards/permission.guard';
+import { Permissions } from '@auth/decorators/permissions.decorator';
+import { PoliticResponse } from '@auth/docs/politic-response.doc';
+import { PolitcDto } from '@auth/dtos/politics.dto';
+import { PoliticIdDto } from '@auth/dtos/politic-id.dto';
+import { SessionGuard } from '@auth/guards/session.guard';
+import { ForgotPswDto } from '@auth/dtos/forgot-psw.dto';
+import { UpdatePswDto } from '@auth/dtos/update-psw.dto';
+import { ResetPswDto } from '@auth/dtos/reset-psw.dto';
 
 @ApiTags('Authentication Endpoints')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly usersService: UsersService) {}
 
   @UseGuards(ContentTypeGuard, AuthGuard('local'))
   @ApiBody({ type: LoginDto })
@@ -64,7 +67,7 @@ export class AuthController {
   })
   @Post('forgot-password')
   @HttpCode(204)
-  forgotPsw(@Body() forgotPswDto: ForgotPswDto): Promise<any> {
+  forgotPsw(@Body() forgotPswDto: ForgotPswDto): Promise<void> {
     return this.authService.forgotPsw(forgotPswDto.email);
   }
 
@@ -89,7 +92,19 @@ export class AuthController {
   })
   @Permissions('update_politics')
   @Put('politics/:politicId')
-  async updatePolitic(@Param() idDto: PoliticIdDto, @Body() politicDto: PolitcDto): Promise<PoliticResponse> {
+  updatePolitic(@Param() idDto: PoliticIdDto, @Body() politicDto: PolitcDto): Promise<PoliticResponse> {
     return this.authService.updatePolitic(idDto.politicId, politicDto);
+  }
+
+  @UseGuards(ContentTypeGuard)
+  @ApiOperation({
+    summary: 'Restablecimiento de una contraseña',
+    description:
+      'Use este endpoint para que un usuario pueda restablecer su contraseña usando su reset password token vigente',
+  })
+  @Post('reset-password')
+  @HttpCode(204)
+  resetPsw(@Query() resetPswDto: ResetPswDto, @Body() updatePswDto: UpdatePswDto): Promise<void> {
+    return this.usersService.resetPsw(resetPswDto, updatePswDto);
   }
 }
