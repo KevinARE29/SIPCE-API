@@ -78,8 +78,8 @@ describe('Role Service', () => {
       expect(result).toEqual({ data: mockCreateRoleDto });
     });
     it('Should throw a not found error if the role does not exists', () => {
-      (roleRepository.getRoleByIdOrThrow as jest.Mock).mockResolvedValue(null);
-      expect(roleService.getSingleRole(1)).rejects.toThrowError(NotFoundException);
+      (roleRepository.getRoleByIdOrThrow as jest.Mock).mockRejectedValue(new NotFoundException());
+      expect(roleService.getSingleRole(0)).rejects.toThrowError(NotFoundException);
     });
 
     it('Should Update a specific role', async () => {

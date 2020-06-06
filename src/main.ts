@@ -6,6 +6,7 @@ import {
   initializeTransactionalContext,
   patchTypeORMRepositoryWithBaseRepository,
 } from 'typeorm-transactional-cls-hooked';
+import { AccessLogRepository } from '@logs/repositories/access-log.repository';
 import { AllExceptionsFilter } from './core/filters/http-exception.filter';
 import { AppModule } from './app.module';
 
@@ -16,6 +17,7 @@ const PORT = process.env.PORT || 3000;
 async function bootstrap() {
   initializeTransactionalContext();
   patchTypeORMRepositoryWithBaseRepository();
+
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
   app.enableCors({
@@ -26,10 +28,13 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
     credentials: true,
   });
+
+  const accessLogRepository = app.get(AccessLogRepository);
+  app.useGlobalFilters(new AllExceptionsFilter(accessLogRepository));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, validationError: { target: false } }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  app.useGlobalFilters(new AllExceptionsFilter());
   app.setGlobalPrefix('api/v1');
+
   const options = new DocumentBuilder()
     .setTitle('SIAPCE API')
     .setDescription(
