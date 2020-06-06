@@ -19,10 +19,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:gen": "nest build && ts-node ./node_modules/typeorm/cli.js migration:generate -n migration",
-    "migration:create": "ts-node ./node_modules/typeorm/cli.js migration:create -n migration",
-    "migration:run": "nest build && ts-node ./node_modules/typeorm/cli.js migration:run",
-    "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert"
+    "migration:gen": "nest build && typeorm migration:generate -n migration",
+    "migration:create": "typeorm migration:create -n migration",
+    "migration:run": "nest build && typeorm migration:run",
+    "migration:revert": "typeorm migration:revert"
   },
   "husky": {
     "hooks": {
@@ -101,7 +101,8 @@
     "@auth": "dist/src/auth",
     "@users": "dist/src/users",
     "@core": "dist/src/core",
-    "@mails": "dist/src/mails"
+    "@mails": "dist/src/mails",
+    "@logs": "dist/src/logs"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -114,7 +115,8 @@
       "^@auth(.*)$": "<rootDir>/auth$1",
       "^@users(.*)$": "<rootDir>/users$1",
       "^@core(.*)$": "<rootDir>/core$1",
-      "^@mails(.*)$": "<rootDir>/mails$1"
+      "^@mails(.*)$": "<rootDir>/mails$1",
+      "^@logs(.*)$": "<rootDir>/logs$1"
     },
     "testRegex": ".spec.ts$",
     "transform": {

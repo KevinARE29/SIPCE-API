@@ -22,6 +22,8 @@ export class RoleRepository extends Repository<Role> {
         return { ...acum, ...orderOption };
       }, {});
       query.orderBy(order);
+    } else {
+      query.orderBy({ 'role.id': 'DESC' });
     }
 
     if (name) {

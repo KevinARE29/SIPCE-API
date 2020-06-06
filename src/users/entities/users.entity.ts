@@ -20,7 +20,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 32, unique: true })
+  @Column('varchar', { length: 64, unique: true })
   username!: string;
 
   @Column('varchar', { length: 128 })
@@ -38,13 +38,13 @@ export class User {
   @Column('varchar', { name: 'reset_password_token', length: 512, unique: true, nullable: true })
   resetPasswordToken!: string | null;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt!: Date;
 
-  @Column({ name: 'deleted_at', nullable: true })
+  @Column({ name: 'deleted_at', nullable: true, type: 'timestamptz' })
   deletedAt!: Date;
 
   @OneToMany(
