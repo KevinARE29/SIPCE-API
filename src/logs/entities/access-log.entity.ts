@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class ActionLog {
+export class AccessLog {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id!: number;

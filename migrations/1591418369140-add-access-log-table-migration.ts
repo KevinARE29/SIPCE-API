@@ -5,7 +5,7 @@ export class Migration1591418369140 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "action_log" ("id" SERIAL NOT NULL, "username" character varying(64) NOT NULL, "ip" character varying(16), "statusCode" smallint NOT NULL, "attempt_time" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "PK_63cffa5d8af90621882f0388359" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "access_log" ("id" SERIAL NOT NULL, "username" character varying(64) NOT NULL, "ip" character varying(16), "statusCode" smallint NOT NULL, "attempt_time" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "PK_63cffa5d8af90621882f0388359" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(`alter table "user" alter column username type varchar(64) using username::varchar(64)`);
     await queryRunner.query(
@@ -24,6 +24,6 @@ export class Migration1591418369140 implements MigrationInterface {
     await queryRunner.query(`alter table "user" alter column updated_at type timestamp using updated_at::timestamp`);
     await queryRunner.query(`alter table "user" alter column created_at type timestamp using created_at::timestamp`);
     await queryRunner.query(`alter table "user" alter column username type varchar(32) using username::varchar(32)`);
-    await queryRunner.query(`DROP TABLE "action_log"`);
+    await queryRunner.query(`DROP TABLE "access_log"`);
   }
 }
