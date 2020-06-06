@@ -1,4 +1,16 @@
-import { Controller, UseGuards, Post, Delete, HttpCode, Body, Get, Put, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Post,
+  Delete,
+  HttpCode,
+  Body,
+  Get,
+  Put,
+  Param,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
@@ -19,6 +31,7 @@ import { SessionGuard } from '@auth/guards/session.guard';
 import { ForgotPswDto } from '@auth/dtos/forgot-psw.dto';
 import { UpdatePswDto } from '@auth/dtos/update-psw.dto';
 import { ResetPswDto } from '@auth/dtos/reset-psw.dto';
+import { AccessLogInterceptor } from '@logs/interceptors/access-log.interceptor';
 
 @ApiTags('Authentication Endpoints')
 @Controller('auth')
@@ -26,6 +39,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService, private readonly usersService: UsersService) {}
 
   @UseGuards(ContentTypeGuard, AuthGuard('local'))
+  @UseInterceptors(AccessLogInterceptor)
   @ApiBody({ type: LoginDto })
   @ApiOperation({
     summary: 'Inicia la sesión de un usuario',
