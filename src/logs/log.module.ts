@@ -2,11 +2,11 @@ import { Module, Global } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LogController } from './controllers/log.controller';
 import { LogService } from './services/log.service';
-import { AccessLog } from './entities/access-log.entity';
+import { AccessLogRepository } from './repositories/access-log.repository';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([AccessLog])],
+  imports: [TypeOrmModule.forFeature([AccessLogRepository])],
   controllers: [LogController],
   providers: [LogService],
   exports: [TypeOrmModule],
