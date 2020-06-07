@@ -10,7 +10,7 @@ export async function logAccess(
   const req = context.getRequest();
   const statusCode = code || context.getResponse().statusCode;
   const { username } = req.body;
-  const ip = req.headers['x-forwarded-for'];
+  const ip = req.headers['x-forwarded-for']?.split(',')[0];
   try {
     await accessLogRepository.save({ username, ip, statusCode });
   } catch {
