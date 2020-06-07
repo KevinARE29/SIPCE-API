@@ -4,8 +4,8 @@ import { validator } from '@core/messages/validator.message';
 
 export class CreateRoleDto {
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: validator.isNotEmpty })
+  @IsString({ message: validator.isString })
   name!: string;
 
   @IsArray()

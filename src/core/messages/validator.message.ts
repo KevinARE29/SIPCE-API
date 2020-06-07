@@ -8,4 +8,5 @@ export const validator = {
   isBoolean: '$property: Debe ser un booleano',
   isMin: '$property: Debe ser mayor o igual a $constraint1',
   isMax: '$property: Debe ser menor o igual a $constraint1',
+  isDateString: '$property: Debe ser una fecha en ISOString',
 };
