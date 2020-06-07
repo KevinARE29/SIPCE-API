@@ -5,8 +5,8 @@ import { validator } from '@core/messages/validator.message';
 export class UpdateRoleDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: validator.isNotEmpty })
+  @IsString({ message: validator.isString })
   name?: string;
 
   @IsOptional()
