@@ -1,12 +1,11 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, ValidationError } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
-import { AccessLogRepository } from '@logs/repositories/access-log.repository';
-import { logAccess } from '@logs/utils/log.util';
+import { LogService } from '@logs/services/log.service';
 import { IExceptionResponse } from '../interfaces/exception-response.interface';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly accessLogRepository: AccessLogRepository) {}
+  constructor(private readonly logService: LogService) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const context = host.switchToHttp();
@@ -32,9 +31,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
       error = 'Internal Server Error';
     }
 
-    if (context.getRequest().url === '/api/v1/auth/login') {
-      logAccess(context, this.accessLogRepository, statusCode);
-    }
+    this.logService.logAccess(context, statusCode);
+    this.logService.logAction(context, statusCode);
 
     response.status(statusCode).json({ statusCode, error, message });
   }

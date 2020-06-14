@@ -4,13 +4,13 @@ import { tap } from 'rxjs/operators';
 import { LogService } from '@logs/services/log.service';
 
 @Injectable()
-export class AccessLogInterceptor implements NestInterceptor {
+export class ActionLogInterceptor implements NestInterceptor {
   constructor(private readonly logService: LogService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       tap(() => {
-        this.logService.logAccess(context.switchToHttp());
+        this.logService.logAction(context.switchToHttp());
       }),
     );
   }

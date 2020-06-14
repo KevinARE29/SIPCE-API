@@ -6,13 +6,13 @@ import {
   initializeTransactionalContext,
   patchTypeORMRepositoryWithBaseRepository,
 } from 'typeorm-transactional-cls-hooked';
-import { AccessLogRepository } from '@logs/repositories/access-log.repository';
+import { ActionLogInterceptor } from '@logs/interceptors/action-log.interceptor';
+import { ConfigService } from '@nestjs/config';
+import { LogService } from '@logs/services/log.service';
 import { AllExceptionsFilter } from './core/filters/http-exception.filter';
 import { AppModule } from './app.module';
 
 require('module-alias/register');
-
-const PORT = process.env.PORT || 3000;
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -29,11 +29,15 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const accessLogRepository = app.get(AccessLogRepository);
-  app.useGlobalFilters(new AllExceptionsFilter(accessLogRepository));
+  const configService = app.get(ConfigService);
+  const port = configService.get('PORT') || 3000;
+  const apiPrefix = configService.get('API_PREFIX') || 'api/v1';
+
+  const logService = app.get(LogService);
+  app.useGlobalFilters(new AllExceptionsFilter(logService));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, validationError: { target: false } }));
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  app.setGlobalPrefix('api/v1');
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)), new ActionLogInterceptor(logService));
+  app.setGlobalPrefix(apiPrefix);
 
   const options = new DocumentBuilder()
     .setTitle('SIAPCE API')
@@ -47,6 +51,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document);
 
-  await app.listen(PORT);
+  await app.listen(port);
 }
 bootstrap();
