@@ -85,13 +85,10 @@ export class AuthController {
     return this.authService.forgotPsw(forgotPswDto.email);
   }
 
-  @UseGuards(AuthGuard('jwt'), SessionGuard, PermissionGuard)
-  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Obtener políticas de seguridad de contraseñas',
     description: 'Use este endpoint para obtener las políticas de seguridad de contraseñas',
   })
-  @Permissions('retrieve_politics')
   @Get('politics')
   async getPolitics(): Promise<PoliticResponse> {
     const politics = await this.authService.getPolitics();
