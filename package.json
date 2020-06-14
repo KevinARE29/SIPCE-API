@@ -22,7 +22,7 @@
     "migration:gen": "nest build && typeorm migration:generate -n migration",
     "migration:create": "typeorm migration:create -n migration",
     "migration:run": "nest build && typeorm migration:run",
-    "migration:revert": "typeorm migration:revert"
+    "migration:revert": "nest build && typeorm migration:revert"
   },
   "husky": {
     "hooks": {

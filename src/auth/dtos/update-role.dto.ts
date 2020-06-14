@@ -10,7 +10,7 @@ export class UpdateRoleDto {
   name?: string;
 
   @IsOptional()
-  @IsArray()
+  @IsArray({ message: validator.isArray })
   @IsInt({ each: true, message: validator.isInt })
   @IsPositive({ each: true, message: validator.isPositive })
   permissions?: number[];

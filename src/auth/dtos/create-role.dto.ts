@@ -8,7 +8,7 @@ export class CreateRoleDto {
   @IsString({ message: validator.isString })
   name!: string;
 
-  @IsArray()
+  @IsArray({ message: validator.isArray })
   @IsInt({ each: true, message: validator.isInt })
   @IsPositive({ each: true, message: validator.isPositive })
   permissions!: number[];
