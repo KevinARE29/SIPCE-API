@@ -9,14 +9,13 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
 import { Token } from '@auth/entities/token.entity';
 import { Permission } from '@auth/entities/permission.entity';
 import { Role } from '@auth/entities/role.entity';
+import { ActionLog } from '@logs/entities/action-log.entity';
 
 @Entity()
 export class User {
-  @ApiProperty()
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -52,6 +51,12 @@ export class User {
     token => token.user,
   )
   tokens!: Token[];
+
+  @OneToMany(
+    () => ActionLog,
+    actionLog => actionLog.user,
+  )
+  actionLogs!: ActionLog[];
 
   @ManyToMany(
     () => Permission,
