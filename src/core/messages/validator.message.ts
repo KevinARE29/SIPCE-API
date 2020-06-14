@@ -1,5 +1,6 @@
 export const validator = {
   isArray: '$property: Debe ser un array',
+  isIn: '$property: Debe ser uno de los siguientes valores: $constraint1',
   isNotEmpty: '$property: No debe ser nulo',
   isEmail: '$property: Debe ser un email válido (i.e. user@mail.com)',
   isString: '$property: Debe ser una cadena de carecteres',

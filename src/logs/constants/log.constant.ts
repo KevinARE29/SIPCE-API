@@ -1,15 +1,17 @@
 export enum EActions {
-  'Crear' = 1,
+  'Actualizar' = 1,
   'Consultar',
-  'Actualizar',
+  'Crear',
   'Eliminar',
 }
 
+export const actionValues = Object.values(EActions).filter(key => typeof key === 'number');
+
 export enum EMethods {
-  'POST' = 1,
+  'PUT' = 1,
+  'PATCH' = 1,
   'GET' = 2,
-  'PUT' = 3,
-  'PATCH' = 3,
+  'POST' = 3,
   'DELETE' = 4,
 }
 
@@ -22,4 +24,6 @@ export const excludedUrls = [
   'auth/forgot-password',
   'auth/reset-password',
   'users/me/password',
+  'logs/access-logs',
+  'logs/action-logs',
 ];

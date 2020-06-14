@@ -10,6 +10,9 @@ import { ActionLogRepository } from '@logs/repositories/action-log.repository';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { ConfigService } from '@nestjs/config';
 import { excludedUrls, EMethods, TMethods, EActions } from '@logs/constants/log.constant';
+import { ActionLogs } from '@logs/docs/action-logs.doc';
+import { ActionLogFilterDto } from '@logs/dtos/action-log-filter.dto';
+import { ActionLogsResponse } from '@logs/docs/action-logs-response.doc';
 
 @Injectable()
 export class LogService {
@@ -44,7 +47,7 @@ export class LogService {
     const { method, user, url } = context.getRequest();
     const apiPrefix = this.configService.get('API_PREFIX') || 'api/v1';
 
-    if (excludedUrls.includes(url.split(`${apiPrefix}/`)[1])) {
+    if (excludedUrls.includes(url.split(`${apiPrefix}/`)[1].split('?')[0])) {
       return;
     }
 
@@ -61,5 +64,12 @@ export class LogService {
     const [accessLogs, count] = await this.accessLogRepository.getAllAccessLogs(pageDto, accessLogFilterDto);
     const pagination = getPagination(pageDto, count);
     return { data: plainToClass(AccessLogs, accessLogs, { excludeExtraneousValues: true }), pagination };
+  }
+
+  async getActionLogs(pageDto: PageDto, actionLogFilterDto: ActionLogFilterDto): Promise<ActionLogsResponse> {
+    const [actionLogs, count] = await this.actionLogRepository.getAllActionLogs(pageDto, actionLogFilterDto);
+    const pagination = getPagination(pageDto, count);
+    const logs = actionLogs.map(actionLog => ({ ...actionLog, action: EActions[actionLog.action] }));
+    return { data: plainToClass(ActionLogs, logs, { excludeExtraneousValues: true }), pagination };
   }
 }
