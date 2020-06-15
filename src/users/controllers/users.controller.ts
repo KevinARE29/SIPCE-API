@@ -9,11 +9,12 @@ import { User } from '../decorators/user.decorator';
 import { UsersService } from '../services/users.service';
 
 @ApiTags('Users Endpoints')
+@UseGuards(ContentTypeGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(ContentTypeGuard, AuthGuard('jwt'), SessionGuard)
+  @UseGuards(AuthGuard('jwt'), SessionGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Actualizar contraseña',

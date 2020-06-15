@@ -4,9 +4,9 @@ import { Request } from 'express';
 @Injectable()
 export class ContentTypeGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const request: Request = context.switchToHttp().getRequest();
+    const req: Request = context.switchToHttp().getRequest();
 
-    if (request.headers['content-type'] !== 'application/json') {
+    if (['POST', 'PUT', 'PATCH'].includes(req.method) && req.headers['content-type'] !== 'application/json') {
       throw new UnsupportedMediaTypeException('El tipo de contenido debe ser application/json');
     }
 

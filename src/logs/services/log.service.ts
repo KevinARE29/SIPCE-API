@@ -47,7 +47,7 @@ export class LogService {
     const { method, user, url } = context.getRequest();
     const apiPrefix = this.configService.get('API_PREFIX') || 'api/v1';
 
-    if (excludedUrls.includes(url.split(`${apiPrefix}/`)[1].split('?')[0])) {
+    if (!user || excludedUrls.includes(url.split(`${apiPrefix}/`)[1].split('?')[0])) {
       return;
     }
 

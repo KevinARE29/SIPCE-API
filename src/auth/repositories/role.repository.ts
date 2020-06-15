@@ -36,7 +36,7 @@ export class RoleRepository extends Repository<Role> {
   async getRoleByIdOrThrow(roleId: number): Promise<Role> {
     const role = await this.findOne(roleId, { relations: ['permissions'] });
     if (!role) {
-      throw new NotFoundException('Role no encontrado');
+      throw new NotFoundException('Rol no encontrado');
     }
     return role;
   }

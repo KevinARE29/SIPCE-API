@@ -23,7 +23,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     } else if (exception instanceof QueryFailedError) {
       statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
       error = 'Unprocessable Entity';
-      message = exception.message;
+      message = 'Error al procesar la entidad';
     } else {
       // eslint-disable-next-line no-console
       console.error(exception);

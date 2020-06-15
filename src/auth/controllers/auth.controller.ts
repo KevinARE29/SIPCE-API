@@ -22,8 +22,6 @@ import { User } from '@users/decorators/user.decorator';
 import { LoginDto } from '@auth/dtos/login.dto';
 import { BearerToken } from '@auth/decorators/bearer-token.decorator';
 import { RefreshTokenDto } from '@auth/dtos/refresh-token.dto';
-import { PermissionGuard } from '@auth/guards/permission.guard';
-import { Permissions } from '@auth/decorators/permissions.decorator';
 import { PoliticResponse } from '@auth/docs/politic-response.doc';
 import { PolitcDto } from '@auth/dtos/politics.dto';
 import { PoliticIdDto } from '@auth/dtos/politic-id.dto';
@@ -32,13 +30,15 @@ import { ForgotPswDto } from '@auth/dtos/forgot-psw.dto';
 import { UpdatePswDto } from '@auth/dtos/update-psw.dto';
 import { ResetPswDto } from '@auth/dtos/reset-psw.dto';
 import { AccessLogInterceptor } from '@logs/interceptors/access-log.interceptor';
+import { Auth } from '@auth/decorators/auth.decorator';
 
 @ApiTags('Authentication Endpoints')
+@UseGuards(ContentTypeGuard)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly usersService: UsersService) {}
 
-  @UseGuards(ContentTypeGuard, AuthGuard('local'))
+  @UseGuards(AuthGuard('local'))
   @UseInterceptors(AccessLogInterceptor)
   @ApiBody({ type: LoginDto })
   @ApiOperation({
@@ -63,7 +63,6 @@ export class AuthController {
     return this.authService.logout(accessToken);
   }
 
-  @UseGuards(ContentTypeGuard)
   @ApiOperation({
     summary: 'Refresca la sesión de un usuario',
     description: 'Use este endpoint para refrescar la sesión de un usuario cuando su access token haya expirado',
@@ -74,7 +73,6 @@ export class AuthController {
     return this.authService.refreshToken(refreshTokenDto);
   }
 
-  @UseGuards(ContentTypeGuard)
   @ApiOperation({
     summary: 'Solicitud de recuperación de contraseña',
     description: 'Use este endpoint para solicitar la recuperación de la contraseña de un usuario',
@@ -95,19 +93,16 @@ export class AuthController {
     return { data: politics };
   }
 
-  @UseGuards(ContentTypeGuard, AuthGuard('jwt'), SessionGuard, PermissionGuard)
-  @ApiBearerAuth()
+  @Auth('update_politics')
   @ApiOperation({
     summary: 'Actualizar políticas de seguridad de contraseñas',
     description: 'Use este endpoint para actualizar políticas de seguridad de contraseñas',
   })
-  @Permissions('update_politics')
   @Put('politics/:politicId')
   updatePolitic(@Param() idDto: PoliticIdDto, @Body() politicDto: PolitcDto): Promise<PoliticResponse> {
     return this.authService.updatePolitic(idDto.politicId, politicDto);
   }
 
-  @UseGuards(ContentTypeGuard)
   @ApiOperation({
     summary: 'Restablecimiento de una contraseña',
     description:
