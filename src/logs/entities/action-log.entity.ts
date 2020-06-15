@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '@users/entities/users.entity';
 import { EActions } from '@logs/constants/log.constant';
 
@@ -23,6 +23,8 @@ export class ActionLog {
   @ManyToOne(
     () => User,
     user => user.actionLogs,
+    { nullable: false },
   )
+  @JoinColumn({ name: 'user_id' })
   user!: User;
 }
