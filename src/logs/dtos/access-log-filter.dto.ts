@@ -3,27 +3,10 @@ import { IsOptional, Validate, IsString, IsPositive, IsInt, IsDateString } from 
 import { SortOptionsValidator } from '@core/validators/sort-options.validator';
 import { validator } from '@core/messages/validator.message';
 import { Type } from 'class-transformer';
+import { getSortOptions, getSortOptionsMap } from '@core/utils/sort.util';
 
-const sortOptions = [
-  'username-asc',
-  'username-desc',
-  'ip-asc',
-  'ip-desc',
-  'statusCode-asc',
-  'statusCode-desc',
-  'attemptTime-asc',
-  'attemptTime-desc',
-];
-
-export const sortOptionsMap = new Map()
-  .set('username-asc', { 'accessLog.username': 'ASC' })
-  .set('username-desc', { 'accessLog.username': 'DESC' })
-  .set('ip-asc', { 'accessLog.ip': 'ASC' })
-  .set('ip-desc', { 'accessLog.ip': 'DESC' })
-  .set('statusCode-asc', { 'accessLog.statusCode': 'ASC' })
-  .set('statusCode-desc', { 'accessLog.statusCode': 'DESC' })
-  .set('attemptTime-asc', { 'accessLog.attemptTime': 'ASC' })
-  .set('attemptTime-desc', { 'accessLog.attemptTime': 'DESC' });
+const sortOptions = getSortOptions('username', 'ip', 'statusCode', 'attemptTime');
+export const sortOptionsMap = getSortOptionsMap('accessLog', sortOptions);
 
 export class AccessLogFilterDto {
   @ApiPropertyOptional({ enum: sortOptions })

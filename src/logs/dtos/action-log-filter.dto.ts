@@ -4,31 +4,12 @@ import { SortOptionsValidator } from '@core/validators/sort-options.validator';
 import { validator } from '@core/messages/validator.message';
 import { Type } from 'class-transformer';
 import { actionValues } from '@logs/constants/log.constant';
+import { getSortOptions, getSortOptionsMap } from '@core/utils/sort.util';
 
-const sortOptions = [
-  'username-asc',
-  'username-desc',
-  'endpoint-asc',
-  'endpoint-desc',
-  'action-asc',
-  'action-desc',
-  'statusCode-asc',
-  'statusCode-desc',
-  'attemptTime-asc',
-  'attemptTime-desc',
-];
-
-export const sortOptionsMap = new Map()
+const sortOptions = getSortOptions('username', 'endpoint', 'action', 'statusCode', 'attemptTime');
+export const sortOptionsMap = getSortOptionsMap('actionLog', sortOptions)
   .set('username-asc', { 'user.username': 'ASC' })
-  .set('username-desc', { 'user.username': 'DESC' })
-  .set('endpoint-asc', { 'actionLog.endpoint': 'ASC' })
-  .set('endpoint-desc', { 'actionLog.endpoint': 'DESC' })
-  .set('action-asc', { 'actionLog.action': 'ASC' })
-  .set('action-desc', { 'actionLog.action': 'DESC' })
-  .set('statusCode-asc', { 'actionLog.statusCode': 'ASC' })
-  .set('statusCode-desc', { 'actionLog.statusCode': 'DESC' })
-  .set('attemptTime-asc', { 'actionLog.attemptTime': 'ASC' })
-  .set('attemptTime-desc', { 'actionLog.attemptTime': 'DESC' });
+  .set('username-desc', { 'user.username': 'DESC' });
 
 export class ActionLogFilterDto {
   @ApiPropertyOptional({ enum: sortOptions })
