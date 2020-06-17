@@ -1,7 +1,16 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, ValidationError } from '@nestjs/common';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+  ValidationError,
+  Logger,
+} from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { LogService } from '@logs/services/log.service';
-import { IExceptionResponse } from '../interfaces/exception-response.interface';
+import { snakeToCamel } from '@core/utils/core.util';
+import { IExceptionResponse, ITypeOrmQueryFailed } from '../interfaces/exception-response.interface';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -23,10 +32,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
     } else if (exception instanceof QueryFailedError) {
       statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
       error = 'Unprocessable Entity';
-      message = 'Error al procesar la entidad';
+      const { detail, routine } = (exception as unknown) as ITypeOrmQueryFailed;
+      if (routine === '_bt_check_unique') {
+        const property = detail.match(/Key [(](?<key>[a-z_]+)[)]/)?.groups?.key as string;
+        message = `${snakeToCamel(property)}: Ya existe un registro con ese valor`;
+      } else {
+        Logger.error(exception);
+        statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+        error = 'Internal Server Error';
+      }
     } else {
-      // eslint-disable-next-line no-console
-      console.error(exception);
+      Logger.error(exception);
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       error = 'Internal Server Error';
     }
