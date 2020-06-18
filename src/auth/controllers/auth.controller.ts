@@ -27,10 +27,10 @@ import { PolitcDto } from '@auth/dtos/politics.dto';
 import { PoliticIdDto } from '@auth/dtos/politic-id.dto';
 import { SessionGuard } from '@auth/guards/session.guard';
 import { ForgotPswDto } from '@auth/dtos/forgot-psw.dto';
-import { UpdatePswDto } from '@auth/dtos/update-psw.dto';
-import { ResetPswDto } from '@auth/dtos/reset-psw.dto';
+import { ResetPswTokenDto } from '@auth/dtos/reset-psw-token.dto';
 import { AccessLogInterceptor } from '@logs/interceptors/access-log.interceptor';
 import { Auth } from '@auth/decorators/auth.decorator';
+import { ResetPswDto } from '@auth/dtos/reset-psw.dto';
 
 @ApiTags('Authentication Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -110,7 +110,7 @@ export class AuthController {
   })
   @Post('reset-password')
   @HttpCode(204)
-  resetPsw(@Query() resetPswDto: ResetPswDto, @Body() updatePswDto: UpdatePswDto): Promise<void> {
-    return this.usersService.resetPsw(resetPswDto, updatePswDto);
+  resetPsw(@Query() resetPswTokenDto: ResetPswTokenDto, @Body() resetPswDto: ResetPswDto): Promise<void> {
+    return this.usersService.resetPsw(resetPswTokenDto, resetPswDto);
   }
 }
