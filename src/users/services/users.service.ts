@@ -1,11 +1,12 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { IsNull } from 'typeorm';
-import { ResetPswDto } from '@auth/dtos/reset-psw.dto';
+import { ResetPswTokenDto } from '@auth/dtos/reset-psw-token.dto';
 import { UpdatePswDto } from '@auth/dtos/update-psw.dto';
 import { TokensService } from '@auth/services/token.service';
 import { User } from '@users/entities/users.entity';
 import { UserRepository } from '@users/repositories/users.repository';
+import { ResetPswDto } from '@auth/dtos/reset-psw.dto';
 
 @Injectable()
 export class UsersService {
@@ -37,22 +38,26 @@ export class UsersService {
     return this.userRepository.findOne({ where: { email, deletedAt: IsNull() } });
   }
 
-  updateUser(user: User, updateUserDto: ResetPswDto | UpdatePswDto) {
+  updateUser(user: User, updateUserDto: ResetPswTokenDto | ResetPswDto) {
     return this.userRepository.save({ ...user, ...updateUserDto });
   }
 
-  updatePsw(user: User, newPsw: string): Promise<User> {
-    const password = this.getHash(newPsw);
+  updatePsw(user: User, updatePswDto: UpdatePswDto): Promise<User> {
+    if (!this.compareHash(updatePswDto.oldPassword, user.password)) {
+      throw new BadRequestException('oldPassword: La contraseña es incorrecta');
+    }
+    const password = this.getHash(updatePswDto.newPassword);
     return this.updateUser(user, { password });
   }
 
-  async resetPsw(resetPswDto: ResetPswDto, updatePswDto: UpdatePswDto): Promise<void> {
-    const pswTokenPayload = this.tokensService.getPswTokenPayload(resetPswDto.resetPasswordToken);
+  async resetPsw(resetPswTokenDto: ResetPswTokenDto, resetPswDto: ResetPswDto): Promise<void> {
+    const pswTokenPayload = this.tokensService.getPswTokenPayload(resetPswTokenDto.resetPasswordToken);
     const user = await this.findByIdOrThrow(pswTokenPayload.id);
-    if (user.resetPasswordToken !== resetPswDto.resetPasswordToken) {
-      throw new ConflictException('Invalid Reset Password Token');
+    if (user.resetPasswordToken !== resetPswTokenDto.resetPasswordToken) {
+      throw new BadRequestException('resetPasswordToken: Reset Password Token inválido');
     }
-    const password = this.getHash(updatePswDto.password);
+
+    const password = this.getHash(resetPswDto.password);
     this.userRepository.save({
       ...user,
       password,

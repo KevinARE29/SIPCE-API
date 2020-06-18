@@ -4,8 +4,18 @@ import { UsersService } from '@users/services/users.service';
 import { UserRepository } from '../repositories/users.repository';
 import { User } from '../entities/users.entity';
 
+jest.mock('bcrypt', () => ({
+  ...jest.requireActual('bcrypt'),
+  compareSync: () => true,
+}));
+
+const mockResetPswDto = {
+  password: 'newPsw',
+};
+
 const mockUpdatePasswordDto = {
-  password: 'testPassword',
+  oldPassword: 'oldPsw',
+  newPassword: 'newPsw',
 };
 
 const mockResetPasswordDto = {
@@ -62,7 +72,7 @@ describe('Users Service', () => {
       (userReporitory.findOne as jest.Mock).mockResolvedValue(mockUser);
       (userReporitory.save as jest.Mock).mockResolvedValue(mockUpdatedUser);
       expect(userReporitory.save).not.toHaveBeenCalled();
-      const result = await usersService.updatePsw(mockUser as User, mockUpdatePasswordDto.password);
+      const result = await usersService.updatePsw(mockUser as User, mockUpdatePasswordDto);
       expect(userReporitory.save).toHaveBeenCalled();
       expect(result).toEqual(mockUpdatedUser);
     });
@@ -74,7 +84,7 @@ describe('Users Service', () => {
       (userReporitory.save as jest.Mock).mockResolvedValue(mockUpdatedUser);
       (tokensService.getPswTokenPayload as jest.Mock).mockReturnValue({ id: 1 });
       expect(userReporitory.save).not.toHaveBeenCalled();
-      await usersService.resetPsw(mockResetPasswordDto, mockUpdatePasswordDto);
+      await usersService.resetPsw(mockResetPasswordDto, mockResetPswDto);
       expect(userReporitory.save).toHaveBeenCalled();
     });
   });

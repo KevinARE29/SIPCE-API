@@ -24,6 +24,6 @@ export class UsersController {
   @HttpCode(204)
   async updatePsw(@User() reqUser: IAuthenticatedUser, @Body() updatePswDto: UpdatePswDto): Promise<void> {
     const user = await this.usersService.findByIdOrThrow(reqUser.id);
-    await this.usersService.updatePsw(user, updatePswDto.password);
+    await this.usersService.updatePsw(user, updatePswDto);
   }
 }
