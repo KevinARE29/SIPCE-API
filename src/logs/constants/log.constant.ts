@@ -24,6 +24,7 @@ export const excludedUrls = [
   'auth/forgot-password',
   'auth/reset-password',
   'auth/politics',
+  'auth/permissions',
   'users/me/password',
   'logs/access-logs',
   'logs/action-logs',
