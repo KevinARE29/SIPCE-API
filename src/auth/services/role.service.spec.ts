@@ -22,6 +22,7 @@ const mockRoleRepository = () => ({
   save: jest.fn(),
   delete: jest.fn(),
   getRoleByIdOrThrow: jest.fn(),
+  getDuplicatedRole: jest.fn(),
 });
 
 const mockPermissionRepository = () => ({
@@ -63,6 +64,7 @@ describe('Role Service', () => {
 
     it('Should Create a new role', async () => {
       (permissionRepository.findByIds as jest.Mock).mockResolvedValue([1]);
+      (roleRepository.getDuplicatedRole as jest.Mock).mockResolvedValue(null);
       (roleRepository.save as jest.Mock).mockResolvedValue(mockCreateRoleDto);
       const result = await roleService.createRole(mockCreateRoleDto);
       expect(result).toEqual({ data: mockCreateRoleDto });
@@ -85,6 +87,7 @@ describe('Role Service', () => {
     it('Should Update a specific role', async () => {
       (permissionRepository.findByIds as jest.Mock).mockResolvedValue([1]);
       (roleRepository.getRoleByIdOrThrow as jest.Mock).mockResolvedValue(mockCreateRoleDto);
+      (roleRepository.getDuplicatedRole as jest.Mock).mockResolvedValue(null);
       (roleRepository.save as jest.Mock).mockResolvedValue(mockCreateRoleDto);
       const result = await roleService.updateRole(10, mockCreateRoleDto);
       expect(result).toEqual({ data: mockCreateRoleDto });
