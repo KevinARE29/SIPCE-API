@@ -25,6 +25,9 @@ export class User {
   @Column('varchar', { length: 64, unique: true })
   username!: string;
 
+  @Column('varchar', { length: 32, unique: true })
+  code!: string;
+
   @Column('varchar', { length: 128 })
   firstname!: string;
 
