@@ -127,7 +127,7 @@ export class AuthService {
       to: email,
       templateId,
       dynamicTemplateData: {
-        name: user.name,
+        name: `${user.firstname} ${user.lastname}`,
         url: `${frontUrl}/reset-psw?resetPasswordToken=${resetPasswordToken}`,
       },
     };
