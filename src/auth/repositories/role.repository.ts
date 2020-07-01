@@ -41,9 +41,16 @@ export class RoleRepository extends Repository<Role> {
     return role;
   }
 
-  async getDuplicatedRole(name: string): Promise<Role | undefined> {
+  getDuplicatedRole(name: string): Promise<Role | undefined> {
     return this.createQueryBuilder('role')
       .where('LOWER(role.name) = LOWER(:name)', { name })
       .getOne();
+  }
+
+  getRoleNames(): Promise<Role[]> {
+    return this.createQueryBuilder('role')
+      .select('id')
+      .addSelect('Lower(role.name)', 'name')
+      .getRawMany();
   }
 }
