@@ -37,12 +37,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
         const property = detail.match(/Key [(](?<key>[a-z_]+)[)]/)?.groups?.key as string;
         message = `${snakeToCamel(property)}: Ya existe un registro con ese valor`;
       } else {
-        Logger.error(exception);
         statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         error = 'Internal Server Error';
       }
     } else {
-      Logger.error(exception);
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       error = 'Internal Server Error';
     }
@@ -50,6 +48,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     this.logService.logAccess(context, statusCode);
     this.logService.logAction(context, statusCode);
 
+    Logger.error(message);
     response.status(statusCode).json({ statusCode, error, message });
   }
 }
