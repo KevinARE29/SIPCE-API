@@ -34,7 +34,7 @@ export class User {
   @Column('varchar', { length: 128 })
   lastname!: string;
 
-  @Column('varchar', { length: 128 })
+  @Column('varchar', { length: 128, nullable: true })
   password!: string;
 
   @Column('varchar', { length: 128, unique: true })
