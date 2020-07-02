@@ -5,10 +5,9 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { AdministrativeDto } from '@users/dtos/bulk/administrative.dto';
 import { UserRepository } from '@users/repositories/users.repository';
 import { RoleRepository } from '@auth/repositories/role.repository';
-import { getRoleMap } from '@auth/utils/role.utils';
 import { QueryFailedError } from 'typeorm';
 import { ITypeOrmQueryFailed } from '@core/interfaces/exception-response.interface';
-import { snakeToCamel } from '@core/utils/core.util';
+import { snakeToCamel, getEntityMap } from '@core/utils/core.util';
 
 @Injectable()
 export class AdministrativeBulkService {
@@ -16,7 +15,7 @@ export class AdministrativeBulkService {
 
   async bulkAdministratives(administratives: AdministrativeDto[]): Promise<void> {
     const roles = await this.roleRepository.getRoleNames();
-    const roleMap = getRoleMap(roles);
+    const roleMap = getEntityMap('name', roles);
     const message: { [key: number]: string } = {};
     for (const [index, user] of administratives.entries()) {
       try {
