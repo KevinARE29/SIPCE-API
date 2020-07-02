@@ -5,3 +5,9 @@ export const snakeToCamel = (str: string) =>
       .replace('-', '')
       .replace('_', ''),
   );
+
+export function getEntityMap<T, K extends keyof T>(key: K, entities: T[]): Map<string | number, T> {
+  return entities.reduce((acum, entity) => {
+    return acum.set(entity[key], entity);
+  }, new Map());
+}
