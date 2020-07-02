@@ -20,7 +20,6 @@ export class AdministrativeDto {
   @IsString({ message: validator.isString })
   role!: string;
 
-  @IsNotEmpty({ message: validator.isNotEmpty })
   @IsEmail({}, { message: validator.isEmail })
   email!: string;
 
