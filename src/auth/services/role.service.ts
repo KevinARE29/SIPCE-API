@@ -31,7 +31,7 @@ export class RoleService {
     if (permissions.length !== createRoleDto.permissions.length) {
       throw new NotFoundException('Permisos no encontrados');
     }
-    const duplicatedRole = await this.roleRepository.getDuplicatedRole(createRoleDto.name);
+    const duplicatedRole = await this.roleRepository.getRoleByName(createRoleDto.name);
     if (duplicatedRole) {
       throw new ConflictException('name: Ya existe un rol con ese nombre');
     }
@@ -60,7 +60,7 @@ export class RoleService {
       role.permissions = permissions;
     }
     role.name = updateRoleDto.name || role.name;
-    const duplicatedRole = await this.roleRepository.getDuplicatedRole(role.name);
+    const duplicatedRole = await this.roleRepository.getRoleByName(role.name);
     if (duplicatedRole && role.id !== duplicatedRole.id) {
       throw new ConflictException('name: Ya existe un rol con ese nombre');
     }

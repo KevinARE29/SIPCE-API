@@ -8,6 +8,7 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@users/entities/users.entity';
@@ -15,6 +16,7 @@ import { Cycle } from './cycle.entity';
 import { Shift } from './shift.entity';
 import { GradeDetail } from './grade-detail.entity';
 
+@Unique(['year', 'shift', 'cycleCoordinator'])
 @Entity()
 export class CycleDetail {
   @ApiProperty()

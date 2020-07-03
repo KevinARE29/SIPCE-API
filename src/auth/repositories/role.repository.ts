@@ -41,7 +41,7 @@ export class RoleRepository extends Repository<Role> {
     return role;
   }
 
-  getDuplicatedRole(name: string): Promise<Role | undefined> {
+  getRoleByName(name: string): Promise<Role | undefined> {
     return this.createQueryBuilder('role')
       .where('LOWER(role.name) = LOWER(:name)', { name })
       .getOne();

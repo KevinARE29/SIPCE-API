@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsEmail } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
+import { IsId } from '@core/decorators/id.decorator';
 
-export class AdministrativeDto {
+export class CoordinatorDto {
   @ApiProperty()
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
@@ -16,9 +17,8 @@ export class AdministrativeDto {
   @IsString({ message: validator.isString })
   username!: string;
 
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  role!: string;
+  @IsId()
+  cycleId!: number;
 
   @IsEmail({}, { message: validator.isEmail })
   email!: string;
