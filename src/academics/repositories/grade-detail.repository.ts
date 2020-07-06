@@ -7,7 +7,7 @@ export class GradeDetailRepository extends Repository<GradeDetail> {
     return this.createQueryBuilder('gradeDetail')
       .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
       .leftJoinAndSelect('gradeDetail.grade', 'grade')
-      .where('cycleDetail.id IN (:...cycleDetailIds)', { cycleDetailIds })
+      .where('cycleDetail.id IN (:...cycleDetailIds)', { cycleDetailIds: [null, ...cycleDetailIds] })
       .loadRelationIdAndMap('gradeDetail.cycleDetail', 'gradeDetail.cycleDetail')
       .loadRelationIdAndMap('gradeDetail.grade', 'gradeDetail.grade')
       .getMany();
