@@ -13,4 +13,13 @@ export class UserRepository extends Repository<User> {
       .andWhere('user.username = :username', { username })
       .getOne();
   }
+
+  findByCode(code: string): Promise<User | undefined> {
+    return this.findOne({
+      relations: ['roles'],
+      where: {
+        code,
+      },
+    });
+  }
 }
