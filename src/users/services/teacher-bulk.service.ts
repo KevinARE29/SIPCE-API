@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-continue */
 /* eslint-disable no-restricted-syntax */
-import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException, UnprocessableEntityException } from '@nestjs/common';
 import { UserRepository } from '@users/repositories/users.repository';
 import { RoleRepository } from '@auth/repositories/role.repository';
 import { IsNull, Connection } from 'typeorm';
@@ -107,19 +107,19 @@ export class TeacherBulkService {
             continue;
           }
           const user = parsedTeachers[cycleId][gradeId][sectionId];
+          const [existingUser, teacherRole] = await Promise.all([
+            this.userRepository.findByCode(user.code),
+            this.roleRepository.getRoleByName('docente'),
+          ]);
+
+          if (!teacherRole) {
+            throw new UnprocessableEntityException('El rol docente no existe');
+          }
+
+          const existingSectionDetail = sectionDetails.find(
+            detail => detail.section.id === +sectionId && detail.gradeDetail.id === gradeDetail.id,
+          );
           try {
-            const [existingUser, teacherRole] = await Promise.all([
-              this.userRepository.findByCode(user.code),
-              this.roleRepository.getRoleByName('docente'),
-            ]);
-
-            if (!teacherRole) {
-              throw new Error();
-            }
-
-            const existingSectionDetail = sectionDetails.find(
-              detail => detail.section.id === +sectionId && detail.gradeDetail.id === gradeDetail.id,
-            );
             await queryRunner.connect();
             await queryRunner.startTransaction();
             const teacher = existingUser

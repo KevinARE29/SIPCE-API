@@ -48,7 +48,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     this.logService.logAccess(context, statusCode);
     this.logService.logAction(context, statusCode);
 
-    Logger.error(message);
+    Logger.error(exception);
     response.status(statusCode).json({ statusCode, error, message });
   }
 }
