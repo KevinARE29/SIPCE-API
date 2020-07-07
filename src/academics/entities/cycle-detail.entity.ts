@@ -51,7 +51,7 @@ export class CycleDetail {
   @ManyToOne(
     () => User,
     user => user.cycleDetails,
-    { nullable: false },
+    { nullable: true },
   )
   @JoinColumn({ name: 'cycle_coordinator_id' })
   cycleCoordinator!: User;

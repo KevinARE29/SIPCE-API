@@ -1,10 +1,10 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-continue */
 /* eslint-disable no-restricted-syntax */
-import { Injectable, ConflictException, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException, UnprocessableEntityException } from '@nestjs/common';
 import { UserRepository } from '@users/repositories/users.repository';
 import { RoleRepository } from '@auth/repositories/role.repository';
-import { IsNull } from 'typeorm';
+import { IsNull, Connection } from 'typeorm';
 import { getEntityMap } from '@core/utils/core.util';
 import { BulkCoordinatorDto } from '@users/dtos/bulk/bulk-coordinator.dto';
 import { ShiftRepository } from '@academics/repositories/shift.repository';
@@ -20,9 +20,11 @@ export class CoordinatorBulkService {
     private readonly cycleDetailRepository: CycleDetailRepository,
     private readonly cycleRepository: CycleRepository,
     private readonly roleRepository: RoleRepository,
+    private connection: Connection,
   ) {}
 
   async bulkCoordinator(bulkCoordinatorDto: BulkCoordinatorDto): Promise<void> {
+    const queryRunner = this.connection.createQueryRunner();
     const { currentYear, shiftId, coordinators } = bulkCoordinatorDto;
     const shift = await this.shiftRepository.findById(shiftId);
     if (!shift) {
@@ -38,27 +40,29 @@ export class CoordinatorBulkService {
     const cyclesMap = getEntityMap('id', cycles);
     const message: { [key: number]: string } = {};
     for (const [index, user] of coordinators.entries()) {
+      const cycle = cyclesMap.get(user.cycleId);
+      if (!cycle) {
+        message[index] = `cycleId: El ciclo '${user.cycleId}' no existe`;
+        continue;
+      }
+
+      const [existingUser, coordinatorRole] = await Promise.all([
+        this.userRepository.findOne({
+          relations: ['roles'],
+          where: {
+            code: user.code,
+          },
+        }),
+        this.roleRepository.getRoleByName('coordinador de ciclo'),
+      ]);
+
+      if (!coordinatorRole) {
+        throw new UnprocessableEntityException('El rol coordinador de ciclo no existe');
+      }
+
       try {
-        const cycle = cyclesMap.get(user.cycleId);
-        if (!cycle) {
-          message[index] = `cycleId: El ciclo '${user.cycleId}' no existe`;
-          continue;
-        }
-
-        const [existingUser, coordinatorRole] = await Promise.all([
-          this.userRepository.findOne({
-            relations: ['roles'],
-            where: {
-              code: user.code,
-            },
-          }),
-          this.roleRepository.getRoleByName('coordinador'),
-        ]);
-
-        if (!coordinatorRole) {
-          throw new Error();
-        }
-
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
         const cycleCoordinator = existingUser
           ? await this.userRepository.save({
               ...existingUser,
@@ -73,11 +77,13 @@ export class CoordinatorBulkService {
         } else {
           await this.cycleDetailRepository.save({ shift, year, cycleCoordinator, cycle });
         }
+        await queryRunner.commitTransaction();
       } catch (err) {
-        Logger.error(err);
+        await queryRunner.rollbackTransaction();
         message[index] = bulkCatchMessage(err);
       }
     }
+    await queryRunner.release();
     if (Object.keys(message).length) {
       throw new ConflictException({ error: 'Conflict', message });
     }
