@@ -6,6 +6,8 @@ import { BulkAdministrativeDto } from '@users/dtos/bulk/bulk-administrative.dto'
 import { AdministrativeBulkService } from '@users/services/administrative-bulk.service';
 import { BulkCoordinatorDto } from '@users/dtos/bulk/bulk-coordinator.dto';
 import { CoordinatorBulkService } from '@users/services/coordinator-bulk.service';
+import { BulkTeacherDto } from '@users/dtos/bulk/bulk-teacher.dto';
+import { TeacherBulkService } from '@users/services/teacher-bulk.service';
 
 @ApiTags('Users Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -14,6 +16,7 @@ export class UserBulkController {
   constructor(
     private readonly administrativeBulkService: AdministrativeBulkService,
     private readonly coordinatorBulkService: CoordinatorBulkService,
+    private readonly teacherBulkService: TeacherBulkService,
   ) {}
 
   @Auth('create_users')
@@ -36,5 +39,18 @@ export class UserBulkController {
   @Post('coordinators')
   bulkCoordinators(@Body() bulkCoordinatorDto: BulkCoordinatorDto): Promise<void> {
     return this.coordinatorBulkService.bulkCoordinator(bulkCoordinatorDto);
+  }
+
+  @Auth('create_users')
+  @ApiOperation({
+    summary: 'Cargar Usuarios Docentes',
+    description:
+      'Use este endpoint para hacer una carga masiva de usuarios docentes y ' +
+      'realizar la asignación de grados y secciones del actual año escolar',
+  })
+  @HttpCode(204)
+  @Post('teachers')
+  bulkTeachers(@Body() bulkTeacherDto: BulkTeacherDto): Promise<void> {
+    return this.teacherBulkService.bulkTeacher(bulkTeacherDto);
   }
 }
