@@ -14,3 +14,10 @@ export function getSortOptionsMap(defaultTable: string, sortOptions: string[]): 
     return acum.set(element, { [field]: 'DESC' });
   }, new Map());
 }
+
+export function getOrderBy(sort: string, sortOptionsMap: Map<string, any>) {
+  return sort.split(',').reduce((acum, sortItem) => {
+    const orderOption = sortOptionsMap.get(sortItem);
+    return { ...acum, ...orderOption };
+  }, {});
+}

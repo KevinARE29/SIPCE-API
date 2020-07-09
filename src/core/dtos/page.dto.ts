@@ -4,14 +4,14 @@ import { Type } from 'class-transformer';
 import { validator } from '@core/messages/validator.message';
 
 export class PageDto {
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: Number })
   @IsOptional()
   @Type(() => Number)
-  @IsInt()
-  @IsPositive()
+  @IsInt({ message: validator.isInt })
+  @IsPositive({ message: validator.isPositive })
   page = 1;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: Number })
   @IsOptional()
   @Type(() => Number)
   @IsInt({ message: validator.isInt })
