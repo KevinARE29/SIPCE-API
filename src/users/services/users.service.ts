@@ -7,6 +7,12 @@ import { TokensService } from '@auth/services/token.service';
 import { User } from '@users/entities/users.entity';
 import { UserRepository } from '@users/repositories/users.repository';
 import { ResetPswDto } from '@auth/dtos/reset-psw.dto';
+import { PageDto } from '@core/dtos/page.dto';
+import { UserFilterDto } from '@users/dtos/user-filter.dto';
+import { UsersResponse } from '@users/docs/users-response.doc';
+import { getPagination } from '@core/utils/pagination.util';
+import { plainToClass } from 'class-transformer';
+import { Users } from '@users/docs/users.doc';
 
 @Injectable()
 export class UsersService {
@@ -36,6 +42,12 @@ export class UsersService {
 
   findByEmail(email: string): Promise<User | undefined> {
     return this.userRepository.findOne({ where: { email, deletedAt: IsNull() } });
+  }
+
+  async getAllUsers(pageDto: PageDto, userFilterDto: UserFilterDto): Promise<UsersResponse> {
+    const [users, count] = await this.userRepository.getAllUsers(pageDto, userFilterDto);
+    const pagination = getPagination(pageDto, count);
+    return { data: plainToClass(Users, users, { excludeExtraneousValues: true }), pagination };
   }
 
   updateUser(user: User, updateUserDto: ResetPswTokenDto | ResetPswDto) {
