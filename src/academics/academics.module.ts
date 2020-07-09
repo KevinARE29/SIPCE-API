@@ -7,6 +7,8 @@ import { GradeDetailRepository } from './repositories/grade-detail.repository';
 import { GradeRepository } from './repositories/grade.repository';
 import { SectionDetailRepository } from './repositories/section-detail.repository';
 import { SectionRepository } from './repositories/section.repository';
+import { SectionController } from './controllers/section.controller';
+import { SectionService } from './services/section.service';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { SectionRepository } from './repositories/section.repository';
       SectionRepository,
     ]),
   ],
+  controllers: [SectionController],
+  providers: [SectionService],
   exports: [TypeOrmModule],
 })
 export class AcademicsModule {}
