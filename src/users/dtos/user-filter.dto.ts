@@ -36,8 +36,9 @@ export class UserFilterDto {
   @IsId()
   role?: number;
 
+  @IsOptional()
   @IsBooleanString({ message: validator.isBoolean })
-  active!: string;
+  active = 'false';
 
   @IsOptional()
   @IsIn(['false'], { message: validator.isIn })
