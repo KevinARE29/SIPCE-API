@@ -10,7 +10,7 @@ import { plainToClass } from 'class-transformer';
 export class SectionService {
   constructor(private readonly sectionRepository: SectionRepository) {}
 
-  async getSections(pageDto: PageDto, sectionFilterDto: SectionFilterDto): Promise<SectionsResponse> {
+  async getAllSections(pageDto: PageDto, sectionFilterDto: SectionFilterDto): Promise<SectionsResponse> {
     const [sections, count] = await this.sectionRepository.getAllSections(pageDto, sectionFilterDto);
     const pagination = getPagination(pageDto, count);
     return { data: plainToClass(Sections, sections, { excludeExtraneousValues: true }), pagination };

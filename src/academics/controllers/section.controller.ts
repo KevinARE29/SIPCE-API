@@ -13,13 +13,13 @@ import { SectionsResponse } from '@academics/docs/sections-response.doc';
 export class SectionController {
   constructor(private readonly sectionService: SectionService) {}
 
-  @Auth('retrieve_sections')
+  @Auth('manage_academics_catalogues')
   @ApiOperation({
     summary: 'Listar Secciones',
     description: 'Use este endpoint para listar las secciones de grados existentes',
   })
   @Get('')
-  getAllSections(@Query() pageDto: PageDto, sectionFilterDto: SectionFilterDto): Promise<SectionsResponse> {
-    return this.sectionService.getSections(pageDto, sectionFilterDto);
+  getAllSections(@Query() pageDto: PageDto, @Query() sectionFilterDto: SectionFilterDto): Promise<SectionsResponse> {
+    return this.sectionService.getAllSections(pageDto, sectionFilterDto);
   }
 }
