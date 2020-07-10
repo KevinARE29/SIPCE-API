@@ -27,4 +27,11 @@ export class SectionRepository extends Repository<Section> {
 
     return query.getManyAndCount();
   }
+
+  getSectionByName(name: string): Promise<Section | undefined> {
+    return this.createQueryBuilder('section')
+      .where('LOWER(section.name) = LOWER(:name)', { name })
+      .andWhere('section.deletedAt is null')
+      .getOne();
+  }
 }
