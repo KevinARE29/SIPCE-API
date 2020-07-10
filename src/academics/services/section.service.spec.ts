@@ -19,6 +19,7 @@ const mockSectionRepository = () => ({
   save: jest.fn(),
   getSectionByName: jest.fn(),
   getSectionByIdOrThrow: jest.fn(),
+  delete: jest.fn(),
 });
 
 describe('Section Service', () => {
@@ -60,5 +61,12 @@ describe('Section Service', () => {
     (sectionRepository.save as jest.Mock).mockResolvedValue(mockSectionDto);
     const result = await sectionService.updateSection(10, mockSectionDto);
     expect(result).toEqual({ data: mockSectionDto });
+  });
+
+  it('Should Delete a specific section', async () => {
+    (sectionRepository.getSectionByIdOrThrow as jest.Mock).mockResolvedValue(mockSectionDto);
+    expect(sectionRepository.delete).not.toHaveBeenCalled();
+    await sectionService.deleteSection(10);
+    expect(sectionRepository.delete).toHaveBeenCalled();
   });
 });
