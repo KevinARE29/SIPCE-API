@@ -3,6 +3,7 @@ import { Section } from '@academics/entities/section.entity';
 import { PageDto } from '@core/dtos/page.dto';
 import { SectionFilterDto, sortOptionsMap } from '@academics/dtos/section-filter.dto';
 import { getOrderBy } from '@core/utils/sort.util';
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(Section)
 export class SectionRepository extends Repository<Section> {
@@ -26,6 +27,14 @@ export class SectionRepository extends Repository<Section> {
     }
 
     return query.getManyAndCount();
+  }
+
+  async getSectionByIdOrThrow(sectionId: number): Promise<Section> {
+    const section = await this.findOne(sectionId);
+    if (!section) {
+      throw new NotFoundException('Sección no encontrada');
+    }
+    return section;
   }
 
   getSectionByName(name: string): Promise<Section | undefined> {
