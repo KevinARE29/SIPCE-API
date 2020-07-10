@@ -5,6 +5,10 @@ import { mockPageDto, mockPagination } from '@core/constants/mock.constants';
 
 const mockSections = [[{ name: 'B' }, { name: 'A' }], 2];
 
+const mockCreateSectionDto = {
+  name: 'Mock Section',
+};
+
 const mockSectionsResponse = {
   data: mockSections[0],
   pagination: mockPagination,
@@ -12,6 +16,8 @@ const mockSectionsResponse = {
 
 const mockSectionRepository = () => ({
   getAllSections: jest.fn(),
+  save: jest.fn(),
+  getSectionByName: jest.fn(),
 });
 
 describe('Section Service', () => {
@@ -38,5 +44,12 @@ describe('Section Service', () => {
       const result = await sectionService.getAllSections(mockPageDto, {});
       expect(result).toEqual(mockSectionsResponse);
     });
+  });
+
+  it('Should Create a new section', async () => {
+    (sectionRepository.getSectionByName as jest.Mock).mockResolvedValue(null);
+    (sectionRepository.save as jest.Mock).mockResolvedValue(mockCreateSectionDto);
+    const result = await sectionService.createSection(mockCreateSectionDto);
+    expect(result).toEqual({ data: mockCreateSectionDto });
   });
 });
