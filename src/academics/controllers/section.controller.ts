@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Query, Post, Body } from '@nestjs/common';
+import { Controller, UseGuards, Get, Query, Post, Body, Put, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { SectionService } from '@academics/services/section.service';
 import { PageDto } from '@core/dtos/page.dto';
@@ -7,7 +7,8 @@ import { Auth } from '@auth/decorators/auth.decorator';
 import { SectionFilterDto } from '@academics/dtos/section-filter.dto';
 import { SectionsResponse } from '@academics/docs/sections-response.doc';
 import { SectionResponse } from '@academics/docs/section-response.doc';
-import { CreateCatalogueDto } from '@academics/dtos/create-catalogue.dto';
+import { CatalogueDto } from '@academics/dtos/catalogue.dto';
+import { SectionIdDto } from '@academics/dtos/section-id.dto';
 
 @ApiTags('Sections Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -31,7 +32,12 @@ export class SectionController {
     description: 'Use este endpoint para crear una nueva sección',
   })
   @Post('')
-  createRole(@Body() createCatalogueDto: CreateCatalogueDto): Promise<SectionResponse> {
+  createRole(@Body() createCatalogueDto: CatalogueDto): Promise<SectionResponse> {
     return this.sectionService.createSection(createCatalogueDto);
+  }
+
+  @Put(':sectionId')
+  updateRole(@Param() idDto: SectionIdDto, @Body() updateRoleDto: CatalogueDto): Promise<SectionResponse> {
+    return this.sectionService.updateSection(idDto.sectionId, updateRoleDto);
   }
 }

@@ -5,7 +5,7 @@ import { mockPageDto, mockPagination } from '@core/constants/mock.constants';
 
 const mockSections = [[{ name: 'B' }, { name: 'A' }], 2];
 
-const mockCreateSectionDto = {
+const mockSectionDto = {
   name: 'Mock Section',
 };
 
@@ -18,6 +18,7 @@ const mockSectionRepository = () => ({
   getAllSections: jest.fn(),
   save: jest.fn(),
   getSectionByName: jest.fn(),
+  getSectionByIdOrThrow: jest.fn(),
 });
 
 describe('Section Service', () => {
@@ -48,8 +49,16 @@ describe('Section Service', () => {
 
   it('Should Create a new section', async () => {
     (sectionRepository.getSectionByName as jest.Mock).mockResolvedValue(null);
-    (sectionRepository.save as jest.Mock).mockResolvedValue(mockCreateSectionDto);
-    const result = await sectionService.createSection(mockCreateSectionDto);
-    expect(result).toEqual({ data: mockCreateSectionDto });
+    (sectionRepository.save as jest.Mock).mockResolvedValue(mockSectionDto);
+    const result = await sectionService.createSection(mockSectionDto);
+    expect(result).toEqual({ data: mockSectionDto });
+  });
+
+  it('Should Update a specific section', async () => {
+    (sectionRepository.getSectionByIdOrThrow as jest.Mock).mockResolvedValue(mockSectionDto);
+    (sectionRepository.getSectionByName as jest.Mock).mockResolvedValue(null);
+    (sectionRepository.save as jest.Mock).mockResolvedValue(mockSectionDto);
+    const result = await sectionService.updateSection(10, mockSectionDto);
+    expect(result).toEqual({ data: mockSectionDto });
   });
 });
