@@ -8,12 +8,19 @@ import { UserBulkController } from './controllers/user-bulk.controller';
 import { AdministrativeBulkService } from './services/administrative-bulk.service';
 import { CoordinatorBulkService } from './services/coordinator-bulk.service';
 import { TeacherBulkService } from './services/teacher-bulk.service';
+import { CounselorBulkService } from './services/counselor-bulk.service';
 
 @Global()
 @Module({
   imports: [TypeOrmModule.forFeature([UserRepository]), AcademicsModule],
   controllers: [UsersController, UserBulkController],
-  providers: [UsersService, AdministrativeBulkService, CoordinatorBulkService, TeacherBulkService],
+  providers: [
+    UsersService,
+    AdministrativeBulkService,
+    CoordinatorBulkService,
+    CounselorBulkService,
+    TeacherBulkService,
+  ],
   exports: [UsersService, TypeOrmModule],
 })
 export class UsersModule {}
