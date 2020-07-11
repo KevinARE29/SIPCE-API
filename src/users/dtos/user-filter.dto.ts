@@ -6,7 +6,7 @@ import { getSortOptions, getSortOptionsMap } from '@core/utils/sort.util';
 import { Type } from 'class-transformer';
 import { IsId } from '@core/decorators/id.decorator';
 
-const sortOptions = getSortOptions('username', 'firstname', 'lastname', 'email');
+const sortOptions = getSortOptions('username', 'firstname', 'lastname', 'email', 'createdAt');
 export const sortOptionsMap = getSortOptionsMap('user', sortOptions);
 
 export class UserFilterDto {
@@ -38,7 +38,7 @@ export class UserFilterDto {
 
   @IsOptional()
   @IsBooleanString({ message: validator.isBoolean })
-  active = 'false';
+  active?: boolean;
 
   @IsOptional()
   @IsIn(['false'], { message: validator.isIn })

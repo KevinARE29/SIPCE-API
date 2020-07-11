@@ -43,7 +43,6 @@ export class UserRepository extends Repository<User> {
     const query = this.createQueryBuilder('user')
       .leftJoinAndSelect('user.roles', 'role')
       .andWhere('user.deletedAt is null')
-      .andWhere(`user.active is ${active}`)
       .take(perPage)
       .skip((page - 1) * perPage);
 
@@ -52,6 +51,10 @@ export class UserRepository extends Repository<User> {
       query.orderBy(order);
     } else {
       query.orderBy({ 'user.id': 'DESC' });
+    }
+
+    if (active) {
+      query.andWhere(`user.active is ${active}`);
     }
 
     if (credentials) {
