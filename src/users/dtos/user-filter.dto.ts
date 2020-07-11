@@ -6,7 +6,7 @@ import { getSortOptions, getSortOptionsMap } from '@core/utils/sort.util';
 import { Type } from 'class-transformer';
 import { IsId } from '@core/decorators/id.decorator';
 
-const sortOptions = getSortOptions('username', 'firstname', 'lastmame', 'email');
+const sortOptions = getSortOptions('username', 'firstname', 'lastname', 'email');
 export const sortOptionsMap = getSortOptionsMap('user', sortOptions);
 
 export class UserFilterDto {
