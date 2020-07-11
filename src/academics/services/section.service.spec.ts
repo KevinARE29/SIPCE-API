@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SectionService } from '@academics/services/section.service';
 import { SectionRepository } from '@academics/repositories/section.repository';
 import { mockPageDto, mockPagination } from '@core/constants/mock.constants';
+import { NotFoundException } from '@nestjs/common';
 
 const mockSections = [[{ name: 'B' }, { name: 'A' }], 2];
 
@@ -63,10 +64,11 @@ describe('Section Service', () => {
     expect(result).toEqual({ data: mockSectionDto });
   });
 
-  it('Should Delete a specific section', async () => {
-    (sectionRepository.getSectionByIdOrThrow as jest.Mock).mockResolvedValue(mockSectionDto);
-    expect(sectionRepository.delete).not.toHaveBeenCalled();
-    await sectionService.deleteSection(10);
-    expect(sectionRepository.delete).toHaveBeenCalled();
+  describe('Remove Section', () => {
+    it('Should delete a specific section', async () => {
+      (sectionRepository.getSectionByIdOrThrow as jest.Mock).mockResolvedValue(mockSectionDto);
+      await sectionService.deleteSection(10);
+      expect(sectionRepository.save).toBeCalled();
+    });
   });
 });
