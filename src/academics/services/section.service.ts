@@ -46,4 +46,10 @@ export class SectionService {
       }),
     };
   }
+
+  async deleteSection(sectionId: number): Promise<void> {
+    const section = await this.sectionRepository.getSectionByIdOrThrow(sectionId);
+    section.deletedAt = new Date();
+    await this.sectionRepository.save(section);
+  }
 }

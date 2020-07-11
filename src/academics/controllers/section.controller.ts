@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Query, Post, Body, Put, Param } from '@nestjs/common';
+import { Controller, UseGuards, Get, Query, Post, Body, Put, Param, Delete, HttpCode } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { SectionService } from '@academics/services/section.service';
 import { PageDto } from '@core/dtos/page.dto';
@@ -36,8 +36,24 @@ export class SectionController {
     return this.sectionService.createSection(createCatalogueDto);
   }
 
+  @Auth('manage_academics_catalogues')
+  @ApiOperation({
+    summary: 'Actualizar Sección',
+    description: 'Use este endpoint para actualizar una sección específica',
+  })
   @Put(':sectionId')
   updateRole(@Param() idDto: SectionIdDto, @Body() updateRoleDto: CatalogueDto): Promise<SectionResponse> {
     return this.sectionService.updateSection(idDto.sectionId, updateRoleDto);
+  }
+
+  @Auth('manage_academics_catalogues')
+  @ApiOperation({
+    summary: 'Eliminar Sección',
+    description: 'Use este endpoint para eliminar una sección específica',
+  })
+  @HttpCode(204)
+  @Delete(':sectionId')
+  deleteRole(@Param() idDto: SectionIdDto): Promise<void> {
+    return this.sectionService.deleteSection(idDto.sectionId);
   }
 }
