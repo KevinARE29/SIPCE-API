@@ -26,13 +26,9 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run format && npm run lint",
+      "pre-push": "npm run format && npm run lint && npm test"
     }
-  },
-  "lint-staged": {
-    "*.ts": [
-      "npm run lint"
-    ]
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
@@ -95,7 +91,7 @@
     "typescript": "^3.7.4"
   },
   "engines": {
-    "node": ">=12.13"
+    "node": ">=12.18"
   },
   "_moduleAliases": {
     "@auth": "dist/src/auth",
