@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Patch, HttpCode, Body, Get, Query } from '@nestjs/common';
+import { Controller, UseGuards, Patch, HttpCode, Body, Get, Query, Post } from '@nestjs/common';
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { SessionGuard } from '@auth/guards/session.guard';
@@ -8,6 +8,7 @@ import { Auth } from '@auth/decorators/auth.decorator';
 import { PageDto } from '@core/dtos/page.dto';
 import { UserFilterDto } from '@users/dtos/user-filter.dto';
 import { UsersResponse } from '@users/docs/users-response.doc';
+import { GenerateCredentialsDto } from '@users/dtos/generate-credentials.dto';
 import { IAuthenticatedUser } from '../interfaces/users.interface';
 import { User } from '../decorators/user.decorator';
 import { UsersService } from '../services/users.service';
@@ -39,5 +40,16 @@ export class UsersController {
   @Get('')
   getAllUsers(@Query() pageDto: PageDto, @Query() userFilterDto: UserFilterDto): Promise<UsersResponse> {
     return this.usersService.getAllUsers(pageDto, userFilterDto);
+  }
+
+  @Auth('generate_user_credentials')
+  @ApiOperation({
+    summary: 'Generar Credenciales de Usuarios',
+    description: 'Use este endpoint para generar credenciales a usuarios recién registrados',
+  })
+  @HttpCode(204)
+  @Post('credentials')
+  async generateCredentials(@Body() generateCredentialsDto: GenerateCredentialsDto): Promise<void> {
+    return this.usersService.generateCredentials(generateCredentialsDto);
   }
 }

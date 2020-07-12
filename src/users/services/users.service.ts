@@ -1,6 +1,14 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { IsNull } from 'typeorm';
+import { IsNull, In } from 'typeorm';
 import { ResetPswTokenDto } from '@auth/dtos/reset-psw-token.dto';
 import { UpdatePswDto } from '@auth/dtos/update-psw.dto';
 import { TokensService } from '@auth/services/token.service';
@@ -13,12 +21,22 @@ import { UsersResponse } from '@users/docs/users-response.doc';
 import { getPagination } from '@core/utils/pagination.util';
 import { plainToClass } from 'class-transformer';
 import { Users } from '@users/docs/users.doc';
+import { GenerateCredentialsDto } from '@users/dtos/generate-credentials.dto';
+import * as generator from 'generate-password';
+import { IEmail } from '@mails/interfaces/email.interface';
+import { ConfigService } from '@nestjs/config';
+import { MailsService } from '@mails/services/mails.service';
 
 @Injectable()
 export class UsersService {
   private saltRounds = 10;
 
-  constructor(private readonly userRepository: UserRepository, private readonly tokensService: TokensService) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly tokensService: TokensService,
+    private readonly configService: ConfigService,
+    private readonly mailsService: MailsService,
+  ) {}
 
   getHash(password: string): string {
     return bcrypt.hashSync(password, this.saltRounds);
@@ -75,5 +93,56 @@ export class UsersService {
       password,
       resetPasswordToken: null,
     });
+  }
+
+  async generateCredentials(generateCredentialsDto: GenerateCredentialsDto): Promise<void> {
+    const { ids } = generateCredentialsDto;
+    const from = this.configService.get<string>('EMAIL_USER');
+    const templateId = this.configService.get<string>('GENERATE_CREDENTIALS_TEMPLATE_ID');
+    const frontUrl = this.configService.get<string>('FRONT_URL');
+
+    if (!(from && templateId && frontUrl)) {
+      throw new InternalServerErrorException('Error en la configuración de Emails');
+    }
+
+    const users = await this.userRepository.find({
+      where: {
+        password: null,
+        id: In(ids),
+      },
+    });
+
+    if (!users.length) {
+      return;
+    }
+
+    for (const user of users) {
+      const random = generator.generate({
+        length: 10,
+        numbers: true,
+        symbols: true,
+      });
+      const password = this.getHash(random);
+      await this.userRepository.save({ ...user, active: true, password });
+
+      const email: IEmail = {
+        to: user.email,
+        from,
+        templateId,
+        dynamicTemplateData: {
+          firstname: user.firstname,
+          lastname: user.lastname,
+          username: user.username,
+          frontLogin: `${frontUrl}/login`,
+          password: random,
+        },
+      };
+
+      try {
+        await this.mailsService.sendEmail(email);
+      } catch (err) {
+        Logger.error(err);
+      }
+    }
   }
 }

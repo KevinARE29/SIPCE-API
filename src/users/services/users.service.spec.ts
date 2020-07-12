@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TokensService } from '@auth/services/token.service';
 import { UsersService } from '@users/services/users.service';
+import { MailsService } from '@mails/services/mails.service';
+import { ConfigService } from '@nestjs/config';
 import { UserRepository } from '../repositories/users.repository';
 import { User } from '../entities/users.entity';
 
@@ -53,6 +55,8 @@ describe('Users Service', () => {
         UsersService,
         { provide: UserRepository, useFactory: mockUserRepository },
         { provide: TokensService, useFactory: mockTokensService },
+        { provide: MailsService, useValue: {} },
+        { provide: ConfigService, useValue: {} },
       ],
     }).compile();
 

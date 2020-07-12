@@ -37,6 +37,7 @@ export class UserBulkController {
   @ApiOperation({
     summary: 'Cargar Usuarios Coordinadores de Ciclo',
     description: 'Use este endpoint para hacer una carga masiva de usuarios coordinadores de ciclo',
+    deprecated: true,
   })
   @HttpCode(204)
   @Post('coordinators')
@@ -48,6 +49,7 @@ export class UserBulkController {
   @ApiOperation({
     summary: 'Cargar Usuarios Orientadores',
     description: 'Use este endpoint para hacer una carga masiva de usuarios orientadores',
+    deprecated: true,
   })
   @HttpCode(204)
   @Post('counselors')
@@ -61,6 +63,7 @@ export class UserBulkController {
     description:
       'Use este endpoint para hacer una carga masiva de usuarios docentes y ' +
       'realizar la asignación de grados y secciones del actual año escolar',
+    deprecated: true,
   })
   @HttpCode(204)
   @Post('teachers')
