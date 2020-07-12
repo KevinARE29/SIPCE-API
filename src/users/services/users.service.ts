@@ -145,4 +145,10 @@ export class UsersService {
       }
     }
   }
+
+  async deleteUser(userId: number): Promise<void> {
+    const user = await this.findByIdOrThrow(userId);
+    user.deletedAt = new Date();
+    await this.userRepository.save(user);
+  }
 }

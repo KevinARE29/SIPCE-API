@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Patch, HttpCode, Body, Get, Query, Post } from '@nestjs/common';
+import { Controller, UseGuards, Patch, HttpCode, Body, Get, Query, Post, Param, Delete } from '@nestjs/common';
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { SessionGuard } from '@auth/guards/session.guard';
@@ -9,6 +9,7 @@ import { PageDto } from '@core/dtos/page.dto';
 import { UserFilterDto } from '@users/dtos/user-filter.dto';
 import { UsersResponse } from '@users/docs/users-response.doc';
 import { GenerateCredentialsDto } from '@users/dtos/generate-credentials.dto';
+import { UserIdDto } from '@users/dtos/user-id.dto';
 import { IAuthenticatedUser } from '../interfaces/users.interface';
 import { User } from '../decorators/user.decorator';
 import { UsersService } from '../services/users.service';
@@ -49,7 +50,18 @@ export class UsersController {
   })
   @HttpCode(204)
   @Post('credentials')
-  async generateCredentials(@Body() generateCredentialsDto: GenerateCredentialsDto): Promise<void> {
+  generateCredentials(@Body() generateCredentialsDto: GenerateCredentialsDto): Promise<void> {
     return this.usersService.generateCredentials(generateCredentialsDto);
+  }
+
+  @Auth('delete_user')
+  @ApiOperation({
+    summary: 'Eliminar Usuario',
+    description: 'Use este endpoint para eliminar un usuario específico',
+  })
+  @HttpCode(204)
+  @Delete(':userId')
+  deleteUser(@Param() idDto: UserIdDto): Promise<void> {
+    return this.usersService.deleteUser(idDto.userId);
   }
 }

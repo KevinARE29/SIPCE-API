@@ -3,6 +3,7 @@ import { TokensService } from '@auth/services/token.service';
 import { UsersService } from '@users/services/users.service';
 import { MailsService } from '@mails/services/mails.service';
 import { ConfigService } from '@nestjs/config';
+import { mockPageDto } from '@core/constants/mock.constants';
 import { UserRepository } from '../repositories/users.repository';
 import { User } from '../entities/users.entity';
 
@@ -10,6 +11,20 @@ jest.mock('bcrypt', () => ({
   ...jest.requireActual('bcrypt'),
   compareSync: () => true,
 }));
+
+const mockAllUsers = [[{ username: 'kescoto' }, { username: 'frivas' }], 2];
+
+const allUsersResponse = {
+  data: mockAllUsers[0],
+  pagination: {
+    totalPages: 1,
+    perPage: mockPageDto.perPage,
+    totalItems: mockAllUsers[1],
+    page: mockPageDto.page,
+    nextPage: undefined,
+    previousPage: undefined,
+  },
+};
 
 const mockResetPswDto = {
   password: 'newPsw',
@@ -38,6 +53,7 @@ const mockUpdatedUser = {
 const mockUserRepository = () => ({
   findOne: jest.fn(),
   save: jest.fn(),
+  getAllUsers: jest.fn().mockResolvedValue(mockAllUsers),
 });
 
 const mockTokensService = () => ({
@@ -46,7 +62,7 @@ const mockTokensService = () => ({
 
 describe('Users Service', () => {
   let usersService: UsersService;
-  let userReporitory: UserRepository;
+  let userRepository: UserRepository;
   let tokensService: TokensService;
 
   beforeEach(async () => {
@@ -61,35 +77,50 @@ describe('Users Service', () => {
     }).compile();
 
     usersService = module.get(UsersService);
-    userReporitory = module.get(UserRepository);
+    userRepository = module.get(UserRepository);
     tokensService = module.get(TokensService);
   });
 
   it('Should be defined', () => {
     expect(usersService).toBeDefined();
-    expect(userReporitory).toBeDefined();
+    expect(userRepository).toBeDefined();
     expect(tokensService).toBeDefined();
+  });
+
+  describe('Get all users', () => {
+    it('Should get all users', async () => {
+      const result = await usersService.getAllUsers(mockPageDto, {});
+      expect(result).toEqual(allUsersResponse);
+    });
   });
 
   describe('Update Password', () => {
     it('Should Update the password of a given user', async () => {
-      (userReporitory.findOne as jest.Mock).mockResolvedValue(mockUser);
-      (userReporitory.save as jest.Mock).mockResolvedValue(mockUpdatedUser);
-      expect(userReporitory.save).not.toHaveBeenCalled();
+      (userRepository.findOne as jest.Mock).mockResolvedValue(mockUser);
+      (userRepository.save as jest.Mock).mockResolvedValue(mockUpdatedUser);
+      expect(userRepository.save).not.toHaveBeenCalled();
       const result = await usersService.updatePsw(mockUser as User, mockUpdatePasswordDto);
-      expect(userReporitory.save).toHaveBeenCalled();
+      expect(userRepository.save).toHaveBeenCalled();
       expect(result).toEqual(mockUpdatedUser);
     });
   });
 
   describe('Resert Password', () => {
     it('Should Resert the password of a given user', async () => {
-      (userReporitory.findOne as jest.Mock).mockResolvedValue(mockUser);
-      (userReporitory.save as jest.Mock).mockResolvedValue(mockUpdatedUser);
+      (userRepository.findOne as jest.Mock).mockResolvedValue(mockUser);
+      (userRepository.save as jest.Mock).mockResolvedValue(mockUpdatedUser);
       (tokensService.getPswTokenPayload as jest.Mock).mockReturnValue({ id: 1 });
-      expect(userReporitory.save).not.toHaveBeenCalled();
+      expect(userRepository.save).not.toHaveBeenCalled();
       await usersService.resetPsw(mockResetPasswordDto, mockResetPswDto);
-      expect(userReporitory.save).toHaveBeenCalled();
+      expect(userRepository.save).toHaveBeenCalled();
+    });
+  });
+
+  describe('Delete User', () => {
+    it('Should delete a specific user', async () => {
+      (userRepository.findOne as jest.Mock).mockResolvedValue(mockUser);
+      await usersService.deleteUser(1);
+      expect(userRepository.save).toBeCalled();
     });
   });
 });
