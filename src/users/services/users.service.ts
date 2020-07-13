@@ -54,7 +54,10 @@ export class UsersService {
   }
 
   async findByIdOrThrow(id: number): Promise<User> {
-    const user = await this.userRepository.findOne(id, { where: { deletedAt: IsNull() } });
+    const user = await this.userRepository.findOne(id, {
+      where: { deletedAt: IsNull() },
+      relations: ['roles', 'permissions'],
+    });
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
@@ -80,6 +83,11 @@ export class UsersService {
     const roles = roleIds ? await this.roleRepository.findRoles(roleIds) : [];
     const permissions = permissionIds ? await this.permissionRepository.findPermissions(permissionIds) : [];
     const user = await this.userRepository.save({ ...userDto, roles, permissions });
+    return { data: plainToClass(UserDoc, user, { excludeExtraneousValues: true }) };
+  }
+
+  async getSingleUser(userId: number): Promise<UserResponse> {
+    const user = await this.findByIdOrThrow(userId);
     return { data: plainToClass(UserDoc, user, { excludeExtraneousValues: true }) };
   }
 

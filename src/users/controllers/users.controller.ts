@@ -56,6 +56,16 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
+  @Auth('view_user')
+  @ApiOperation({
+    summary: 'Ver detalle de Usuario',
+    description: 'Use este endpoint para ver el detalle de un usuario específico',
+  })
+  @Get(':userId')
+  getSingleUser(@Param() idDto: UserIdDto): Promise<UserResponse> {
+    return this.usersService.getSingleUser(idDto.userId);
+  }
+
   @Auth('update_user')
   @ApiOperation({
     summary: 'Actualizar Usuario',
