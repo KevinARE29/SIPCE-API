@@ -31,12 +31,18 @@ export class AllExceptionsFilter implements ExceptionFilter {
       error = exceptionResponse.error;
       message = exceptionResponse.message;
     } else if (exception instanceof QueryFailedError) {
+      // Mapping the TypeORM exception
       statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
       error = 'Unprocessable Entity';
       const { detail, routine } = (exception as unknown) as ITypeOrmQueryFailed;
       if (routine === '_bt_check_unique') {
-        const property = detail.match(/Key [(](?<key>[a-z_]+)[)]/)?.groups?.key as string;
-        message = `${snakeToCamel(property)}: Ya existe un registro con ese valor`;
+        // This happens when a unique constraint in the DB fails
+        const groups = detail.match(/Key [(](?<key>[A-Za-z0-9_, ]+)[)]=[(](?<value>[A-Za-z0-9\-_,@. ]+)/)?.groups;
+        const key = groups && groups.key;
+        const value = groups && groups.value;
+        if (key && value) {
+          message = `${snakeToCamel(key)}: Ya existe un registro con el valor ${value}`;
+        }
       } else {
         statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         error = 'Internal Server Error';
@@ -49,7 +55,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
     this.logService.logAccess(context, statusCode);
     this.logService.logAction(context, statusCode);
 
-    Logger.error(exception);
     response.status(statusCode).json({ statusCode, error, message });
   }
 }
