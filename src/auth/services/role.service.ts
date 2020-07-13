@@ -21,6 +21,10 @@ export class RoleService {
   ) {}
 
   async getAllRoles(pageDto: PageDto, roleFilterDto: RoleFilterDto): Promise<RolesResponse> {
+    if (roleFilterDto.paginate === 'false') {
+      const [roles] = await this.roleRepository.getAllRoles(pageDto, roleFilterDto);
+      return { data: plainToClass(Roles, roles, { excludeExtraneousValues: true }) };
+    }
     const [roles, count] = await this.roleRepository.getAllRoles(pageDto, roleFilterDto);
     const pagination = getPagination(pageDto, count);
     return { data: plainToClass(Roles, roles, { excludeExtraneousValues: true }), pagination };

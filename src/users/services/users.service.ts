@@ -20,12 +20,17 @@ import { UserFilterDto } from '@users/dtos/user-filter.dto';
 import { UsersResponse } from '@users/docs/users-response.doc';
 import { getPagination } from '@core/utils/pagination.util';
 import { plainToClass } from 'class-transformer';
-import { Users } from '@users/docs/users.doc';
+import { User as UserDoc } from '@users/docs/user.doc';
 import { GenerateCredentialsDto } from '@users/dtos/generate-credentials.dto';
 import * as generator from 'generate-password';
 import { IEmail } from '@mails/interfaces/email.interface';
 import { ConfigService } from '@nestjs/config';
 import { MailsService } from '@mails/services/mails.service';
+import { UpdateUserDto } from '@users/dtos/update-user.dto';
+import { UserResponse } from '@users/docs/user-response.doc';
+import { CreateUserDto } from '@users/dtos/create-user.dto';
+import { RoleRepository } from '@auth/repositories/role.repository';
+import { PermissionRepository } from '@auth/repositories/permission.repository';
 
 @Injectable()
 export class UsersService {
@@ -33,6 +38,8 @@ export class UsersService {
 
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly roleRepository: RoleRepository,
+    private readonly permissionRepository: PermissionRepository,
     private readonly tokensService: TokensService,
     private readonly configService: ConfigService,
     private readonly mailsService: MailsService,
@@ -65,11 +72,24 @@ export class UsersService {
   async getAllUsers(pageDto: PageDto, userFilterDto: UserFilterDto): Promise<UsersResponse> {
     const [users, count] = await this.userRepository.getAllUsers(pageDto, userFilterDto);
     const pagination = getPagination(pageDto, count);
-    return { data: plainToClass(Users, users, { excludeExtraneousValues: true }), pagination };
+    return { data: plainToClass(UserDoc, users, { excludeExtraneousValues: true }), pagination };
   }
 
-  updateUser(user: User, updateUserDto: ResetPswTokenDto | ResetPswDto) {
-    return this.userRepository.save({ ...user, ...updateUserDto });
+  async createUser(createUserDto: CreateUserDto): Promise<UserResponse> {
+    const { roleIds, permissionIds, ...userDto } = createUserDto;
+    const roles = roleIds ? await this.roleRepository.findRoles(roleIds) : [];
+    const permissions = permissionIds ? await this.permissionRepository.findPermissions(permissionIds) : [];
+    const user = await this.userRepository.save({ ...userDto, roles, permissions });
+    return { data: plainToClass(UserDoc, user, { excludeExtraneousValues: true }) };
+  }
+
+  async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<UserResponse> {
+    const user = await this.findByIdOrThrow(userId);
+    const { roleIds, permissionIds, ...userDto } = updateUserDto;
+    const roles = roleIds ? await this.roleRepository.findRoles(roleIds) : [];
+    const permissions = permissionIds ? await this.permissionRepository.findPermissions(permissionIds) : [];
+    const updatedUser = await this.userRepository.save({ ...user, ...userDto, roles, permissions });
+    return { data: plainToClass(UserDoc, updatedUser, { excludeExtraneousValues: true }) };
   }
 
   updatePsw(user: User, updatePswDto: UpdatePswDto): Promise<User> {
@@ -77,7 +97,7 @@ export class UsersService {
       throw new BadRequestException('oldPassword: La contraseña es incorrecta');
     }
     const password = this.getHash(updatePswDto.newPassword);
-    return this.updateUser(user, { password });
+    return this.userRepository.save({ ...user, password });
   }
 
   async resetPsw(resetPswTokenDto: ResetPswTokenDto, resetPswDto: ResetPswDto): Promise<void> {

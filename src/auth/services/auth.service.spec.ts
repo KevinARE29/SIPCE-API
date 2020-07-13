@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { MailsService } from '@mails/services/mails.service';
 import { UsersService } from '@users/services/users.service';
+import { UserRepository } from '@users/repositories/users.repository';
 import { AuthService } from '../services/auth.service';
 import { PoliticRepository } from '../repositories/politic.repository';
 import { TokenRepository } from '../repositories/token.repository';
@@ -65,6 +66,7 @@ describe('Auth Service', () => {
         { provide: TokenRepository, useFactory: mockTokenRepository },
         { provide: PoliticRepository, useFactory: mockPoliticRepository },
         { provide: MailsService, useFactory: mockMailsService },
+        { provide: UserRepository, useValue: {} },
       ],
     }).compile();
 

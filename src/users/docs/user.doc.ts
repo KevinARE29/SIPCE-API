@@ -1,8 +1,9 @@
 import { Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from './user-role.doc';
+import { UserPermission } from './user-permission.doc';
 
-export class Users {
+export class User {
   @Expose()
   id!: number;
 
@@ -31,4 +32,9 @@ export class Users {
   @Type(() => UserRole)
   @Expose()
   roles!: UserRole[];
+
+  @ApiProperty({ type: [UserPermission] })
+  @Type(() => UserPermission)
+  @Expose()
+  permissions!: UserPermission[];
 }

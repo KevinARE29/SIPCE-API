@@ -8,5 +8,5 @@ export class RolesResponse implements IApiResponse<Roles[]> {
   data!: Roles[];
 
   @ApiProperty()
-  pagination!: Pagination;
+  pagination?: Pagination;
 }

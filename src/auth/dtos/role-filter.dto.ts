@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, Validate, IsString } from 'class-validator';
+import { IsOptional, Validate, IsString, IsIn } from 'class-validator';
 import { SortOptionsValidator } from '@core/validators/sort-options.validator';
 import { validator } from '@core/messages/validator.message';
 import { getSortOptions, getSortOptionsMap } from '@core/utils/sort.util';
@@ -17,4 +17,8 @@ export class RoleFilterDto {
   @IsOptional()
   @IsString({ message: validator.isString })
   name?: string;
+
+  @IsOptional()
+  @IsIn(['false'], { message: validator.isIn })
+  paginate?: string;
 }
