@@ -13,6 +13,7 @@ export class UserRepository extends Repository<User> {
       .leftJoin('role.permissions', 'rolePermission')
       .select(['user', 'role', 'permission', 'rolePermission'])
       .andWhere('user.deletedAt is null')
+      .andWhere('user.active is true')
       .andWhere('user.username = :username', { username })
       .getOne();
   }
