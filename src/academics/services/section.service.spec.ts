@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SectionService } from '@academics/services/section.service';
 import { SectionRepository } from '@academics/repositories/section.repository';
 import { mockPageDto, mockPagination } from '@core/constants/mock.constants';
-import { NotFoundException } from '@nestjs/common';
 
 const mockSections = [[{ name: 'B' }, { name: 'A' }], 2];
 
