@@ -85,7 +85,10 @@ export class UsersService {
 
   async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<UserResponse> {
     const user = await this.findByIdOrThrow(userId);
-    const updatedUser = await this.userRepository.save({ ...user });
+    const { roleIds, permissionIds, ...userDto } = updateUserDto;
+    const roles = roleIds ? await this.roleRepository.findRoles(roleIds) : [];
+    const permissions = permissionIds ? await this.permissionRepository.findPermissions(permissionIds) : [];
+    const updatedUser = await this.userRepository.save({ ...user, ...userDto, roles, permissions });
     return { data: plainToClass(UserDoc, updatedUser, { excludeExtraneousValues: true }) };
   }
 
