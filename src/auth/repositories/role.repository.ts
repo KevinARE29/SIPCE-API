@@ -2,25 +2,29 @@ import { EntityRepository, Repository } from 'typeorm';
 import { PageDto } from '@core/dtos/page.dto';
 import { RoleFilterDto, sortOptionsMap } from '@auth/dtos/role-filter.dto';
 import { NotFoundException } from '@nestjs/common';
+import { getOrderBy } from '@core/utils/sort.util';
 import { Role } from '../entities/role.entity';
 
 @EntityRepository(Role)
 export class RoleRepository extends Repository<Role> {
   getAllRoles(pageDto: PageDto, roleFilterDto: RoleFilterDto): Promise<[Role[], number]> {
     const { page, perPage } = pageDto;
-    const { sort, name } = roleFilterDto;
+    const { sort, name, paginate } = roleFilterDto;
     const query = this.createQueryBuilder('role')
-      .select(['role'])
+      .select('role')
       .leftJoin('role.users', 'user')
-      .loadRelationCountAndMap('role.usersCount', 'role.users')
-      .take(perPage)
-      .skip((page - 1) * perPage);
+      .loadRelationCountAndMap('role.usersCount', 'role.users');
+
+    if (paginate === 'false') {
+      query.orderBy({ 'role.name': 'ASC' });
+      return query.getManyAndCount();
+    }
+
+    query.take(perPage);
+    query.skip((page - 1) * perPage);
 
     if (sort) {
-      const order = sort.split(',').reduce((acum, sortItem) => {
-        const orderOption = sortOptionsMap.get(sortItem);
-        return { ...acum, ...orderOption };
-      }, {});
+      const order = getOrderBy(sort, sortOptionsMap);
       query.orderBy(order);
     } else {
       query.orderBy({ 'role.id': 'DESC' });

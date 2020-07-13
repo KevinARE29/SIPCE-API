@@ -4,6 +4,8 @@ import { UsersService } from '@users/services/users.service';
 import { MailsService } from '@mails/services/mails.service';
 import { ConfigService } from '@nestjs/config';
 import { mockPageDto } from '@core/constants/mock.constants';
+import { RoleRepository } from '@auth/repositories/role.repository';
+import { PermissionRepository } from '@auth/repositories/permission.repository';
 import { UserRepository } from '../repositories/users.repository';
 import { User } from '../entities/users.entity';
 
@@ -73,6 +75,8 @@ describe('Users Service', () => {
         { provide: TokensService, useFactory: mockTokensService },
         { provide: MailsService, useValue: {} },
         { provide: ConfigService, useValue: {} },
+        { provide: RoleRepository, useValue: {} },
+        { provide: PermissionRepository, useValue: {} },
       ],
     }).compile();
 
