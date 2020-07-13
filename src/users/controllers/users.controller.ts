@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Patch, HttpCode, Body, Get, Query, Post, Param, Delete } from '@nestjs/common';
+import { Controller, UseGuards, Patch, HttpCode, Body, Get, Query, Post, Param, Delete, Put } from '@nestjs/common';
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { SessionGuard } from '@auth/guards/session.guard';
@@ -10,6 +10,9 @@ import { UserFilterDto } from '@users/dtos/user-filter.dto';
 import { UsersResponse } from '@users/docs/users-response.doc';
 import { GenerateCredentialsDto } from '@users/dtos/generate-credentials.dto';
 import { UserIdDto } from '@users/dtos/user-id.dto';
+import { CreateUserDto } from '@users/dtos/create-user.dto';
+import { UpdateUserDto } from '@users/dtos/update-user.dto';
+import { UserResponse } from '@users/docs/user-response.doc';
 import { IAuthenticatedUser } from '../interfaces/users.interface';
 import { User } from '../decorators/user.decorator';
 import { UsersService } from '../services/users.service';
@@ -41,6 +44,26 @@ export class UsersController {
   @Get('')
   getAllUsers(@Query() pageDto: PageDto, @Query() userFilterDto: UserFilterDto): Promise<UsersResponse> {
     return this.usersService.getAllUsers(pageDto, userFilterDto);
+  }
+
+  @Auth('create_users')
+  @ApiOperation({
+    summary: 'Crear Usuarios',
+    description: 'Use este endpoint para crear nuevos usuarios',
+  })
+  @Post('')
+  createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
+    return this.usersService.createUser(createUserDto);
+  }
+
+  @Auth('update_user')
+  @ApiOperation({
+    summary: 'Actualizar Usuario',
+    description: 'Use este endpoint para actualizar usuarios',
+  })
+  @Put(':userId')
+  updateUser(@Param() idDto: UserIdDto, @Body() updateUserDto: UpdateUserDto): Promise<UserResponse> {
+    return this.usersService.updateUser(idDto.userId, updateUserDto);
   }
 
   @Auth('generate_user_credentials')

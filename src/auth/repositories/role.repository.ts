@@ -53,4 +53,10 @@ export class RoleRepository extends Repository<Role> {
       .addSelect('Lower(role.name)', 'name')
       .getRawMany();
   }
+
+  findRoles(roleIds: number[]): Promise<Role[]> {
+    return this.createQueryBuilder('role')
+      .where('role.id IN (:...roleIds)', { roleIds: [null, ...roleIds] })
+      .getMany();
+  }
 }
