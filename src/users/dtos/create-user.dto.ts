@@ -1,4 +1,4 @@
-import { IsString, IsArray, IsInt, IsPositive, IsOptional } from 'class-validator';
+import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsEmail } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 
 export class CreateUserDto {
@@ -14,7 +14,7 @@ export class CreateUserDto {
   @IsString({ message: validator.isString })
   lastname!: string;
 
-  @IsString({ message: validator.isString })
+  @IsEmail({}, { message: validator.isEmail })
   email!: string;
 
   @IsOptional()
