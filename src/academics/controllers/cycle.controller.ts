@@ -6,11 +6,9 @@ import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { Auth } from '@auth/decorators/auth.decorator';
 import { CycleFilterDto } from '@academics/dtos/cycle-filter.dto';
 import { CyclesResponse } from '@academics/docs/cycles-response.doc';
-/*
-import { SectionResponse } from '@academics/docs/section-response.doc';
+import { CycleResponse } from '@academics/docs/cycle-response.doc';
 import { CatalogueDto } from '@academics/dtos/catalogue.dto';
-import { SectionIdDto } from '@academics/dtos/section-id.dto';
-*/
+import { CycleIdDto } from '@academics/dtos/cycle-id.dto';
 
 @ApiTags('Cycle Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -27,38 +25,36 @@ export class CycleController {
   getAllCycles(@Query() pageDto: PageDto, @Query() cycleFilterDto: CycleFilterDto): Promise<CyclesResponse> {
     return this.cycleService.getAllCycles(pageDto, cycleFilterDto);
   }
-
   /*
   @Auth('manage_academics_catalogues')
   @ApiOperation({
-    summary: 'Crear Sección',
-    description: 'Use este endpoint para crear una nueva sección',
+    summary: 'Crear Ciclos',
+    description: 'Use este endpoint para crear un nuevo ciclo',
   })
   @Post('')
-  createRole(@Body() createCatalogueDto: CatalogueDto): Promise<SectionResponse> {
-    return this.sectionService.createSection(createCatalogueDto);
+  createCycle(@Body() createCatalogueDto: CatalogueDto): Promise<CycleResponse> {
+    return this.cycleService.createCycle(createCatalogueDto);
   }
 
   @Auth('manage_academics_catalogues')
   @ApiOperation({
-    summary: 'Actualizar Sección',
-    description: 'Use este endpoint para actualizar una sección específica',
+    summary: 'Actualizar Ciclo',
+    description: 'Use este endpoint para actualizar un ciclo específico',
   })
-  @Put(':sectionId')
-  updateRole(@Param() idDto: SectionIdDto, @Body() updateRoleDto: CatalogueDto): Promise<SectionResponse> {
-    return this.sectionService.updateSection(idDto.sectionId, updateRoleDto);
+  @Put(':cycleId')
+  updateCycle(@Param() idDto: CycleIdDto, @Body() updateCycleDto: CatalogueDto): Promise<CycleResponse> {
+    return this.cycleService.updateCycle(idDto.cycleId, updateCycleDto);
   }
 
   @Auth('manage_academics_catalogues')
   @ApiOperation({
-    summary: 'Eliminar Sección',
-    description: 'Use este endpoint para eliminar una sección específica',
+    summary: 'Eliminar Ciclos',
+    description: 'Use este endpoint para eliminar un ciclo específico',
   })
   @HttpCode(204)
-  @Delete(':sectionId')
-  deleteRole(@Param() idDto: SectionIdDto): Promise<void> {
-    return this.sectionService.deleteSection(idDto.sectionId);
+  @Delete(':cycleId')
+  deleteCycle(@Param() idDto: CycleIdDto): Promise<void> {
+    return this.cycleService.deleteCycle(idDto.cycleId);
   }
-
   */
 }

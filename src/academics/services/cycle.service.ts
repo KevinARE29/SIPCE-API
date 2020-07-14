@@ -7,10 +7,9 @@ import { CyclesResponse } from '@academics/docs/cycles-response.doc';
 import { Cycles } from '@academics/docs/cycles.doc';
 import { plainToClass } from 'class-transformer';
 /*
-import { SectionResponse } from '@academics/docs/section-response.doc';
 import { CatalogueDto } from '@academics/dtos/catalogue.dto';
-import { Section } from '@academics/docs/section.doc';
-
+import { Cycle } from '@academics/docs/cycle.doc';
+import { CycleResponse } from '@academics/docs/cycle-response.doc'; 
 */
 
 @Injectable()
@@ -22,39 +21,38 @@ export class CycleService {
     const pagination = getPagination(pageDto, count);
     return { data: plainToClass(Cycles, cycles, { excludeExtraneousValues: true }), pagination };
   }
-
   /*
-  async createSection(createCatalogueDto: CatalogueDto): Promise<SectionResponse> {
-    const duplicateSection = await this.sectionRepository.getSectionByName(createCatalogueDto.name);
-    if (duplicateSection) {
-      throw new ConflictException('name: Ya existe una sección con ese nombre');
+  async createCycle(createCatalogueDto: CatalogueDto): Promise<CycleResponse> {
+    const duplicateCycle = await this.cycleRepository.getCycleByName(createCatalogueDto.name);
+    if (duplicateCycle) {
+      throw new ConflictException('name: Ya existe un ciclo con ese nombre');
     }
     return {
-      data: plainToClass(Section, await this.sectionRepository.save({ ...createCatalogueDto }), {
+      data: plainToClass(Cycle, await this.cycleRepository.save({ ...createCatalogueDto }), {
         excludeExtraneousValues: true,
       }),
     };
   }
 
-  async updateSection(sectionId: number, catalogueDto: CatalogueDto): Promise<SectionResponse> {
-    const section = await this.sectionRepository.getSectionByIdOrThrow(sectionId);
+  async updateCycle(sectionId: number, catalogueDto: CatalogueDto): Promise<CycleResponse> {
+    const cycle = await this.cycleRepository.getCycleByIdOrThrow(sectionId);
 
-    section.name = catalogueDto.name || section.name;
-    const duplicatedRole = await this.sectionRepository.getSectionByName(section.name);
-    if (duplicatedRole && section.id !== duplicatedRole.id) {
-      throw new ConflictException('name: Ya existe una sección con ese nombre');
+    cycle.name = catalogueDto.name || cycle.name;
+    const duplicatedCycle = await this.cycleRepository.getCycleByName(cycle.name);
+    if (duplicatedCycle && cycle.id !== duplicatedCycle.id) {
+      throw new ConflictException('name: Ya existe un ciclo con ese nombre');
     }
     return {
-      data: plainToClass(Section, await this.sectionRepository.save({ ...section }), {
+      data: plainToClass(Cycle, await this.cycleRepository.save({ ...cycle }), {
         excludeExtraneousValues: true,
       }),
     };
   }
 
-  async deleteSection(sectionId: number): Promise<void> {
-    const section = await this.sectionRepository.getSectionByIdOrThrow(sectionId);
-    section.deletedAt = new Date();
-    await this.sectionRepository.save(section);
-  }  
-  */
+  async deleteCycle(cycleId: number): Promise<void> {
+    const cycle = await this.cycleRepository.getCycleByIdOrThrow(cycleId);
+    cycle.deletedAt = new Date();
+    await this.cycleRepository.save(cycle);
+  }
+   */
 }
