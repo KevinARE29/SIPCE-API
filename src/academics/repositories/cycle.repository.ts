@@ -32,7 +32,7 @@ export class CycleRepository extends Repository<Cycle> {
   async getCycleByIdOrThrow(cycleId: number): Promise<Cycle> {
     const cycle = await this.findOne(cycleId);
     if (!cycle) {
-      throw new NotFoundException('Ciclo no encontrada');
+      throw new NotFoundException('Ciclo no encontrado');
     }
     return cycle;
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { PageDto } from '@core/dtos/page.dto';
 import { getPagination } from '@core/utils/pagination.util';
 import { CycleRepository } from '@academics/repositories/cycle.repository';
@@ -6,11 +6,9 @@ import { CycleFilterDto } from '@academics/dtos/cycle-filter.dto';
 import { CyclesResponse } from '@academics/docs/cycles-response.doc';
 import { Cycles } from '@academics/docs/cycles.doc';
 import { plainToClass } from 'class-transformer';
-/*
 import { CatalogueDto } from '@academics/dtos/catalogue.dto';
 import { Cycle } from '@academics/docs/cycle.doc';
-import { CycleResponse } from '@academics/docs/cycle-response.doc'; 
-*/
+import { CycleResponse } from '@academics/docs/cycle-response.doc';
 
 @Injectable()
 export class CycleService {
@@ -21,7 +19,7 @@ export class CycleService {
     const pagination = getPagination(pageDto, count);
     return { data: plainToClass(Cycles, cycles, { excludeExtraneousValues: true }), pagination };
   }
-  /*
+
   async createCycle(createCatalogueDto: CatalogueDto): Promise<CycleResponse> {
     const duplicateCycle = await this.cycleRepository.getCycleByName(createCatalogueDto.name);
     if (duplicateCycle) {
@@ -54,5 +52,4 @@ export class CycleService {
     cycle.deletedAt = new Date();
     await this.cycleRepository.save(cycle);
   }
-   */
 }

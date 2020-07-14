@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CycleService } from '@academics/services/cycle.service';
 import { CycleRepository } from '@academics/repositories/cycle.repository';
 import { mockPageDto, mockPagination } from '@core/constants/mock.constants';
+import { CycleService } from './cycle.service';
 
 const mockCycles = [[{ name: 'B' }, { name: 'A' }], 2];
 
@@ -47,7 +47,7 @@ describe('Cycle Service', () => {
       expect(result).toEqual(mockCyclesResponse);
     });
   });
-  /*
+
   it('Should Create a new cycle', async () => {
     (cycleRepository.getCycleByName as jest.Mock).mockResolvedValue(null);
     (cycleRepository.save as jest.Mock).mockResolvedValue(mockCycleDto);
@@ -70,5 +70,4 @@ describe('Cycle Service', () => {
       expect(cycleRepository.save).toBeCalled();
     });
   });
-    */
 });

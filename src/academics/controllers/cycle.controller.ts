@@ -25,7 +25,7 @@ export class CycleController {
   getAllCycles(@Query() pageDto: PageDto, @Query() cycleFilterDto: CycleFilterDto): Promise<CyclesResponse> {
     return this.cycleService.getAllCycles(pageDto, cycleFilterDto);
   }
-  /*
+
   @Auth('manage_academics_catalogues')
   @ApiOperation({
     summary: 'Crear Ciclos',
@@ -56,5 +56,4 @@ export class CycleController {
   deleteCycle(@Param() idDto: CycleIdDto): Promise<void> {
     return this.cycleService.deleteCycle(idDto.cycleId);
   }
-  */
 }
