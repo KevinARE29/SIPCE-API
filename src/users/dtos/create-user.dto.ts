@@ -1,16 +1,20 @@
-import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsEmail } from 'class-validator';
+import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsEmail, IsNotEmpty } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 
 export class CreateUserDto {
+  @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
   code!: string;
 
+  @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
   username!: string;
 
+  @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
   firstname!: string;
 
+  @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
   lastname!: string;
 
