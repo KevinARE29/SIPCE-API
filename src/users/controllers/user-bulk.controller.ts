@@ -1,36 +1,29 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Controller, UseGuards, Post, Body, HttpCode } from '@nestjs/common';
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from '@auth/decorators/auth.decorator';
-import { BulkAdministrativeDto } from '@users/dtos/bulk/bulk-administrative.dto';
-import { AdministrativeBulkService } from '@users/services/administrative-bulk.service';
+import { BulkUsersDto } from '@users/dtos/bulk/bulk-users.dto';
+import { UsersBulkService } from '@users/services/users-bulk.service';
 import { BulkCoordinatorDto } from '@users/dtos/bulk/bulk-coordinator.dto';
-import { CoordinatorBulkService } from '@users/services/coordinator-bulk.service';
 import { BulkTeacherDto } from '@users/dtos/bulk/bulk-teacher.dto';
-import { TeacherBulkService } from '@users/services/teacher-bulk.service';
 import { BulkCounselorDto } from '@users/dtos/bulk/bulk-counselor.dto';
-import { CounselorBulkService } from '@users/services/counselor-bulk.service';
 
 @ApiTags('Users Endpoints')
 @UseGuards(ContentTypeGuard)
 @Controller('users')
 export class UserBulkController {
-  constructor(
-    private readonly administrativeBulkService: AdministrativeBulkService,
-    private readonly coordinatorBulkService: CoordinatorBulkService,
-    private readonly counselorBulkService: CounselorBulkService,
-    private readonly teacherBulkService: TeacherBulkService,
-  ) {}
+  constructor(private readonly usersBulkService: UsersBulkService) {}
 
   @Auth('create_users')
   @ApiOperation({
-    summary: 'Cargar Usuarios Administrativos',
-    description: 'Use este endpoint para hacer una carga masiva de usuarios administrativos',
+    summary: 'Cargar Usuarios',
+    description: 'Use este endpoint para hacer una carga masiva de usuarios',
   })
   @HttpCode(204)
-  @Post('administratives')
-  bulkAdministratives(@Body() bulkAdministrativeDto: BulkAdministrativeDto): Promise<void> {
-    return this.administrativeBulkService.bulkAdministratives(bulkAdministrativeDto.administratives);
+  @Post('bulk')
+  bulkUsers(@Body() bulkusersDto: BulkUsersDto): Promise<void> {
+    return this.usersBulkService.bulkUsers(bulkusersDto.users);
   }
 
   @Auth('create_users')
@@ -41,8 +34,8 @@ export class UserBulkController {
   })
   @HttpCode(204)
   @Post('coordinators')
-  bulkCoordinators(@Body() bulkCoordinatorDto: BulkCoordinatorDto): Promise<void> {
-    return this.coordinatorBulkService.bulkCoordinator(bulkCoordinatorDto);
+  bulkCoordinators(@Body() bulkCoordinatorDto: BulkCoordinatorDto): void {
+    // return this.coordinatorBulkService.bulkCoordinator(bulkCoordinatorDto);
   }
 
   @Auth('create_users')
@@ -53,8 +46,8 @@ export class UserBulkController {
   })
   @HttpCode(204)
   @Post('counselors')
-  bulkCounselors(@Body() bulkCounselorDto: BulkCounselorDto): Promise<void> {
-    return this.counselorBulkService.bulkCounselor(bulkCounselorDto);
+  bulkCounselors(@Body() bulkCounselorDto: BulkCounselorDto): void {
+    // return this.counselorBulkService.bulkCounselor(bulkCounselorDto);
   }
 
   @Auth('create_users')
@@ -67,7 +60,7 @@ export class UserBulkController {
   })
   @HttpCode(204)
   @Post('teachers')
-  bulkTeachers(@Body() bulkTeacherDto: BulkTeacherDto): Promise<void> {
-    return this.teacherBulkService.bulkTeacher(bulkTeacherDto);
+  bulkTeachers(@Body() bulkTeacherDto: BulkTeacherDto): void {
+    // return this.teacherBulkService.bulkTeacher(bulkTeacherDto);
   }
 }

@@ -2,12 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, ValidateNested } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import { Type } from 'class-transformer/decorators';
-import { AdministrativeDto } from './administrative.dto';
+import { BulkUserDto } from './bulk-user.dto';
 
-export class BulkAdministrativeDto {
-  @ApiProperty({ type: [AdministrativeDto] })
+export class BulkUsersDto {
+  @ApiProperty({ type: [BulkUserDto] })
   @IsArray({ message: validator.isArray })
   @ValidateNested({ each: true })
-  @Type(() => AdministrativeDto)
-  administratives!: AdministrativeDto[];
+  @Type(() => BulkUserDto)
+  users!: BulkUserDto[];
 }
