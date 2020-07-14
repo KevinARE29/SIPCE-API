@@ -36,8 +36,8 @@ export class SectionService {
     const section = await this.sectionRepository.getSectionByIdOrThrow(sectionId);
 
     section.name = catalogueDto.name || section.name;
-    const duplicatedRole = await this.sectionRepository.getSectionByName(section.name);
-    if (duplicatedRole && section.id !== duplicatedRole.id) {
+    const duplicatedCyle = await this.sectionRepository.getSectionByName(section.name);
+    if (duplicatedCyle && section.id !== duplicatedCyle.id) {
       throw new ConflictException('name: Ya existe una sección con ese nombre');
     }
     return {

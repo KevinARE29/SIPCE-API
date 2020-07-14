@@ -9,6 +9,8 @@ import { SectionDetailRepository } from './repositories/section-detail.repositor
 import { SectionRepository } from './repositories/section.repository';
 import { SectionController } from './controllers/section.controller';
 import { SectionService } from './services/section.service';
+import { CycleController } from './controllers/cycle.controller';
+import { CycleService } from './services/cycle.service';
 
 @Module({
   imports: [
@@ -22,8 +24,8 @@ import { SectionService } from './services/section.service';
       SectionRepository,
     ]),
   ],
-  controllers: [SectionController],
-  providers: [SectionService],
+  controllers: [SectionController, CycleController],
+  providers: [SectionService, CycleService],
   exports: [TypeOrmModule],
 })
 export class AcademicsModule {}

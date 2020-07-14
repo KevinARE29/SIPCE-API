@@ -32,7 +32,7 @@ export class SectionController {
     description: 'Use este endpoint para crear una nueva sección',
   })
   @Post('')
-  createRole(@Body() createCatalogueDto: CatalogueDto): Promise<SectionResponse> {
+  createSection(@Body() createCatalogueDto: CatalogueDto): Promise<SectionResponse> {
     return this.sectionService.createSection(createCatalogueDto);
   }
 
@@ -42,8 +42,8 @@ export class SectionController {
     description: 'Use este endpoint para actualizar una sección específica',
   })
   @Put(':sectionId')
-  updateRole(@Param() idDto: SectionIdDto, @Body() updateRoleDto: CatalogueDto): Promise<SectionResponse> {
-    return this.sectionService.updateSection(idDto.sectionId, updateRoleDto);
+  updateSection(@Param() idDto: SectionIdDto, @Body() updateSectionDto: CatalogueDto): Promise<SectionResponse> {
+    return this.sectionService.updateSection(idDto.sectionId, updateSectionDto);
   }
 
   @Auth('manage_academics_catalogues')
@@ -53,7 +53,7 @@ export class SectionController {
   })
   @HttpCode(204)
   @Delete(':sectionId')
-  deleteRole(@Param() idDto: SectionIdDto): Promise<void> {
+  deleteSection(@Param() idDto: SectionIdDto): Promise<void> {
     return this.sectionService.deleteSection(idDto.sectionId);
   }
 }
