@@ -9,7 +9,7 @@ export class Cycle {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 32, unique: true })
+  @Column('varchar', { length: 32 })
   name!: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })

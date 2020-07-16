@@ -9,7 +9,7 @@ export class Section {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 16, unique: true })
+  @Column('varchar', { length: 16 })
   name!: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
