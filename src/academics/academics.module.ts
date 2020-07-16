@@ -13,6 +13,11 @@ import { CycleController } from './controllers/cycle.controller';
 import { CycleService } from './services/cycle.service';
 import { GradeService } from './services/grade.service';
 import { GradeController } from './controllers/grade.controller';
+import { PeriodService } from './services/period.service';
+import { PeriodController } from './controllers/period.controller';
+import { PeriodRepository } from './repositories/period.repository';
+import { ShiftService } from './services/shift.service';
+import { ShiftController } from './controllers/shift.controller';
 
 @Module({
   imports: [
@@ -24,10 +29,11 @@ import { GradeController } from './controllers/grade.controller';
       GradeRepository,
       SectionDetailRepository,
       SectionRepository,
+      PeriodRepository,
     ]),
   ],
-  controllers: [SectionController, CycleController, GradeController],
-  providers: [SectionService, CycleService, GradeService],
+  controllers: [SectionController, CycleController, GradeController, PeriodController, ShiftController],
+  providers: [SectionService, CycleService, GradeService, PeriodService, ShiftService],
   exports: [TypeOrmModule],
 })
 export class AcademicsModule {}
