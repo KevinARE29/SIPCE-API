@@ -19,11 +19,7 @@ export class GradeService {
 
   async deleteGrade(gradeId: number): Promise<void> {
     const grade = await this.gradeRepository.getGradeByIdOrThrow(gradeId);
-    const variable = grade.active;
-    if (variable) {
-      grade.active = false;
-    } else grade.active = true;
-
+    grade.active = !grade.active;
     await this.gradeRepository.save(grade);
   }
 }

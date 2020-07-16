@@ -11,7 +11,6 @@ export class GradeRepository extends Repository<Grade> {
     const { page, perPage } = pageDto;
     const { sort, name, active } = gradeFilterDto;
     const query = this.createQueryBuilder('grade')
-      // .andWhere('grade.deletedAt is null')
       .take(perPage)
       .skip((page - 1) * perPage);
 
