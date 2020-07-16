@@ -11,6 +11,8 @@ import { SectionController } from './controllers/section.controller';
 import { SectionService } from './services/section.service';
 import { CycleController } from './controllers/cycle.controller';
 import { CycleService } from './services/cycle.service';
+import { GradeService } from './services/grade.service';
+import { GradeController } from './controllers/grade.controller';
 
 @Module({
   imports: [
@@ -24,8 +26,8 @@ import { CycleService } from './services/cycle.service';
       SectionRepository,
     ]),
   ],
-  controllers: [SectionController, CycleController],
-  providers: [SectionService, CycleService],
+  controllers: [SectionController, CycleController, GradeController],
+  providers: [SectionService, CycleService, GradeService],
   exports: [TypeOrmModule],
 })
 export class AcademicsModule {}
