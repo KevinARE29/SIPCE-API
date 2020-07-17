@@ -5,8 +5,8 @@ import { GradeService } from './grade.service';
 
 const mockGrades = [
   [
-    { name: 'B', active: 'true' },
-    { name: 'A', active: 'false' },
+    { name: 'Octavo', active: 'true' },
+    { name: 'Bachillerato', active: 'false' },
   ],
   2,
 ];
@@ -53,8 +53,8 @@ describe('Grade Service', () => {
     });
   });
 
-  describe('Remove grade', () => {
-    it('Should delete a specific grade', async () => {
+  describe('Deactivate grade', () => {
+    it('Should deactivate a specific grade', async () => {
       (gradeRepository.getGradeByIdOrThrow as jest.Mock).mockResolvedValue(mockGradeDto);
       await gradeService.deleteGrade(10);
       expect(gradeRepository.save).toBeCalled();
