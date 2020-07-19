@@ -19,7 +19,8 @@
       "@core/*": ["src/core/*"],
       "@mails/*": ["src/mails/*"],
       "@logs/*": ["src/logs/*"],
-      "@academics/*": ["src/academics/*"]
+      "@academics/*": ["src/academics/*"],
+      "@students/*": ["src/students/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

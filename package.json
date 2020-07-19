@@ -99,7 +99,8 @@
     "@core": "dist/src/core",
     "@mails": "dist/src/mails",
     "@logs": "dist/src/logs",
-    "@academics": "dist/src/academics"
+    "@academics": "dist/src/academics",
+    "@students": "dist/src/students"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -114,7 +115,8 @@
       "^@core(.*)$": "<rootDir>/core$1",
       "^@mails(.*)$": "<rootDir>/mails$1",
       "^@logs(.*)$": "<rootDir>/logs$1",
-      "^@academics(.*)$": "<rootDir>/academics$1"
+      "^@academics(.*)$": "<rootDir>/academics$1",
+      "^@students(.*)$": "<rootDir>/students$1"
     },
     "testRegex": ".spec.ts$",
     "transform": {
