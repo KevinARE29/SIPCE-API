@@ -8,9 +8,12 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { EStudentStatus } from '@students/constants/student.constant';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
+import { Grade } from '@academics/entities/grade.entity';
 import { ResponsibleStudent } from './responsible_student.entity';
 
 @Entity()
@@ -32,9 +35,6 @@ export class Student {
 
   @Column('smallint', { name: 'registration_year', unsigned: true })
   registrationYear!: number;
-
-  @Column('smallint', { name: 'started_grade', unsigned: true })
-  startedGrade!: number;
 
   @Column('varchar', { length: 128, unique: true })
   email!: string;
@@ -72,4 +72,12 @@ export class Student {
     inverseJoinColumns: [{ name: 'section_detail_id' }],
   })
   sectionDetails!: SectionDetail[];
+
+  @ManyToOne(
+    () => Grade,
+    grade => grade.students,
+    { nullable: false },
+  )
+  @JoinColumn({ name: 'started_grade_id' })
+  startedGrade!: Grade;
 }
