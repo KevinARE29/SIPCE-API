@@ -4,7 +4,7 @@ export class Migration1595226738146 implements MigrationInterface {
   name = 'migration1595226738146';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "public"."cycle_detail" DROP CONSTRAINT "UQ_a058a7336d5ceb0412c069c3115"`);
+    await queryRunner.query(`ALTER TABLE "public"."cycle_detail" DROP CONSTRAINT "UQ_ebe0f35f1a6437c4aee50780f3b"`);
     await queryRunner.query(`ALTER TABLE "public"."cycle_detail" RENAME COLUMN "year" TO "school_year_id"`);
     await queryRunner.query(`CREATE TYPE "school_year_status_enum" AS ENUM('1', '2', '3')`);
     await queryRunner.query(
@@ -35,7 +35,7 @@ export class Migration1595226738146 implements MigrationInterface {
     await queryRunner.query(`DROP TYPE "school_year_status_enum"`);
     await queryRunner.query(`ALTER TABLE "public"."cycle_detail" RENAME COLUMN "school_year_id" TO "year"`);
     await queryRunner.query(
-      `ALTER TABLE "public"."cycle_detail" ADD CONSTRAINT "UQ_a058a7336d5ceb0412c069c3115" UNIQUE ("year", "shift_id", "cycle_coordinator_id")`,
+      `ALTER TABLE "public"."cycle_detail" ADD CONSTRAINT "UQ_ebe0f35f1a6437c4aee50780f3b" UNIQUE ("year", "shift_id", "cycle_coordinator_id")`,
     );
   }
 }
