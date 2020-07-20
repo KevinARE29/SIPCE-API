@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Student } from '@students/entities/student.entity';
 import { GradeDetail } from './grade-detail.entity';
 
 @Entity()
@@ -26,4 +27,16 @@ export class Grade {
     gradeDetail => gradeDetail.grade,
   )
   gradeDetails!: GradeDetail[];
+
+  @OneToMany(
+    () => Student,
+    student => student.startedGrade,
+  )
+  startedStudents!: Student[];
+
+  @OneToMany(
+    () => Student,
+    student => student.currentGrade,
+  )
+  currentStudents!: Student[];
 }
