@@ -100,7 +100,8 @@
     "@mails": "dist/src/mails",
     "@logs": "dist/src/logs",
     "@academics": "dist/src/academics",
-    "@students": "dist/src/students"
+    "@students": "dist/src/students",
+    "@schedules": "dist/src/schedules"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -116,7 +117,8 @@
       "^@mails(.*)$": "<rootDir>/mails$1",
       "^@logs(.*)$": "<rootDir>/logs$1",
       "^@academics(.*)$": "<rootDir>/academics$1",
-      "^@students(.*)$": "<rootDir>/students$1"
+      "^@students(.*)$": "<rootDir>/students$1",
+      "^@schedules(.*)$": "<rootDir>/schedules$1"
     },
     "testRegex": ".spec.ts$",
     "transform": {
