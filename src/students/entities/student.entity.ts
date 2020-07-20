@@ -75,9 +75,17 @@ export class Student {
 
   @ManyToOne(
     () => Grade,
-    grade => grade.students,
+    grade => grade.startedStudents,
     { nullable: false },
   )
   @JoinColumn({ name: 'started_grade_id' })
   startedGrade!: Grade;
+
+  @ManyToOne(
+    () => Grade,
+    grade => grade.currentStudents,
+    { nullable: false },
+  )
+  @JoinColumn({ name: 'current_grade_id' })
+  currentGrade!: Grade;
 }
