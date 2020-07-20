@@ -1,7 +1,6 @@
 /* istanbul ignore file */
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
@@ -15,16 +14,14 @@ import { User } from '@users/entities/users.entity';
 import { Cycle } from './cycle.entity';
 import { Shift } from './shift.entity';
 import { GradeDetail } from './grade-detail.entity';
+import { SchoolYear } from './school-year.entity';
 
-@Unique(['year', 'shift', 'cycleCoordinator'])
+@Unique(['shift', 'cycleCoordinator'])
 @Entity()
 export class CycleDetail {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id!: number;
-
-  @Column('smallint', { unsigned: true })
-  year!: number;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
@@ -47,6 +44,14 @@ export class CycleDetail {
   )
   @JoinColumn({ name: 'shift_id' })
   shift!: Shift;
+
+  @ManyToOne(
+    () => SchoolYear,
+    schoolYear => schoolYear.cycleDetails,
+    { nullable: false },
+  )
+  @JoinColumn({ name: 'school_year_id' })
+  schoolYear!: SchoolYear;
 
   @ManyToOne(
     () => User,

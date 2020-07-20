@@ -32,5 +32,11 @@ export class Grade {
     () => Student,
     student => student.startedGrade,
   )
-  students!: Student[];
+  startedStudents!: Student[];
+
+  @OneToMany(
+    () => Student,
+    student => student.currentGrade,
+  )
+  currentStudents!: Student[];
 }
