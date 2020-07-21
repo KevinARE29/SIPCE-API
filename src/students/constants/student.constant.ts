@@ -28,3 +28,5 @@ export enum EResponsibleRelationship {
 }
 
 export const relationshipValues = Object.values(EResponsibleRelationship).filter(key => typeof key === 'number');
+
+export type TRelationship = keyof typeof EResponsibleRelationship;
