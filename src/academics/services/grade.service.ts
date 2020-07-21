@@ -24,7 +24,7 @@ export class GradeService {
       if (gradeId === 15 && !grade.active) {
         const prevGrade = await this.gradeRepository.getGradeByIdOrThrow(gradeId - 1);
         if (!prevGrade.active) {
-          throw new BadRequestException('gradeId: El grado seleccionado no se puede activar generara conflictos');
+          throw new BadRequestException('gradeId: El grado seleccionado no se puede activar generará conflictos');
         }
         grade.active = !grade.active;
       }
@@ -34,13 +34,13 @@ export class GradeService {
       const prevGrade = await this.gradeRepository.getGradeByIdOrThrow(gradeId - 1);
       if (grade.active) {
         if (nextGrade.active && prevGrade.active) {
-          throw new BadRequestException('gradeId: El grado seleccionado no se puede desactivar generara conflictos');
+          throw new BadRequestException('gradeId: El grado seleccionado no se puede desactivar generará conflictos');
         } else {
           grade.active = !grade.active;
         }
       } else {
         if (!nextGrade.active && !prevGrade.active) {
-          throw new BadRequestException('gradeId: El grado seleccionado no se puede activar generara conflictos');
+          throw new BadRequestException('gradeId: El grado seleccionado no se puede activar generará conflictos');
         }
         grade.active = !grade.active;
       }
