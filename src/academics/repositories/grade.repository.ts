@@ -18,7 +18,7 @@ export class GradeRepository extends Repository<Grade> {
       const order = getOrderBy(sort, sortOptionsMap);
       query.orderBy(order);
     } else {
-      query.orderBy({ 'grade.id': 'DESC' });
+      query.orderBy({ 'grade.id': 'ASC' });
     }
 
     if (name) {
