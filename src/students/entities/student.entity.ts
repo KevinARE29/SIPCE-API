@@ -15,7 +15,7 @@ import { EStudentStatus } from '@students/constants/student.constant';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { Grade } from '@academics/entities/grade.entity';
 import { Shift } from '@academics/entities/shift.entity';
-import { ResponsibleStudent } from './responsible_student.entity';
+import { ResponsibleStudent } from './responsible-student.entity';
 
 @Entity()
 export class Student {

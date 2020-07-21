@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { ResponsibleStudent } from './responsible_student.entity';
+import { ResponsibleStudent } from './responsible-student.entity';
 
 @Entity()
 export class Responsible {
