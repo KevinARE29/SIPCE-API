@@ -16,7 +16,7 @@ export class Responsible {
   @Column('varchar', { length: 128, unique: true })
   email!: string;
 
-  @Column('varchar', { length: 8, unique: true })
+  @Column('varchar', { length: 8 })
   phone!: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })

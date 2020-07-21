@@ -40,7 +40,7 @@ export class Student {
   @Column('varchar', { length: 128, unique: true })
   email!: string;
 
-  @Column('enum', { enum: EStudentStatus, enumName: 'student_status_enum' })
+  @Column('enum', { enum: EStudentStatus, enumName: 'student_status_enum', default: 1 })
   status!: EStudentStatus;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
