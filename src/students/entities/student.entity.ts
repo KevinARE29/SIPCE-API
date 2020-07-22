@@ -14,7 +14,8 @@ import {
 import { EStudentStatus } from '@students/constants/student.constant';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { Grade } from '@academics/entities/grade.entity';
-import { ResponsibleStudent } from './responsible_student.entity';
+import { Shift } from '@academics/entities/shift.entity';
+import { ResponsibleStudent } from './responsible-student.entity';
 
 @Entity()
 export class Student {
@@ -39,7 +40,7 @@ export class Student {
   @Column('varchar', { length: 128, unique: true })
   email!: string;
 
-  @Column('enum', { enum: EStudentStatus, enumName: 'student_status_enum' })
+  @Column('enum', { enum: EStudentStatus, enumName: 'student_status_enum', default: 1 })
   status!: EStudentStatus;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
@@ -88,4 +89,12 @@ export class Student {
   )
   @JoinColumn({ name: 'current_grade_id' })
   currentGrade!: Grade;
+
+  @ManyToOne(
+    () => Shift,
+    shift => shift.currentStudents,
+    { nullable: false },
+  )
+  @JoinColumn({ name: 'current_shift_id' })
+  currentShift!: Shift;
 }
