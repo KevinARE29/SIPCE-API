@@ -4,11 +4,14 @@ import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from '@auth/decorators/auth.decorator';
 import { BulkStudentsDto } from '@students/dtos/bulk/bulk-students.dto';
+import { StudentBulkService } from '@students/services/student-bulk.service';
 
 @ApiTags('Students Endpoints')
 @UseGuards(ContentTypeGuard)
 @Controller('students')
 export class StudentBulkController {
+  constructor(private readonly studentBulkService: StudentBulkService) {}
+
   @Auth('create_students')
   @ApiOperation({
     summary: 'Cargar Estudiantes',
@@ -16,7 +19,7 @@ export class StudentBulkController {
   })
   @HttpCode(204)
   @Post('bulk')
-  async bulkStudents(@Body() bulkStudentsDto: BulkStudentsDto): Promise<void> {
-    return undefined;
+  bulkStudents(@Body() bulkStudentsDto: BulkStudentsDto): Promise<void> {
+    return this.studentBulkService.bulkStudent(bulkStudentsDto);
   }
 }

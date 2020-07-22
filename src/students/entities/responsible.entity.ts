@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { ResponsibleStudent } from './responsible_student.entity';
+import { ResponsibleStudent } from './responsible-student.entity';
 
 @Entity()
 export class Responsible {
@@ -16,7 +16,7 @@ export class Responsible {
   @Column('varchar', { length: 128, unique: true })
   email!: string;
 
-  @Column('varchar', { length: 8, unique: true })
+  @Column('varchar', { length: 8 })
   phone!: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
