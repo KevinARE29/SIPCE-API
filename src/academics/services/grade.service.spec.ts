@@ -56,7 +56,7 @@ describe('Grade Service', () => {
   describe('Deactivate grade', () => {
     it('Should deactivate a specific grade', async () => {
       (gradeRepository.getGradeByIdOrThrow as jest.Mock).mockResolvedValue(mockGradeDto);
-      await gradeService.deleteGrade(10);
+      await gradeService.deleteGrade(1);
       expect(gradeRepository.save).toBeCalled();
     });
   });

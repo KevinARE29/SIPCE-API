@@ -18,6 +18,7 @@ import { PeriodController } from './controllers/period.controller';
 import { PeriodRepository } from './repositories/period.repository';
 import { ShiftService } from './services/shift.service';
 import { ShiftController } from './controllers/shift.controller';
+import { SchoolYearRepository } from './repositories/school-year.repository';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ShiftController } from './controllers/shift.controller';
       SectionDetailRepository,
       SectionRepository,
       PeriodRepository,
+      SchoolYearRepository,
     ]),
   ],
   controllers: [SectionController, CycleController, GradeController, PeriodController, ShiftController],

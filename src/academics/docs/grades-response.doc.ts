@@ -8,5 +8,5 @@ export class GradesResponse implements IApiResponse<Grade[]> {
   data!: Grade[];
 
   @ApiProperty()
-  pagination!: Pagination;
+  pagination?: Pagination;
 }

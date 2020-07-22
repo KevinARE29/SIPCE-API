@@ -1,7 +1,16 @@
 /* istanbul ignore file */
-import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@users/entities/users.entity';
+import { Student } from '@students/entities/student.entity';
 import { Section } from './section.entity';
 import { GradeDetail } from './grade-detail.entity';
 
@@ -40,4 +49,10 @@ export class SectionDetail {
   )
   @JoinColumn({ name: 'teacher_id' })
   teacher!: User;
+
+  @ManyToMany(
+    () => Student,
+    student => student.sectionDetails,
+  )
+  students!: Student[];
 }
