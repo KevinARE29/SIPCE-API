@@ -12,6 +12,10 @@ export class GradeService {
   constructor(private readonly gradeRepository: GradeRepository) {}
 
   async getAllGrades(pageDto: PageDto, gradeFilterDto: GradeFilterDto): Promise<GradesResponse> {
+    if (gradeFilterDto.paginate === 'false') {
+      const [grades] = await this.gradeRepository.getAllGrades(pageDto, gradeFilterDto);
+      return { data: plainToClass(Grades, grades, { excludeExtraneousValues: true }) };
+    }
     const [grades, count] = await this.gradeRepository.getAllGrades(pageDto, gradeFilterDto);
     const pagination = getPagination(pageDto, count);
     return { data: plainToClass(Grades, grades, { excludeExtraneousValues: true }), pagination };

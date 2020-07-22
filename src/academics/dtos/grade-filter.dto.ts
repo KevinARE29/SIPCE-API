@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, Validate, IsString, IsBooleanString } from 'class-validator';
+import { IsOptional, Validate, IsString, IsBooleanString, IsIn } from 'class-validator';
 import { SortOptionsValidator } from '@core/validators/sort-options.validator';
 import { validator } from '@core/messages/validator.message';
 import { getSortOptions, getSortOptionsMap } from '@core/utils/sort.util';
@@ -21,4 +21,8 @@ export class GradeFilterDto {
   @IsOptional()
   @IsBooleanString({ message: validator.isBoolean })
   active?: boolean;
+
+  @IsOptional()
+  @IsIn(['false'], { message: validator.isIn })
+  paginate?: string;
 }

@@ -9,10 +9,16 @@ import { getOrderBy } from '@core/utils/sort.util';
 export class GradeRepository extends Repository<Grade> {
   getAllGrades(pageDto: PageDto, gradeFilterDto: GradeFilterDto): Promise<[Grade[], number]> {
     const { page, perPage } = pageDto;
-    const { sort, name, active } = gradeFilterDto;
-    const query = this.createQueryBuilder('grade')
-      .take(perPage)
-      .skip((page - 1) * perPage);
+    const { sort, name, active, paginate } = gradeFilterDto;
+    const query = this.createQueryBuilder('grade');
+
+    if (paginate === 'false') {
+      query.orderBy({ id: 'ASC' });
+      return query.getManyAndCount();
+    }
+
+    query.take(perPage);
+    query.skip((page - 1) * perPage);
 
     if (sort) {
       const order = getOrderBy(sort, sortOptionsMap);
