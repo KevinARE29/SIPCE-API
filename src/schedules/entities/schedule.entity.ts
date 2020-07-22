@@ -10,7 +10,8 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@users/entities/users.entity';
-import { ESchedule } from '@schedules/constants/constants/schedule.constant';
+import { ESchedule } from '@schedules/constants/schedule.constant';
+import { Transform } from 'class-transformer';
 @Entity()
 export class Schedule {
   @ApiProperty()
@@ -20,9 +21,11 @@ export class Schedule {
   @Column('enum', { enum: ESchedule, enumName: 'day_enum' })
   day!: ESchedule;
 
+  @Transform(startTime => startTime.format('HH:mm'))
   @Column({ name: 'start_time', type: 'timetz' })
   startTime!: Date;
 
+  @Transform(endTime => endTime.format('HH:mm'))
   @Column({ name: 'end_time', type: 'timetz' })
   endTime!: Date;
 
