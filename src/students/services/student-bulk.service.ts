@@ -26,7 +26,7 @@ export class StudentBulkService {
 
   async bulkStudent(bulkStudentsDto: BulkStudentsDto): Promise<void> {
     const queryRunner = this.connection.createQueryRunner();
-    const { shiftId, students } = bulkStudentsDto;
+    const { shiftId, students, currentYear } = bulkStudentsDto;
 
     const currentShift = await this.shiftRepository.findById(shiftId);
     if (!currentShift) {
@@ -54,6 +54,9 @@ export class StudentBulkService {
         email,
         phone,
       };
+
+      const now = new Date().getFullYear();
+      mappedStudent.registrationYear = mappedStudent.registrationYear || currentYear ? now : now + 1;
 
       const startedGrade = gradesMap.get(startedGradeId || gradeId);
       if (!startedGrade) {
