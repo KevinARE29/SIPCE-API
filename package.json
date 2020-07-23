@@ -26,9 +26,14 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run format && npm run lint",
+      "pre-commit": "lint-staged",
       "pre-push": "npm run format && npm run lint && npm test"
     }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run format && npm run lint"
+    ]
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
@@ -47,7 +52,7 @@
     "generate-password": "^1.5.1",
     "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
-    "module-alias": "^2.2.2",
+    "lint-staged": "^10.2.11",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -92,15 +97,6 @@
   },
   "engines": {
     "node": ">=12.18"
-  },
-  "_moduleAliases": {
-    "@auth": "dist/src/auth",
-    "@users": "dist/src/users",
-    "@core": "dist/src/core",
-    "@mails": "dist/src/mails",
-    "@logs": "dist/src/logs",
-    "@academics": "dist/src/academics",
-    "@students": "dist/src/students"
   },
   "jest": {
     "moduleFileExtensions": [

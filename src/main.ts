@@ -12,8 +12,6 @@ import { LogService } from '@logs/services/log.service';
 import { AllExceptionsFilter } from './core/filters/http-exception.filter';
 import { AppModule } from './app.module';
 
-require('module-alias/register');
-
 async function bootstrap() {
   initializeTransactionalContext();
   patchTypeORMRepositoryWithBaseRepository();
