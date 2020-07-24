@@ -11,8 +11,8 @@ import {
   IsNumberString,
   IsEnum,
 } from 'class-validator';
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { EResponsibleRelationship, relationshipKeys } from '@students/constants/student.constant';
+import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
+import { EResponsibleRelationship, relationshipKeys, TRelationship } from '@students/constants/student.constant';
 
 export class StudentDto {
   @IsNotEmpty({ message: validator.isNotEmpty })
@@ -56,10 +56,11 @@ export class StudentDto {
   @IsString({ message: validator.isString })
   responsibleLastname!: string;
 
+  @ApiProperty({ type: String })
   @IsEnum(EResponsibleRelationship, {
     message: `responsibleRelationship: Debe ser uno de los siguientes valores: ${relationshipKeys}`,
   })
-  responsibleRelationship!: string;
+  responsibleRelationship!: TRelationship;
 
   @IsEmail({}, { message: validator.isEmail })
   responsibleEmail!: string;

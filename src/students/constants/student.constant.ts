@@ -1,13 +1,15 @@
 export enum EStudentStatus {
   'Aprobado' = 1,
-  'Repetidor',
-  'Reprobado',
+  'Desertor',
   'Egresado',
   'Expulsado',
-  'Desertor',
+  'Repetidor',
+  'Reprobado',
 }
 
 export const statusValues = Object.values(EStudentStatus).filter(key => typeof key === 'number');
+export const statusKeys = Object.values(EStudentStatus).filter(key => typeof key === 'string');
+export type TStatus = keyof typeof EStudentStatus;
 
 export enum EResponsibleRelationship {
   'Madre' = 1,

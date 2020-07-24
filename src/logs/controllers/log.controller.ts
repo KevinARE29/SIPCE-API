@@ -9,11 +9,11 @@ import { ActionLogsResponse } from '@logs/docs/action-logs-response.doc';
 import { Auth } from '@auth/decorators/auth.decorator';
 
 @ApiTags('Logs Endpoints')
-@Auth('retrieve_logs')
 @Controller('logs')
 export class LogController {
   constructor(private readonly logService: LogService) {}
 
+  @Auth('retrieve_logs')
   @ApiOperation({
     summary: 'Mostrar bitácora de accesos',
     description: 'Use este endpoint para mostrar la bitácora de accesos',
@@ -26,6 +26,7 @@ export class LogController {
     return this.logService.getAccessLogs(pageDto, accessLogFilterDto);
   }
 
+  @Auth('retrieve_logs')
   @ApiOperation({
     summary: 'Mostrar bitácora de acciones',
     description: 'Use este endpoint para mostrar la bitácora de acciones',
