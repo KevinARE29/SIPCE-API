@@ -11,7 +11,7 @@ import { getEntityMap } from '@core/utils/core.util';
 import { StudentRepository } from '@students/repositories/student.repository';
 import { ResponsibleRepository } from '@students/repositories/responsible.repository';
 import { ResponsibleStudentRepository } from '@students/repositories/responsible-student.repository';
-import { EResponsibleRelationship, TRelationship } from '@students/constants/student.constant';
+import { EResponsibleRelationship } from '@students/constants/student.constant';
 
 @Injectable()
 export class StudentBulkService {
@@ -95,7 +95,7 @@ export class StudentBulkService {
         await this.responsibleStudentRepository.save({
           student,
           responsible,
-          relationship: EResponsibleRelationship[relationship as TRelationship],
+          relationship: EResponsibleRelationship[relationship],
         });
 
         await queryRunner.commitTransaction();
