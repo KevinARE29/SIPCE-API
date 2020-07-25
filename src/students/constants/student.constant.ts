@@ -7,6 +7,9 @@ export enum EStudentStatus {
   'Reprobado',
 }
 
+export const activeStatuses = [1, 5];
+export const inactiveStatuses = [2, 3, 4, 6];
+
 export const statusValues = Object.values(EStudentStatus).filter(key => typeof key === 'number');
 export const statusKeys = Object.values(EStudentStatus).filter(key => typeof key === 'string');
 export type TStatus = keyof typeof EStudentStatus;

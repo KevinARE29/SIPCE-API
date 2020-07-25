@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, Validate, IsString, IsPositive, IsInt, IsEnum } from 'class-validator';
+import { IsOptional, Validate, IsString, IsPositive, IsInt, IsEnum, IsIn } from 'class-validator';
 import { SortOptionsValidator } from '@core/validators/sort-options.validator';
 import { validator } from '@core/messages/validator.message';
 import { Type } from 'class-transformer';
@@ -43,4 +43,9 @@ export class StudentFilterDto {
     message: `status: Debe ser uno de los siguientes valores: ${statusKeys}`,
   })
   status?: TStatus;
+
+  @ApiPropertyOptional({ type: Boolean })
+  @IsOptional()
+  @IsIn(['true', 'false'], { message: validator.isIn })
+  active?: string;
 }
