@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Student } from '@students/entities/student.entity';
 import { PageDto } from '@core/dtos/page.dto';
 import { StudentFilterDto, sortOptionsMap } from '@students/dtos/student-filter.dto';
-import { EStudentStatus } from '@students/constants/student.constant';
+import { EStudentStatus, activeStatuses, inactiveStatuses } from '@students/constants/student.constant';
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> {
@@ -16,7 +16,7 @@ export class StudentRepository extends Repository<Student> {
 
   getAllStudents(pageDto: PageDto, studentFilterDto: StudentFilterDto): Promise<[Student[], number]> {
     const { page, perPage } = pageDto;
-    const { sort, code, firstname, lastname, email, currentGrade, status } = studentFilterDto;
+    const { sort, code, firstname, lastname, email, currentGrade, status, active } = studentFilterDto;
     const query = this.createQueryBuilder('student')
       .leftJoinAndSelect('student.currentGrade', 'currentGrade')
       .take(perPage)
@@ -54,6 +54,10 @@ export class StudentRepository extends Repository<Student> {
 
     if (status) {
       query.andWhere(`"student"."status" = '${EStudentStatus[status]}'`);
+    } else if (active === 'false') {
+      query.andWhere(`"student"."status" IN (:...inactiveStatuses)`, { inactiveStatuses: [null, ...inactiveStatuses] });
+    } else {
+      query.andWhere(`"student"."status" IN (:...activeStatuses)`, { activeStatuses: [null, ...activeStatuses] });
     }
 
     return query.getManyAndCount();
