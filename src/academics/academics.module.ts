@@ -19,6 +19,8 @@ import { PeriodRepository } from './repositories/period.repository';
 import { ShiftService } from './services/shift.service';
 import { ShiftController } from './controllers/shift.controller';
 import { SchoolYearRepository } from './repositories/school-year.repository';
+import { SchoolYearController } from './controllers/school-year.controller';
+import { SchoolYearService } from './services/school-year.service';
 
 @Module({
   imports: [
@@ -34,8 +36,15 @@ import { SchoolYearRepository } from './repositories/school-year.repository';
       SchoolYearRepository,
     ]),
   ],
-  controllers: [SectionController, CycleController, GradeController, PeriodController, ShiftController],
-  providers: [SectionService, CycleService, GradeService, PeriodService, ShiftService],
+  controllers: [
+    SectionController,
+    CycleController,
+    GradeController,
+    PeriodController,
+    ShiftController,
+    SchoolYearController,
+  ],
+  providers: [SectionService, CycleService, GradeService, PeriodService, ShiftService, SchoolYearService],
   exports: [TypeOrmModule],
 })
 export class AcademicsModule {}
