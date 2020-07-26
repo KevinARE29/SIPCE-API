@@ -22,7 +22,7 @@ export class Student {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 32 })
+  @Column('varchar', { length: 32, unique: true })
   code!: string;
 
   @Column('varchar', { length: 128 })

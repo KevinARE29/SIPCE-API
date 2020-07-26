@@ -16,7 +16,7 @@ export class ResponsibleDto {
   @IsEnum(EResponsibleRelationship, {
     message: `responsibleRelationship: Debe ser uno de los siguientes valores: ${relationshipKeys}`,
   })
-  responsibleRelationship!: TRelationship;
+  relationship!: TRelationship;
 
   @IsEmail({}, { message: validator.isEmail })
   email!: string;
