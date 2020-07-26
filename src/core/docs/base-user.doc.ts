@@ -5,10 +5,16 @@ export class BaseUser {
   id!: number;
 
   @Expose()
+  code!: string;
+
+  @Expose()
   username!: string;
 
   @Expose()
-  name!: string;
+  firstname!: string;
+
+  @Expose()
+  lastname!: string;
 
   @Expose()
   email!: string;

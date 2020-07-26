@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, IsNull } from 'typeorm';
 import { Section } from '@academics/entities/section.entity';
 import { PageDto } from '@core/dtos/page.dto';
 import { SectionFilterDto, sortOptionsMap } from '@academics/dtos/section-filter.dto';
@@ -30,7 +30,7 @@ export class SectionRepository extends Repository<Section> {
   }
 
   async getSectionByIdOrThrow(sectionId: number): Promise<Section> {
-    const section = await this.findOne(sectionId);
+    const section = await this.findOne(sectionId, { where: { deletedAt: IsNull() } });
     if (!section) {
       throw new NotFoundException('Sección no encontrada');
     }

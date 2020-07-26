@@ -4,4 +4,5 @@ export enum ESchoolYearStatus {
   'Histórico',
 }
 
+export const activeSchoolYearStatus = [1, 2];
 export const yearStatusValues = Object.values(ESchoolYearStatus).filter(key => typeof key === 'number');
