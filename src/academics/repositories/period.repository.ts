@@ -18,7 +18,7 @@ export class PeriodRepository extends Repository<Period> {
       const order = getOrderBy(sort, sortOptionsMap);
       query.orderBy(order);
     } else {
-      query.orderBy({ 'period.id': 'DESC' });
+      query.orderBy({ 'period.id': 'ASC' });
     }
 
     if (name) {
