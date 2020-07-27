@@ -76,8 +76,10 @@ export class StudentService {
         relationship: EResponsibleRelationship[responsibleDto.relationship],
       });
       await queryRunner.commitTransaction();
+      await queryRunner.release();
     } catch (err) {
       await queryRunner.rollbackTransaction();
+      await queryRunner.release();
       throw err;
     }
   }

@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-export class Responsibles {
+export class Responsible {
   @Expose()
   id!: number;
 
