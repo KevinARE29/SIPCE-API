@@ -3,6 +3,7 @@ import { Student } from '@students/entities/student.entity';
 import { PageDto } from '@core/dtos/page.dto';
 import { StudentFilterDto, sortOptionsMap } from '@students/dtos/student-filter.dto';
 import { EStudentStatus, activeStatuses, inactiveStatuses } from '@students/constants/student.constant';
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> {
@@ -12,6 +13,14 @@ export class StudentRepository extends Repository<Student> {
         code,
       },
     });
+  }
+
+  async findByIdOrFail(id: number): Promise<Student> {
+    const student = await this.findOne(id);
+    if (!student) {
+      throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
+    }
+    return student;
   }
 
   getAllStudents(pageDto: PageDto, studentFilterDto: StudentFilterDto): Promise<[Student[], number]> {

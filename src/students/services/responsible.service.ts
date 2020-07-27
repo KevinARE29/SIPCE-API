@@ -5,12 +5,22 @@ import { plainToClass } from 'class-transformer';
 import { EResponsibleRelationship } from '@students/constants/student.constant';
 import { ResponsibleFilterDto } from '@students/dtos/responsible-filter.dto';
 import { ResponsiblesResponse } from '@students/docs/responsibles-response.doc';
-import { Responsibles } from '@students/docs/responsibles.doc';
+import { Responsible } from '@students/docs/responsible.doc';
 import { ResponsibleRepository } from '@students/repositories/responsible.repository';
+import { ResponsibleDto } from '@students/dtos/responsible.dto';
+import { ResponsibleResponse } from '@students/docs/responsible-response.doc';
+import { Connection } from 'typeorm';
+import { StudentRepository } from '@students/repositories/student.repository';
+import { ResponsibleStudentRepository } from '@students/repositories/responsible-student.repository';
 
 @Injectable()
 export class ResponsibleService {
-  constructor(private readonly responsibleRepository: ResponsibleRepository) {}
+  constructor(
+    private readonly responsibleRepository: ResponsibleRepository,
+    private readonly studentRepository: StudentRepository,
+    private readonly responsibleStudentRepository: ResponsibleStudentRepository,
+    private connection: Connection,
+  ) {}
 
   async getStudentResponsibles(
     studentId: number,
@@ -27,6 +37,34 @@ export class ResponsibleService {
       ...responsible,
       relationship: EResponsibleRelationship[responsible.responsibleStudents[0].relationship],
     }));
-    return { data: plainToClass(Responsibles, mappedResponsibles, { excludeExtraneousValues: true }), pagination };
+    return { data: plainToClass(Responsible, mappedResponsibles, { excludeExtraneousValues: true }), pagination };
+  }
+
+  async createResponsible(studentId: number, responsibleDto: ResponsibleDto): Promise<ResponsibleResponse> {
+    const queryRunner = this.connection.createQueryRunner();
+    const { relationship, ...respDto } = responsibleDto;
+    const student = await this.studentRepository.findByIdOrFail(studentId);
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      const existingResponsible = await this.responsibleRepository.findByEmail(responsibleDto.email);
+
+      const responsible = existingResponsible
+        ? await this.responsibleRepository.save({ ...existingResponsible, ...respDto })
+        : await this.responsibleRepository.save(respDto);
+
+      await this.responsibleStudentRepository.save({
+        student,
+        responsible,
+        relationship: EResponsibleRelationship[relationship],
+      });
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+      return { data: plainToClass(Responsible, responsible, { excludeExtraneousValues: true }) };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
+      throw err;
+    }
   }
 }

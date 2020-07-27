@@ -7,6 +7,7 @@ import {
   ValidationError,
   Logger,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { QueryFailedError } from 'typeorm';
 import { LogService } from '@logs/services/log.service';
 import { snakeToCamel } from '@core/utils/core.util';
@@ -16,10 +17,11 @@ import { IExceptionResponse, ITypeOrmQueryFailed } from '../interfaces/exception
 export class AllExceptionsFilter implements ExceptionFilter {
   constructor(private readonly logService: LogService) {}
 
-  catch(exception: unknown, host: ArgumentsHost): void {
-    Logger.error(exception);
+  catch(exception: any, host: ArgumentsHost): void {
     const context = host.switchToHttp();
-    const response = context.getResponse();
+    const res = context.getResponse();
+    const { ip, url } = context.getRequest<Request>();
+    Logger.error({ ip, url, time: new Date() }, exception.stack);
 
     let statusCode: number;
     let error: string;
@@ -55,6 +57,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
     this.logService.logAccess(context, statusCode);
     this.logService.logAction(context, statusCode);
 
-    response.status(statusCode).json({ statusCode, error, message });
+    res.status(statusCode).json({ statusCode, error, message });
   }
 }
