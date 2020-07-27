@@ -8,13 +8,15 @@ import { ResponsibleStudentRepository } from './repositories/responsible-student
 import { ResponsibleRepository } from './repositories/responsible.repository';
 import { StudentController } from './controllers/student.controller';
 import { StudentService } from './services/student.service';
+import { ResponsibleController } from './controllers/responsible.controller';
+import { ResponsibleService } from './services/responsible.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([StudentRepository, ResponsibleRepository, ResponsibleStudentRepository]),
     AcademicsModule,
   ],
-  controllers: [StudentController, StudentBulkController],
-  providers: [StudentService, StudentBulkService],
+  controllers: [StudentController, StudentBulkController, ResponsibleController],
+  providers: [StudentService, StudentBulkService, ResponsibleService],
 })
 export class StudentModule {}

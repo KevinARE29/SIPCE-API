@@ -15,20 +15,20 @@ export const statusKeys = Object.values(EStudentStatus).filter(key => typeof key
 export type TStatus = keyof typeof EStudentStatus;
 
 export enum EResponsibleRelationship {
-  'Madre' = 1,
+  'Abuela' = 1,
+  'Abuelo',
+  'Hermana',
+  'Hermano',
+  'Madrastra',
+  'Madre',
+  'Madrina',
+  'Padrastro',
   'Padre',
+  'Padrino',
+  'Prima',
+  'Primo',
   'Tía',
   'Tío',
-  'Abuelo',
-  'Abuela',
-  'Padrino',
-  'Madrina',
-  'Madrastra',
-  'Padrastro',
-  'Hermano',
-  'Hermana',
-  'Primo',
-  'Prima',
   'Tutor',
 }
 
