@@ -3,9 +3,23 @@ import { Responsible } from '@students/entities/responsible.entity';
 import { PageDto } from '@core/dtos/page.dto';
 import { ResponsibleFilterDto, sortOptionsMap } from '@students/dtos/responsible-filter.dto';
 import { EResponsibleRelationship } from '@students/constants/student.constant';
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(Responsible)
 export class ResponsibleRepository extends Repository<Responsible> {
+  async findByIdOrFail(studentId: number, responsibleId: number): Promise<Responsible> {
+    const responsible = await this.createQueryBuilder('responsible')
+      .leftJoin('responsible.responsibleStudents', 'responsibleStudent')
+      .leftJoin('responsibleStudent.student', 'student')
+      .where(`responsible.id = ${responsibleId}`)
+      .andWhere(`student.id = ${studentId}`)
+      .getOne();
+    if (!responsible) {
+      throw new NotFoundException(`Responsable con id ${responsibleId} no encontrado`);
+    }
+    return responsible;
+  }
+
   findByEmail(email: string): Promise<Responsible | undefined> {
     return this.findOne({
       where: {

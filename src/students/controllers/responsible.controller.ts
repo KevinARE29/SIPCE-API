@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param, Body, Post } from '@nestjs/common';
+import { Controller, Get, Query, Param, Body, Post, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PageDto } from '@core/dtos/page.dto';
 import { Auth } from '@auth/decorators/auth.decorator';
@@ -8,6 +8,8 @@ import { ResponsiblesResponse } from '@students/docs/responsibles-response.doc';
 import { ResponsibleService } from '@students/services/responsible.service';
 import { ResponsibleDto } from '@students/dtos/responsible.dto';
 import { ResponsibleResponse } from '@students/docs/responsible-response.doc';
+import { ResponsibleIdDto } from '@students/dtos/responsible-id.dto';
+import { UpdateResponsibleDto } from '@students/dtos/update-responsible.dto';
 
 @ApiTags('Students Endpoints')
 @Controller('students')
@@ -39,5 +41,23 @@ export class ResponsibleController {
     @Body() responsibleDto: ResponsibleDto,
   ): Promise<ResponsibleResponse> {
     return this.responsibleService.createResponsible(idDto.studentId, responsibleDto);
+  }
+
+  @Auth('update_student')
+  @ApiOperation({
+    summary: 'Actualizar Responsable',
+    description: 'Use este endpoint para actualizar los datos de un responsable de un estudiante determinado',
+  })
+  @Put(':studentId/responsibles/:responsibleId')
+  updateResponsible(
+    @Param() studentIdDto: StudentIdDto,
+    @Param() responsibleIdDto: ResponsibleIdDto,
+    @Body() updateResponsibleDto: UpdateResponsibleDto,
+  ): Promise<ResponsibleResponse> {
+    return this.responsibleService.updateResponsible(
+      studentIdDto.studentId,
+      responsibleIdDto.responsibleId,
+      updateResponsibleDto,
+    );
   }
 }
