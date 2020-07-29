@@ -102,4 +102,22 @@ export class ResponsibleService {
       throw err;
     }
   }
+
+  async deleteResponsible(studentId: number, responsibleId: number): Promise<void> {
+    const queryRunner = this.connection.createQueryRunner();
+    const responsible = await this.responsibleRepository.findByIdOrFail(studentId, responsibleId);
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      await this.responsibleStudentRepository.delete({ responsible });
+      await this.responsibleRepository.remove(responsible);
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
+      throw err;
+    }
+  }
 }

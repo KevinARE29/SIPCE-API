@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param, Body, Post, Put } from '@nestjs/common';
+import { Controller, Get, Query, Param, Body, Post, Put, Delete } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PageDto } from '@core/dtos/page.dto';
 import { Auth } from '@auth/decorators/auth.decorator';
@@ -59,5 +59,15 @@ export class ResponsibleController {
       responsibleIdDto.responsibleId,
       updateResponsibleDto,
     );
+  }
+
+  @Auth('update_student')
+  @ApiOperation({
+    summary: 'Eliminar Responsable',
+    description: 'Use este endpoint para eliminar un responsable de un estudiante determinado',
+  })
+  @Delete(':studentId/responsibles/:responsibleId')
+  deleteResponsible(@Param() studentIdDto: StudentIdDto, @Param() responsibleIdDto: ResponsibleIdDto): Promise<void> {
+    return this.responsibleService.deleteResponsible(studentIdDto.studentId, responsibleIdDto.responsibleId);
   }
 }
