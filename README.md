@@ -52,6 +52,12 @@ API para el Sistema Informático para el control y seguimiento del historial con
 | RESET_PSW_SENDGRID_TEMPLATE_ID   | [Template ID for Reset Password]                                             |
 | GENERATE_CREDENTIALS_TEMPLATE_ID | [Template ID for Generate User Credentials]                                  |
 | EMAIL_USER                       | [The no reply email]                                                         |
+| CLOUDINARY_CLOUD_NAME            | [The Cloudinary Cloud Name]                                                  |
+| CLOUDINARY_API_KEY               | [The Cloudinary API KEY]                                                     |
+| CLOUDINARY_API_SECRET            | [The Cloudinary API SECRET]                                                  |
+| CLOUDINARY_ENVS                  | [dev, uat]                                                                   |
+| FILE_EXTENSION_WHITE_LIST        | jpg,jpeg,png,svg                                                             |
+| FILE_SIZE_LIMIT_IN_BYTES         | 5242880                                                                      |
 
 </center>
 

@@ -10,13 +10,16 @@ import { StudentController } from './controllers/student.controller';
 import { StudentService } from './services/student.service';
 import { ResponsibleController } from './controllers/responsible.controller';
 import { ResponsibleService } from './services/responsible.service';
+import { StudentImageService } from './services/student-image.service';
+import { StudentImageController } from './controllers/student-image.controller';
+import { ImageRepository } from './repositories/image.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StudentRepository, ResponsibleRepository, ResponsibleStudentRepository]),
+    TypeOrmModule.forFeature([StudentRepository, ResponsibleRepository, ResponsibleStudentRepository, ImageRepository]),
     AcademicsModule,
   ],
-  controllers: [StudentController, StudentBulkController, ResponsibleController],
-  providers: [StudentService, StudentBulkService, ResponsibleService],
+  controllers: [StudentController, StudentBulkController, ResponsibleController, StudentImageController],
+  providers: [StudentService, StudentBulkService, ResponsibleService, StudentImageService],
 })
 export class StudentModule {}

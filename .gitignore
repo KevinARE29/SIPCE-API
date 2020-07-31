@@ -29,3 +29,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 # Configuration Files
 .env
+# Images
+/images/*
+!/images/.gitkeep

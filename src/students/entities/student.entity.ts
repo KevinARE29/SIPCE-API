@@ -16,6 +16,7 @@ import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { Grade } from '@academics/entities/grade.entity';
 import { Shift } from '@academics/entities/shift.entity';
 import { ResponsibleStudent } from './responsible-student.entity';
+import { Image } from './image.entity';
 
 @Entity()
 export class Student {
@@ -97,4 +98,10 @@ export class Student {
   )
   @JoinColumn({ name: 'current_shift_id' })
   currentShift!: Shift;
+
+  @OneToMany(
+    () => Image,
+    image => image.student,
+  )
+  images!: Image[];
 }
