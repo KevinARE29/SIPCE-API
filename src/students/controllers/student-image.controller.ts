@@ -1,4 +1,4 @@
-import { Controller, Post, Param, UseGuards, UseInterceptors, UploadedFile, Query } from '@nestjs/common';
+import { Controller, Post, Param, UseGuards, UseInterceptors, UploadedFile, Query, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { Auth } from '@auth/decorators/auth.decorator';
 import { StudentIdDto } from '@students/dtos/student-id.dto';
@@ -31,5 +31,15 @@ export class StudentImageController {
     @UploadedFile() imageFile: Express.Multer.File,
   ): Promise<Image> {
     return this.studentImageService.uploadStudentImage(studentIdDto.studentId, gradeIdDto.gradeId, imageFile);
+  }
+
+  @Auth('update_student')
+  @ApiOperation({
+    summary: 'Agregar foto a estudiante',
+    description: 'Use este endpoint para agregar una foto a un estudiante',
+  })
+  @Get(':studentId/images')
+  getStudentImages(@Param() studentIdDto: StudentIdDto): Promise<Image[]> {
+    return this.studentImageService.getStudentImages(studentIdDto.studentId);
   }
 }
