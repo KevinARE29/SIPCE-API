@@ -4,7 +4,7 @@ import { Shift } from '@academics/docs/shift.doc';
 import { Image } from '@core/docs/image.doc';
 import { Sibling } from './sibling.doc';
 import { ResponsibleStudent } from './responsible-student.doc';
-import { SectionDetail } from './section-detail.doc';
+import { SSectionDetail } from './section-detail.doc';
 
 export class Student {
   @Expose()
@@ -56,6 +56,6 @@ export class Student {
   responsibleStudents!: ResponsibleStudent[];
 
   @Expose()
-  @Type(() => SectionDetail)
-  sectionDetails!: SectionDetail[];
+  @Type(() => SSectionDetail)
+  sectionDetails!: SSectionDetail[];
 }
