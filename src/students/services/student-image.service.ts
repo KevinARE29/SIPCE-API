@@ -106,4 +106,19 @@ export class StudentImageService {
       path: imageAsBase64,
     };
   }
+
+  async getStudentImages(studentId: number): Promise<Image[]> {
+    const student = await this.studentRepository.findByIdOrFail(studentId);
+    const images = await this.imageRepository.find({ where: { student } });
+    const cloudinaryEnvs = this.configService.get<string>('CLOUDINARY_ENVS')?.split(',') || ['dev', 'uat'];
+    const env = this.configService.get<string>('NODE_ENV') || 'dev';
+    if (cloudinaryEnvs.includes(env)) {
+      return images;
+    }
+
+    return images.map(image => ({
+      ...image,
+      path: fs.readFileSync(image.path, 'base64'),
+    }));
+  }
 }

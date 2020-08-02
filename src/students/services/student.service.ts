@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PageDto } from '@core/dtos/page.dto';
 import { getPagination } from '@core/utils/pagination.util';
 import { plainToClass } from 'class-transformer';
@@ -13,6 +13,10 @@ import { ResponsibleRepository } from '@students/repositories/responsible.reposi
 import { ResponsibleStudentRepository } from '@students/repositories/responsible-student.repository';
 import { Connection } from 'typeorm';
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
+import { ConfigService } from '@nestjs/config';
+import * as fs from 'fs';
+import { Student } from '@students/docs/student.doc';
+import { StudentResponse } from '@students/docs/student-response.doc';
 
 @Injectable()
 export class StudentService {
@@ -22,6 +26,7 @@ export class StudentService {
     private readonly schoolYearRepository: SchoolYearRepository,
     private readonly responsibleRepository: ResponsibleRepository,
     private readonly responsibleStudentRepository: ResponsibleStudentRepository,
+    private readonly configService: ConfigService,
     private connection: Connection,
   ) {}
 
@@ -82,5 +87,31 @@ export class StudentService {
       await queryRunner.release();
       throw err;
     }
+  }
+
+  async getStudent(studentId: number): Promise<StudentResponse> {
+    const student = await this.studentRepository.getStudentDetails(studentId);
+    if (!student) {
+      throw new NotFoundException(`Estudiante con id ${studentId} no encontrado`);
+    }
+    const cloudinaryEnvs = this.configService.get<string>('CLOUDINARY_ENVS')?.split(',') || ['dev', 'uat'];
+    const env = this.configService.get<string>('NODE_ENV') || 'dev';
+    if (!cloudinaryEnvs.includes(env)) {
+      student.images = student.images.map(image => ({
+        ...image,
+        path: fs.readFileSync(image.path, 'base64'),
+      }));
+    }
+
+    const mappedStudent = {
+      ...student,
+      status: EStudentStatus[student.status],
+      responsibleStudents: student.responsibleStudents.map(rStudent => ({
+        ...rStudent,
+        relationship: EResponsibleRelationship[rStudent.relationship],
+      })),
+    };
+
+    return { data: plainToClass(Student, mappedStudent, { excludeExtraneousValues: true }) };
   }
 }
