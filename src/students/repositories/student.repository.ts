@@ -80,7 +80,7 @@ export class StudentRepository extends Repository<Student> {
       .leftJoinAndSelect('student.currentShift', 'currentShift')
       .leftJoinAndSelect('student.currentGrade', 'currentGrade')
       .leftJoinAndSelect('student.startedGrade', 'startedGrade')
-      .leftJoinAndSelect('student.brothers', 'brother')
+      .leftJoinAndSelect('student.siblings', 'siblings')
       .leftJoinAndMapMany('student.images', Image, 'image', 'image.student = student.id')
       .leftJoinAndMapMany(
         'student.responsibleStudents',
