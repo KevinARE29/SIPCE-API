@@ -35,8 +35,8 @@ export class StudentImageController {
 
   @Auth('update_student')
   @ApiOperation({
-    summary: 'Agregar foto a estudiante',
-    description: 'Use este endpoint para agregar una foto a un estudiante',
+    summary: 'Ver fotos de un estudiante',
+    description: 'Use este endpoint para visualizar la galería de fotos de un estudiante específico',
   })
   @Get(':studentId/images')
   getStudentImages(@Param() studentIdDto: StudentIdDto): Promise<Image[]> {
