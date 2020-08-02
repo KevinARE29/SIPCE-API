@@ -56,7 +56,7 @@ export class Student {
     joinColumns: [{ name: 'student_id' }],
     inverseJoinColumns: [{ name: 'brother_id' }],
   })
-  brothers!: Student[];
+  siblings!: Student[];
 
   @OneToMany(
     () => ResponsibleStudent,
