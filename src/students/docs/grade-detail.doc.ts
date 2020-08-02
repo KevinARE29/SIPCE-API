@@ -1,8 +1,8 @@
 import { Expose, Type } from 'class-transformer';
 import { Grade } from '@academics/docs/grade.doc';
-import { CycleDetail } from './cycle.detail.doc';
+import { SCycleDetail } from './cycle-detail.doc';
 
-export class GradeDetail {
+export class SGradeDetail {
   @Expose()
   id!: number;
 
@@ -11,6 +11,6 @@ export class GradeDetail {
   grade!: Grade;
 
   @Expose()
-  @Type(() => CycleDetail)
-  cycleDetail!: CycleDetail;
+  @Type(() => SCycleDetail)
+  cycleDetail!: SCycleDetail;
 }
