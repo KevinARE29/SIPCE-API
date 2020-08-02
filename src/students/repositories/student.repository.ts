@@ -4,6 +4,9 @@ import { PageDto } from '@core/dtos/page.dto';
 import { StudentFilterDto, sortOptionsMap } from '@students/dtos/student-filter.dto';
 import { EStudentStatus, activeStatuses, inactiveStatuses } from '@students/constants/student.constant';
 import { NotFoundException } from '@nestjs/common';
+import { Image } from '@students/entities/image.entity';
+import { ResponsibleStudent } from '@students/entities/responsible-student.entity';
+import { Responsible } from '@students/entities/responsible.entity';
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> {
@@ -70,5 +73,31 @@ export class StudentRepository extends Repository<Student> {
     }
 
     return query.getManyAndCount();
+  }
+
+  async getStudentDetails(id: number): Promise<Student | undefined> {
+    const student = await this.createQueryBuilder('student')
+      .leftJoinAndSelect('student.currentShift', 'currentShift')
+      .leftJoinAndSelect('student.currentGrade', 'currentGrade')
+      .leftJoinAndSelect('student.startedGrade', 'startedGrade')
+      .leftJoinAndSelect('student.brothers', 'brother')
+      .leftJoinAndMapMany('student.images', Image, 'image', 'image.student = student.id')
+      .leftJoinAndMapMany(
+        'student.responsibleStudents',
+        ResponsibleStudent,
+        'rStudent',
+        'rStudent.student = student.id',
+      )
+      .leftJoinAndMapOne('rStudent.responsible', Responsible, 'responsible', 'rStudent.responsible = responsible.id')
+      .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
+      .leftJoinAndSelect('sectionDetail.section', 'section')
+      .leftJoinAndSelect('sectionDetail.gradeDetail', 'gradeDetail')
+      .leftJoinAndSelect('gradeDetail.grade', 'grade')
+      .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoinAndSelect('cycleDetail.cycle', 'cycle')
+      .where(`student.id = ${id}`)
+      .getOne();
+
+    return student;
   }
 }
