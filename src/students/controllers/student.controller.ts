@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, Param, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PageDto } from '@core/dtos/page.dto';
 import { Auth } from '@auth/decorators/auth.decorator';
@@ -8,6 +8,8 @@ import { StudentService } from '@students/services/student.service';
 import { CreateStudentDto } from '@students/dtos/create-student.dto';
 import { StudentIdDto } from '@students/dtos/student-id.dto';
 import { StudentResponse } from '@students/docs/student-response.doc';
+import { UpdateStudentDto } from '@students/dtos/update-student.dto';
+import { UpdatedStudentResponse } from '@students/docs/updated-student-response.doc';
 
 @ApiTags('Students Endpoints')
 @Controller('students')
@@ -42,5 +44,18 @@ export class StudentController {
   @Get(':studentId')
   getStudent(@Param() studentIdDto: StudentIdDto): Promise<StudentResponse> {
     return this.studentService.getStudent(studentIdDto.studentId);
+  }
+
+  @Auth('update_student')
+  @ApiOperation({
+    summary: 'Actualizar un estudiante específico',
+    description: 'Use este endpoint para actualizar los datos de un estudiante específico',
+  })
+  @Put(':studentId')
+  updateStudent(
+    @Param() studentIdDto: StudentIdDto,
+    @Body() updateStudentDto: UpdateStudentDto,
+  ): Promise<UpdatedStudentResponse> {
+    return this.studentService.updateStudent(studentIdDto.studentId, updateStudentDto);
   }
 }

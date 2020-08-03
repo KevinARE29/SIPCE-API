@@ -8,6 +8,8 @@ import {
   ValidateNested,
   IsNotEmptyObject,
   IsOptional,
+  IsInt,
+  IsPositive,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -45,7 +47,8 @@ export class CreateStudentDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsId()
+  @IsInt({ message: validator.isInt })
+  @IsPositive({ message: validator.isPositive })
   registrationYear?: number;
 
   @ApiProperty({ type: ResponsibleDto })
