@@ -17,12 +17,17 @@ import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { Student } from '@students/docs/student.doc';
 import { StudentResponse } from '@students/docs/student-response.doc';
+import { UpdateStudentDto } from '@students/dtos/update-student.dto';
+import { ShiftRepository } from '@academics/repositories/shift.repository';
+import { UpdatedStudent } from '@students/docs/updated-student.doc';
+import { UpdatedStudentResponse } from '@students/docs/updated-student-response.doc';
 
 @Injectable()
 export class StudentService {
   constructor(
     private readonly studentRepository: StudentRepository,
     private readonly gradeRepository: GradeRepository,
+    private readonly shiftRepository: ShiftRepository,
     private readonly schoolYearRepository: SchoolYearRepository,
     private readonly responsibleRepository: ResponsibleRepository,
     private readonly responsibleStudentRepository: ResponsibleStudentRepository,
@@ -113,5 +118,52 @@ export class StudentService {
     };
 
     return { data: plainToClass(Student, mappedStudent, { excludeExtraneousValues: true }) };
+  }
+
+  async updateStudent(studentId: number, updateStudentDto: UpdateStudentDto): Promise<UpdatedStudentResponse> {
+    const { shiftId, gradeId, sectionId, startedGradeId, siblings, status, ...studentDto } = updateStudentDto;
+    const student = await this.studentRepository.findOne(studentId, { relations: ['sectionDetails'] });
+    if (!student) {
+      throw new NotFoundException(`Estudiante con id ${studentId} no encontrado`);
+    }
+    if (shiftId) {
+      student.currentShift = await this.shiftRepository.getShiftByIdOrThrow(shiftId);
+    }
+    if (startedGradeId) {
+      student.startedGrade = await this.gradeRepository.getGradeByIdOrThrow(startedGradeId);
+    }
+    if (siblings) {
+      student.siblings = await this.studentRepository.findByIds(siblings);
+    }
+    if (status) {
+      student.status = +EStudentStatus[status];
+    }
+
+    if (gradeId && sectionId) {
+      const [currentGrade, currentAssignation] = await Promise.all([
+        this.gradeRepository.getGradeByIdOrThrow(gradeId),
+        this.schoolYearRepository.getCurrentAssignation({
+          gradeId,
+          sectionId,
+          shiftId: student.currentShift.id,
+        }),
+      ]);
+
+      if (!currentAssignation) {
+        throw new BadRequestException('La asignación especificada no es válida para el año escolar activo');
+      }
+      const sectionDetail = currentAssignation.cycleDetails[0].gradeDetails[0].sectionDetails[0];
+      const mappedSectionDetails = student.sectionDetails.filter(sDetail => sDetail.id !== sectionDetail?.id);
+      student.sectionDetails = mappedSectionDetails;
+      await this.studentRepository.save({ ...student, currentGrade });
+      student.sectionDetails = [...mappedSectionDetails, sectionDetail];
+    }
+
+    const updatedStudent = await this.studentRepository.save({
+      ...student,
+      ...studentDto,
+    });
+
+    return { data: plainToClass(UpdatedStudent, updatedStudent, { excludeExtraneousValues: true }) };
   }
 }

@@ -1,5 +1,6 @@
 export enum EStudentStatus {
   'Aprobado' = 1,
+  'Cursando Año Escolar',
   'Desertor',
   'Egresado',
   'Expulsado',
@@ -7,8 +8,8 @@ export enum EStudentStatus {
   'Reprobado',
 }
 
-export const activeStatuses = [1, 5];
-export const inactiveStatuses = [2, 3, 4, 6];
+export const activeStatuses = [1, 2, 6];
+export const inactiveStatuses = [3, 4, 5, 7];
 
 export const statusValues = Object.values(EStudentStatus).filter(key => typeof key === 'number');
 export const statusKeys = Object.values(EStudentStatus).filter(key => typeof key === 'string');
