@@ -110,6 +110,10 @@ export class StudentService {
 
     const mappedStudent = {
       ...student,
+      siblings: student.siblings.map(sibling => ({
+        ...sibling,
+        status: EStudentStatus[sibling.status],
+      })),
       status: EStudentStatus[student.status],
       responsibleStudents: student.responsibleStudents.map(rStudent => ({
         ...rStudent,
