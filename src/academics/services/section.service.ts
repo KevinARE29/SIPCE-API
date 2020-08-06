@@ -15,6 +15,11 @@ export class SectionService {
   constructor(private readonly sectionRepository: SectionRepository) {}
 
   async getAllSections(pageDto: PageDto, sectionFilterDto: SectionFilterDto): Promise<SectionsResponse> {
+    if (sectionFilterDto.paginate === 'false') {
+      const [sections] = await this.sectionRepository.getAllSections(pageDto, sectionFilterDto);
+      return { data: plainToClass(Sections, sections, { excludeExtraneousValues: true }) };
+    }
+
     const [sections, count] = await this.sectionRepository.getAllSections(pageDto, sectionFilterDto);
     const pagination = getPagination(pageDto, count);
     return { data: plainToClass(Sections, sections, { excludeExtraneousValues: true }), pagination };
