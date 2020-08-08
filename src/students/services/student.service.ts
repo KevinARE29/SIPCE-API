@@ -125,49 +125,65 @@ export class StudentService {
   }
 
   async updateStudent(studentId: number, updateStudentDto: UpdateStudentDto): Promise<UpdatedStudentResponse> {
-    const { shiftId, gradeId, sectionId, startedGradeId, siblings, status, ...studentDto } = updateStudentDto;
-    const student = await this.studentRepository.findOne(studentId, { relations: ['sectionDetails'] });
-    if (!student) {
-      throw new NotFoundException(`Estudiante con id ${studentId} no encontrado`);
-    }
-    if (shiftId) {
-      student.currentShift = await this.shiftRepository.getShiftByIdOrThrow(shiftId);
-    }
-    if (startedGradeId) {
-      student.startedGrade = await this.gradeRepository.getGradeByIdOrThrow(startedGradeId);
-    }
-    if (siblings) {
-      student.siblings = await this.studentRepository.findByIds(siblings);
-    }
-    if (status) {
-      student.status = +EStudentStatus[status];
-    }
-
-    if (gradeId && sectionId) {
-      const [currentGrade, currentAssignation] = await Promise.all([
-        this.gradeRepository.getGradeByIdOrThrow(gradeId),
-        this.schoolYearRepository.getCurrentAssignation({
-          gradeId,
-          sectionId,
-          shiftId: student.currentShift.id,
-        }),
-      ]);
-
-      if (!currentAssignation) {
-        throw new BadRequestException('La asignación especificada no es válida para el año escolar activo');
+    const queryRunner = this.connection.createQueryRunner();
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      const { shiftId, gradeId, sectionId, startedGradeId, siblings, status, ...studentDto } = updateStudentDto;
+      const student = await this.studentRepository.findOne(studentId, { relations: ['sectionDetails'] });
+      if (!student) {
+        throw new NotFoundException(`Estudiante con id ${studentId} no encontrado`);
       }
-      const sectionDetail = currentAssignation.cycleDetails[0].gradeDetails[0].sectionDetails[0];
-      const mappedSectionDetails = student.sectionDetails.filter(sDetail => sDetail.id !== sectionDetail?.id);
-      student.sectionDetails = mappedSectionDetails;
-      await this.studentRepository.save({ ...student, currentGrade });
-      student.sectionDetails = [...mappedSectionDetails, sectionDetail];
+      if (shiftId) {
+        student.currentShift = await this.shiftRepository.getShiftByIdOrThrow(shiftId);
+      }
+      if (startedGradeId) {
+        student.startedGrade = await this.gradeRepository.getGradeByIdOrThrow(startedGradeId);
+      }
+      if (siblings) {
+        student.siblings = await this.studentRepository.findByIds(siblings);
+      }
+      if (status) {
+        student.status = +EStudentStatus[status];
+      }
+
+      // Updates Current Assignation and Current Grade
+      if (gradeId && sectionId) {
+        const [currentGrade, currentAssignation] = await Promise.all([
+          this.gradeRepository.getGradeByIdOrThrow(gradeId),
+          this.schoolYearRepository.getCurrentAssignation({
+            gradeId,
+            sectionId,
+            shiftId: student.currentShift.id,
+          }),
+        ]);
+
+        if (!currentAssignation) {
+          throw new BadRequestException('La asignación especificada no es válida para el año escolar activo');
+        }
+        const sectionDetail = currentAssignation.cycleDetails[0].gradeDetails[0].sectionDetails[0];
+        const mappedSectionDetails = student.sectionDetails.filter(sDetail => sDetail.id !== sectionDetail?.id);
+        student.sectionDetails = mappedSectionDetails;
+        await this.studentRepository.save({ ...student, currentGrade });
+        student.sectionDetails = [...mappedSectionDetails, sectionDetail];
+      }
+      // Updates currentGrade
+      else if (gradeId) {
+        const currentGrade = await this.gradeRepository.getGradeByIdOrThrow(gradeId);
+        student.currentGrade = currentGrade;
+      }
+
+      const updatedStudent = await this.studentRepository.save({
+        ...student,
+        ...studentDto,
+      });
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+      return { data: plainToClass(UpdatedStudent, updatedStudent, { excludeExtraneousValues: true }) };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
+      throw err;
     }
-
-    const updatedStudent = await this.studentRepository.save({
-      ...student,
-      ...studentDto,
-    });
-
-    return { data: plainToClass(UpdatedStudent, updatedStudent, { excludeExtraneousValues: true }) };
   }
 }
