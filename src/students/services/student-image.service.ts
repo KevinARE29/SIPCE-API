@@ -95,16 +95,20 @@ export class StudentImageService {
     return this.saveImageOnLocalFolder(filePath, imageFile);
   }
 
+  getImageBase64(imagePath: string): string {
+    const ext = imagePath.split('.').slice(-1)[0];
+    const imageAsBase64 = fs.readFileSync(imagePath, 'base64');
+    const image = `data:image/${ext};base64, ${imageAsBase64}`;
+    return image;
+  }
+
   getImage(imagePath: string): Image {
     const cloudinaryEnvs = this.configService.get<string>('CLOUDINARY_ENVS')?.split(',') || ['dev', 'uat'];
     const env = this.configService.get<string>('NODE_ENV') || 'dev';
     if (cloudinaryEnvs.includes(env)) {
       return { path: imagePath };
     }
-    const imageAsBase64 = fs.readFileSync(imagePath, 'base64');
-    return {
-      path: imageAsBase64,
-    };
+    return { path: this.getImageBase64(imagePath) };
   }
 
   async getStudentImages(studentId: number): Promise<Image[]> {
@@ -118,7 +122,7 @@ export class StudentImageService {
 
     return images.map(image => ({
       ...image,
-      path: fs.readFileSync(image.path, 'base64'),
+      path: this.getImageBase64(image.path),
     }));
   }
 }
