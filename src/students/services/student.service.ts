@@ -130,7 +130,7 @@ export class StudentService {
       await queryRunner.connect();
       await queryRunner.startTransaction();
       const { shiftId, gradeId, sectionId, startedGradeId, siblings, status, ...studentDto } = updateStudentDto;
-      const student = await this.studentRepository.findOne(studentId, { relations: ['sectionDetails'] });
+      const student = await this.studentRepository.findOne(studentId, { relations: ['sectionDetails', 'siblings'] });
       if (!student) {
         throw new NotFoundException(`Estudiante con id ${studentId} no encontrado`);
       }
@@ -140,8 +140,22 @@ export class StudentService {
       if (startedGradeId) {
         student.startedGrade = await this.gradeRepository.getGradeByIdOrThrow(startedGradeId);
       }
+      // Updates the entire siblings assignation
       if (siblings) {
-        student.siblings = await this.studentRepository.findByIds(siblings);
+        const currentSiblingsIds = student.siblings.map(currentSibling => currentSibling.id).join();
+        await this.studentRepository.query(
+          `DELETE FROM student_brother ` +
+            `WHERE student_id IN (${currentSiblingsIds})` +
+            `OR brother_id IN (${currentSiblingsIds})`,
+        );
+        const siblingsArray = [...(await this.studentRepository.findByIds(siblings)), student];
+        const students = siblingsArray.map(studentSibling => ({
+          ...studentSibling,
+          siblings: siblingsArray.filter(sibling => sibling.id !== studentSibling.id),
+        }));
+        await this.studentRepository.save(students);
+        // Updates the current siblings assignation to the updated one
+        student.siblings = students.find(updatedSibling => updatedSibling.id === student.id)?.siblings || [];
       }
       if (status) {
         student.status = +EStudentStatus[status];
