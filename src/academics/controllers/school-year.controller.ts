@@ -1,9 +1,10 @@
-import { Controller, UseGuards, Get } from '@nestjs/common';
+import { Controller, UseGuards, Get, Post, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { Auth } from '@auth/decorators/auth.decorator';
 import { SchoolYearService } from '@academics/services/school-year.service';
 import { SchoolYear } from '@academics/docs/school-year.doc';
+import { StartSchoolYearDto } from '@academics/dtos/start-school-year.dto';
 
 @ApiTags('School Year Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -19,5 +20,15 @@ export class SchoolYearController {
   @Get('')
   getCurrentAssignation(): Promise<SchoolYear> {
     return this.schoolYearService.getCurrentAssignation();
+  }
+
+  @Auth('manage_school_year')
+  @ApiOperation({
+    summary: 'Aperturar Año Escolar',
+    description: 'Use este endpoint para aperturar año escolar',
+  })
+  @Post('')
+  startSchoolYear(@Body() startSchoolYearDto: StartSchoolYearDto): Promise<SchoolYear> {
+    return this.schoolYearService.startSchoolYear(startSchoolYearDto);
   }
 }
