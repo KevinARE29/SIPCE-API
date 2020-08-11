@@ -5,6 +5,7 @@ import { Auth } from '@auth/decorators/auth.decorator';
 import { SchoolYearService } from '@academics/services/school-year.service';
 import { SchoolYear } from '@academics/docs/school-year.doc';
 import { StartSchoolYearDto } from '@academics/dtos/start-school-year.dto';
+import { SchoolYearResponse } from '@academics/docs/school-year-response.doc';
 
 @ApiTags('School Year Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -18,7 +19,7 @@ export class SchoolYearController {
     description: 'Use este endpoint para consultar la asignación actual del año escolar activo',
   })
   @Get('')
-  getCurrentAssignation(): Promise<SchoolYear> {
+  getCurrentAssignation(): Promise<SchoolYearResponse> {
     return this.schoolYearService.getCurrentAssignation();
   }
 

@@ -1,13 +1,11 @@
-/* eslint-disable no-multi-assign */
-/* eslint-disable no-param-reassign */
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
 import { SchoolYear } from '@academics/docs/school-year.doc';
 import { ESchoolYearStatus, activeSchoolYearStatus } from '@academics/constants/academic.constants';
-import { CycleDetail } from '@academics/docs/cycle-detail.doc';
 import { StartSchoolYearDto } from '@academics/dtos/start-school-year.dto';
 import { In } from 'typeorm';
+import { mapCycleDetails } from '@academics/utils/school-year.util';
+import { SchoolYearResponse } from '@academics/docs/school-year-response.doc';
 
 @Injectable()
 export class SchoolYearService {
@@ -27,39 +25,44 @@ export class SchoolYearService {
     };
   }
 
-  async getCurrentAssignation(): Promise<SchoolYear> {
+  async getCurrentAssignation(): Promise<SchoolYearResponse> {
     const currentAssignation = await this.schoolYearRepository.getCurrentAssignation({});
     if (!currentAssignation) {
       throw new NotFoundException('No se encontró año escolar activo');
     }
 
-    const mappedCycleDetails = currentAssignation.cycleDetails.reduce((result, item) => {
-      if (result[item.shift.id]) {
-        result[item.shift.id].push(
-          plainToClass(CycleDetail, item, {
-            excludeExtraneousValues: true,
-          }),
-        );
-      } else {
-        result[item.shift.id] = [
-          plainToClass(CycleDetail, item, {
-            excludeExtraneousValues: true,
-          }),
-        ];
-      }
-      return result;
-    }, {} as any);
+    const previousAssignation =
+      currentAssignation.status === 1
+        ? await this.schoolYearRepository.getCurrentAssignation({ status: 'Histórico' })
+        : undefined;
 
-    const mappedAssignation = {
+    const mappedCurrentCycleDetails = currentAssignation.cycleDetails.reduce(mapCycleDetails, {} as any);
+    const mappedPreviousCycleDetails = previousAssignation
+      ? previousAssignation.cycleDetails.reduce(mapCycleDetails, {} as any)
+      : undefined;
+
+    const mappedCurrentAssignation = {
       id: currentAssignation.id,
       year: currentAssignation.year,
       status: ESchoolYearStatus[currentAssignation.status],
-      cycleDetails: mappedCycleDetails,
+      cycleDetails: mappedCurrentCycleDetails,
       startDate: currentAssignation.startDate,
       endDate: currentAssignation.endDate,
       closeDate: currentAssignation.closeDate,
     };
 
-    return mappedAssignation;
+    const mappedPreviousAssignation = previousAssignation
+      ? {
+          id: previousAssignation.id,
+          year: previousAssignation.year,
+          status: ESchoolYearStatus[previousAssignation.status],
+          cycleDetails: mappedPreviousCycleDetails,
+          startDate: previousAssignation.startDate,
+          endDate: previousAssignation.endDate,
+          closeDate: previousAssignation.closeDate,
+        }
+      : undefined;
+
+    return { currentAssignation: mappedCurrentAssignation, previousAssignation: mappedPreviousAssignation };
   }
 }

@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { SchoolYear } from '@academics/entities/school-year.entity';
-import { activeSchoolYearStatus } from '@academics/constants/academic.constants';
+import { activeSchoolYearStatus, ESchoolYearStatus } from '@academics/constants/academic.constants';
 import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
@@ -9,7 +9,7 @@ import { CurrentAssignationDto } from '@academics/dtos/current-assignation.dto';
 @EntityRepository(SchoolYear)
 export class SchoolYearRepository extends Repository<SchoolYear> {
   getCurrentAssignation(currentAssignationDto: CurrentAssignationDto): Promise<SchoolYear | undefined> {
-    const { shiftId, cycleId, gradeId, sectionId } = currentAssignationDto;
+    const { shiftId, cycleId, gradeId, sectionId, status } = currentAssignationDto;
     const query = this.createQueryBuilder('schoolYear')
       .leftJoinAndMapMany(
         'schoolYear.cycleDetails',
@@ -35,10 +35,8 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
         'sectionDetail.gradeDetail = gradeDetail.id',
       )
       .leftJoinAndSelect('sectionDetail.section', 'section')
-      .leftJoinAndSelect('sectionDetail.teacher', 'teacher')
-      .andWhere(`"schoolYear"."status" IN (:...activeSchoolYearStatus)`, {
-        activeSchoolYearStatus: [null, ...activeSchoolYearStatus],
-      });
+      .leftJoinAndSelect('sectionDetail.teacher', 'teacher');
+
     if (shiftId) {
       query.andWhere(`"shift"."id" = ${shiftId}`);
     }
@@ -51,6 +49,14 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
     if (sectionId) {
       query.andWhere(`"section"."id" = ${sectionId}`);
     }
+    if (status) {
+      query.andWhere(`"schoolYear"."status" = '${ESchoolYearStatus[status]}'`);
+    } else {
+      query.andWhere(`"schoolYear"."status" IN (:...activeSchoolYearStatus)`, {
+        activeSchoolYearStatus: [null, ...activeSchoolYearStatus],
+      });
+    }
+    query.orderBy(`"schoolYear"."id"`, 'DESC');
     return query.getOne();
   }
 }
