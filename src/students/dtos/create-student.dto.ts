@@ -31,7 +31,7 @@ export class CreateStudentDto {
   @IsEmail({}, { message: validator.isEmail })
   email!: string;
 
-  @IsDateString()
+  @IsDateString({ message: validator.isDateString })
   birthdate!: Date;
 
   @IsId()
