@@ -32,7 +32,7 @@ export class CycleDetail {
   @ManyToOne(
     () => Cycle,
     cycle => cycle.cycleDetails,
-    { nullable: false },
+    { nullable: false, eager: true },
   )
   @JoinColumn({ name: 'cycle_id' })
   cycle!: Cycle;
@@ -40,7 +40,7 @@ export class CycleDetail {
   @ManyToOne(
     () => Shift,
     shift => shift.cycleDetails,
-    { nullable: false },
+    { nullable: false, eager: true },
   )
   @JoinColumn({ name: 'shift_id' })
   shift!: Shift;
@@ -56,7 +56,7 @@ export class CycleDetail {
   @ManyToOne(
     () => User,
     user => user.cycleDetails,
-    { nullable: true },
+    { nullable: true, eager: true },
   )
   @JoinColumn({ name: 'cycle_coordinator_id' })
   cycleCoordinator!: User;
@@ -64,6 +64,7 @@ export class CycleDetail {
   @OneToMany(
     () => GradeDetail,
     gradeDetail => gradeDetail.cycleDetail,
+    { eager: true },
   )
   gradeDetails!: GradeDetail[];
 }

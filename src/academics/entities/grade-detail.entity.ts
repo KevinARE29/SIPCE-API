@@ -29,7 +29,7 @@ export class GradeDetail {
   @ManyToOne(
     () => Grade,
     grade => grade.gradeDetails,
-    { nullable: false },
+    { nullable: false, eager: true },
   )
   @JoinColumn({ name: 'grade_id' })
   grade!: Grade;
@@ -45,7 +45,7 @@ export class GradeDetail {
   @ManyToOne(
     () => User,
     user => user.gradeDetails,
-    { nullable: true },
+    { nullable: true, eager: true },
   )
   @JoinColumn({ name: 'counselor_id' })
   counselor!: User;
@@ -53,6 +53,7 @@ export class GradeDetail {
   @OneToMany(
     () => SectionDetail,
     sectionDetail => sectionDetail.gradeDetail,
+    { eager: true },
   )
   sectionDetails!: SectionDetail[];
 }
