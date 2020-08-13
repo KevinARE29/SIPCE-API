@@ -4,8 +4,9 @@ import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { Auth } from '@auth/decorators/auth.decorator';
 import { SchoolYearService } from '@academics/services/school-year.service';
 import { SchoolYear } from '@academics/docs/school-year.doc';
-import { StartSchoolYearDto } from '@academics/dtos/start-school-year.dto';
+import { StartSchoolYearDto } from '@academics/dtos/school-year/start-school-year.dto';
 import { SchoolYearResponse } from '@academics/docs/school-year-response.doc';
+import { AssignAcademicCataloguesDto } from '@academics/dtos/school-year/assign-academic-catalogues.dto';
 
 @ApiTags('School Year Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -31,5 +32,17 @@ export class SchoolYearController {
   @Post('')
   startSchoolYear(@Body() startSchoolYearDto: StartSchoolYearDto): Promise<SchoolYear> {
     return this.schoolYearService.startSchoolYear(startSchoolYearDto);
+  }
+
+  @Auth('manage_school_year')
+  @ApiOperation({
+    summary: 'Asignar catálogos académicos',
+    description: 'Use este endpoint para asignar ciclos, grados y secciones por turnos',
+  })
+  @Post('academic-catalogues')
+  assignAcademicCatalogues(
+    @Body() assignAcademicCataloguesDto: AssignAcademicCataloguesDto,
+  ): Promise<SchoolYearResponse> {
+    return this.schoolYearService.assignAcademicCatalogues(assignAcademicCataloguesDto);
   }
 }
