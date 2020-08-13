@@ -29,7 +29,7 @@ export class SectionDetail {
   @ManyToOne(
     () => Section,
     section => section.sectionDetails,
-    { nullable: false },
+    { nullable: false, eager: true },
   )
   @JoinColumn({ name: 'section_id' })
   section!: Section;
@@ -45,7 +45,7 @@ export class SectionDetail {
   @ManyToOne(
     () => User,
     user => user.sectionDetails,
-    { nullable: false },
+    { nullable: true, eager: true },
   )
   @JoinColumn({ name: 'teacher_id' })
   teacher!: User;
