@@ -4,7 +4,7 @@ import { activeSchoolYearStatus, ESchoolYearStatus } from '@academics/constants/
 import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
-import { CurrentAssignationDto } from '@academics/dtos/current-assignation.dto';
+import { CurrentAssignationDto } from '@academics/dtos/school-year/current-assignation.dto';
 
 @EntityRepository(SchoolYear)
 export class SchoolYearRepository extends Repository<SchoolYear> {

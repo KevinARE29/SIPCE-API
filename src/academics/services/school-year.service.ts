@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, UnprocessableEntityException } from '@ne
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
 import { SchoolYear } from '@academics/docs/school-year.doc';
 import { ESchoolYearStatus, activeSchoolYearStatus } from '@academics/constants/academic.constants';
-import { StartSchoolYearDto } from '@academics/dtos/start-school-year.dto';
+import { StartSchoolYearDto } from '@academics/dtos/school-year/start-school-year.dto';
 import { In } from 'typeorm';
 import { mapCycleDetails } from '@academics/utils/school-year.util';
 import { SchoolYearResponse } from '@academics/docs/school-year-response.doc';
