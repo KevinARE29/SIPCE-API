@@ -37,7 +37,7 @@ export class SectionDetail {
   @ManyToOne(
     () => GradeDetail,
     gradeDetail => gradeDetail.sectionDetails,
-    { nullable: false },
+    { nullable: true },
   )
   @JoinColumn({ name: 'grade_detail_id' })
   gradeDetail!: GradeDetail;

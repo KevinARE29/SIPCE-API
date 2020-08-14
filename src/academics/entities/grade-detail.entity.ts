@@ -37,7 +37,7 @@ export class GradeDetail {
   @ManyToOne(
     () => CycleDetail,
     cycleDetail => cycleDetail.gradeDetails,
-    { nullable: false },
+    { nullable: true },
   )
   @JoinColumn({ name: 'cycle_detail_id' })
   cycleDetail!: CycleDetail;
