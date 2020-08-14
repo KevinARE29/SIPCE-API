@@ -40,9 +40,7 @@ export class SchoolYearController {
     description: 'Use este endpoint para asignar ciclos, grados y secciones por turnos',
   })
   @Post('academic-catalogues')
-  assignAcademicCatalogues(
-    @Body() assignAcademicCataloguesDto: AssignAcademicCataloguesDto,
-  ): Promise<SchoolYearResponse> {
+  assignAcademicCatalogues(@Body() assignAcademicCataloguesDto: AssignAcademicCataloguesDto): Promise<void> {
     return this.schoolYearService.assignAcademicCatalogues(assignAcademicCataloguesDto);
   }
 }
