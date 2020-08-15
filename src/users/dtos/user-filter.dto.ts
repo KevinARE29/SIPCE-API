@@ -51,4 +51,8 @@ export class UserFilterDto {
   @IsOptional()
   @IsDateString({ message: validator.isDateString })
   createdAtEnd?: Date;
+
+  @IsOptional()
+  @IsIn(['false'], { message: validator.isIn })
+  paginate?: string;
 }
