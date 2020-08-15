@@ -8,5 +8,5 @@ export class UsersResponse implements IApiResponse<User[]> {
   data!: User[];
 
   @ApiProperty()
-  pagination!: Pagination;
+  pagination?: Pagination;
 }

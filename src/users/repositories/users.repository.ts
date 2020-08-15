@@ -40,12 +40,22 @@ export class UserRepository extends Repository<User> {
       role,
       createdAtStart,
       createdAtEnd,
+      paginate,
     } = userFilterDto;
     const query = this.createQueryBuilder('user')
       .leftJoinAndSelect('user.roles', 'role')
-      .andWhere('user.deletedAt is null')
-      .take(perPage)
-      .skip((page - 1) * perPage);
+      .andWhere('user.deletedAt is null');
+
+    if (paginate === 'false') {
+      query.orderBy({ 'user.firstname': 'ASC' });
+      query.addOrderBy('user.lastname', 'ASC');
+      if (role) {
+        query.andWhere(`role.id = ${role}`);
+      }
+      return query.getManyAndCount();
+    }
+    query.take(perPage);
+    query.skip((page - 1) * perPage);
 
     if (sort) {
       const order = getOrderBy(sort, sortOptionsMap);

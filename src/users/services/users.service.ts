@@ -73,6 +73,10 @@ export class UsersService {
   }
 
   async getAllUsers(pageDto: PageDto, userFilterDto: UserFilterDto): Promise<UsersResponse> {
+    if (userFilterDto.paginate === 'false') {
+      const [users] = await this.userRepository.getAllUsers(pageDto, userFilterDto);
+      return { data: plainToClass(UserDoc, users, { excludeExtraneousValues: true }) };
+    }
     const [users, count] = await this.userRepository.getAllUsers(pageDto, userFilterDto);
     const pagination = getPagination(pageDto, count);
     return { data: plainToClass(UserDoc, users, { excludeExtraneousValues: true }), pagination };
