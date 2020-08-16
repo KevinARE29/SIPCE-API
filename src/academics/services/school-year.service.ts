@@ -19,6 +19,8 @@ import { SectionDetailRepository } from '@academics/repositories/section-detail.
 import { SectionRepository } from '@academics/repositories/section.repository';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { CycleDetail } from '@academics/entities/cycle-detail.entity';
+import { AssignCycleCoordinatorsDto } from '@academics/dtos/school-year/assign-cycle-coordinators.dto';
+import { UserRepository } from '@users/repositories/users.repository';
 
 @Injectable()
 export class SchoolYearService {
@@ -31,6 +33,7 @@ export class SchoolYearService {
     private readonly gradeRepository: GradeRepository,
     private readonly sectionDetailRepository: SectionDetailRepository,
     private readonly sectionRepository: SectionRepository,
+    private readonly userRepository: UserRepository,
     private connection: Connection,
   ) {}
 
@@ -161,6 +164,64 @@ export class SchoolYearService {
           updatedCycleDetails.push(cycleDetail);
         }
       }
+      await this.cycleDetailRepository.save(updatedCycleDetails);
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
+      throw err;
+    }
+  }
+
+  async assignCycleCoordinators(assignCycleCoordinatorsDto: AssignCycleCoordinatorsDto): Promise<void> {
+    const queryRunner = this.connection.createQueryRunner();
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      const currentAssignation = await this.schoolYearRepository.getCurrentAssignation({});
+      if (!currentAssignation) {
+        throw new NotFoundException('No se encontró año escolar en proceso de apertura');
+      }
+
+      const updatedCycleDetails: CycleDetail[] = [];
+      for (const [shiftIndex, shiftAssignation] of assignCycleCoordinatorsDto.shifts.entries()) {
+        const shift = await this.shiftRepository.findById(shiftAssignation.shiftId);
+        if (!shift) {
+          throw new BadRequestException(`${shiftIndex}.shiftId: El turno seleccionado no existe o no está activo`);
+        }
+
+        const cycleIds = shiftAssignation.cycles.map(cycle => cycle.cycleId);
+        const cycles = await this.cycleRepository.findByIds(cycleIds);
+        if (cycleIds.length !== cycles.length) {
+          throw new BadRequestException(`${shiftIndex}.cycles: Ciclos especificados no son válidos`);
+        }
+        const cycleDetails = await this.cycleDetailRepository.findOrCreateCycleDetails(
+          currentAssignation,
+          shift,
+          cycleIds,
+        );
+
+        for (const [cycleIndex, cycleAssignation] of shiftAssignation.cycles.entries()) {
+          const cycleDetail = cycleDetails.find(cDetail => cDetail.cycle.id === cycleAssignation.cycleId);
+          if (!cycleDetail) {
+            throw new UnprocessableEntityException('Error al asignar los detalles de ciclo');
+          }
+
+          const cycleCoordinator = await this.userRepository.findOne(cycleAssignation.cycleCoordinatorId, {
+            relations: ['roles'],
+          });
+
+          if (!cycleCoordinator || !cycleCoordinator.roles.find(role => role.name === 'Coordinador de Ciclo')) {
+            throw new BadRequestException(
+              `${shiftIndex}.${cycleIndex}.cycleCoordinatorId: Coordinador de ciclo especificado no válido. Asegúrese que el usuario cuente con el rol 'Coordinador de Ciclo'`,
+            );
+          }
+          cycleDetail.cycleCoordinator = cycleCoordinator;
+          updatedCycleDetails.push(cycleDetail);
+        }
+      }
+
       await this.cycleDetailRepository.save(updatedCycleDetails);
       await queryRunner.commitTransaction();
       await queryRunner.release();
