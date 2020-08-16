@@ -16,7 +16,7 @@ import { Shift } from './shift.entity';
 import { GradeDetail } from './grade-detail.entity';
 import { SchoolYear } from './school-year.entity';
 
-@Unique(['shift', 'cycleCoordinator'])
+@Unique(['shift', 'cycleCoordinator', 'schoolYear'])
 @Entity()
 export class CycleDetail {
   @ApiProperty()
