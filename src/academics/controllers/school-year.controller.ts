@@ -8,6 +8,7 @@ import { StartSchoolYearDto } from '@academics/dtos/school-year/start-school-yea
 import { SchoolYearResponse } from '@academics/docs/school-year-response.doc';
 import { AssignAcademicCataloguesDto } from '@academics/dtos/school-year/assign-academic-catalogues.dto';
 import { AssignCycleCoordinatorsDto } from '@academics/dtos/school-year/assign-cycle-coordinators.dto';
+import { AssignCounselorsDto } from '@academics/dtos/school-year/assign-counselors.dto';
 
 @ApiTags('School Year Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -55,5 +56,16 @@ export class SchoolYearController {
   @Post('cycle-coordinators')
   assignCycleCoordinators(@Body() assignCycleCoordinatorsDto: AssignCycleCoordinatorsDto): Promise<void> {
     return this.schoolYearService.assignCycleCoordinators(assignCycleCoordinatorsDto);
+  }
+
+  @Auth('manage_school_year')
+  @ApiOperation({
+    summary: 'Asignar orientadores de grado',
+    description: 'Use este endpoint para asignar orientadores de grado',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post('counselors')
+  async assignCounselors(@Body() assignCounselorsDto: AssignCounselorsDto): Promise<void> {
+    return this.schoolYearService.assignCounselors(assignCounselorsDto);
   }
 }

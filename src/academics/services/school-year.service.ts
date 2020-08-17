@@ -21,6 +21,7 @@ import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { AssignCycleCoordinatorsDto } from '@academics/dtos/school-year/assign-cycle-coordinators.dto';
 import { UserRepository } from '@users/repositories/users.repository';
+import { AssignCounselorsDto } from '@academics/dtos/school-year/assign-counselors.dto';
 
 @Injectable()
 export class SchoolYearService {
@@ -229,6 +230,40 @@ export class SchoolYearService {
       await queryRunner.rollbackTransaction();
       await queryRunner.release();
       throw err;
+    }
+  }
+
+  async assignCounselors(assignCounselorsDto: AssignCounselorsDto): Promise<void> {
+    const currentAssignation = await this.schoolYearRepository.getCurrentAssignation({});
+    if (!currentAssignation) {
+      throw new NotFoundException('No se encontró año escolar en proceso de apertura');
+    }
+
+    for (const [shiftIndex, shiftAssignation] of assignCounselorsDto.shifts.entries()) {
+      const shift = await this.shiftRepository.findById(shiftAssignation.shiftId);
+      if (!shift) {
+        throw new BadRequestException(`${shiftIndex}.shiftId: El turno seleccionado no existe o no está activo`);
+      }
+
+      for (const [counselorIndex, counselorAssignation] of shiftAssignation.counselors.entries()) {
+        const { counselorId, gradeIds } = counselorAssignation;
+        const counselor = await this.userRepository.findOne(counselorId, {
+          relations: ['roles'],
+        });
+        if (!counselor || !counselor.roles.find(role => role.name === 'Orientador')) {
+          throw new BadRequestException(
+            `${shiftIndex}.counselors.${counselorIndex}.counselorId: Orientador especificado no válido. Asegúrese que el usuario cuente con el rol 'Orientador'`,
+          );
+        }
+
+        const gradeDetails = await this.gradeDetailRepository.findByGradeIds(shift.id, gradeIds);
+        if (gradeIds.length !== gradeDetails.length) {
+          throw new BadRequestException(
+            `${shiftIndex}.counselors.${counselorIndex}.gradeIds: Grados especificados no son válidos`,
+          );
+        }
+        await this.gradeDetailRepository.save(gradeDetails.map(gDetail => ({ ...gDetail, counselor })));
+      }
     }
   }
 }
