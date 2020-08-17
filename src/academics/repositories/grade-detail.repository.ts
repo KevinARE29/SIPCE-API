@@ -1,8 +1,8 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
-import { SchoolYear } from '@academics/entities/school-year.entity';
 import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { Grade } from '@academics/entities/grade.entity';
+import { activeSchoolYearStatus } from '@academics/constants/academic.constants';
 
 @EntityRepository(GradeDetail)
 export class GradeDetailRepository extends Repository<GradeDetail> {
@@ -42,5 +42,19 @@ export class GradeDetailRepository extends Repository<GradeDetail> {
     });
     const newGradeDetails = await this.save(missingGradeDetails);
     return [...existingGradeDetails, ...newGradeDetails];
+  }
+
+  findByGradeIds(shiftId: number, gradeIds: number[]): Promise<GradeDetail[]> {
+    return this.createQueryBuilder('gradeDetail')
+      .leftJoin('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoin('cycleDetail.schoolYear', 'schoolYear')
+      .leftJoin('cycleDetail.shift', 'shift')
+      .leftJoin('gradeDetail.grade', 'grade')
+      .where(`"shift"."id" = ${shiftId}`)
+      .andWhere('grade.id IN (:...gradeIds)', { gradeIds: [null, ...gradeIds] })
+      .andWhere(`"schoolYear"."status" IN (:...activeSchoolYearStatus)`, {
+        activeSchoolYearStatus: [null, ...activeSchoolYearStatus],
+      })
+      .getMany();
   }
 }
