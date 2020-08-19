@@ -22,6 +22,7 @@ import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { AssignCycleCoordinatorsDto } from '@academics/dtos/school-year/assign-cycle-coordinators.dto';
 import { UserRepository } from '@users/repositories/users.repository';
 import { AssignCounselorsDto } from '@academics/dtos/school-year/assign-counselors.dto';
+import { AssignTeachersDto } from '@academics/dtos/school-year/assign-teachers.dto';
 
 @Injectable()
 export class SchoolYearService {
@@ -153,7 +154,6 @@ export class SchoolYearService {
               );
             }
             const sectionDetails = await this.sectionDetailRepository.findOrCreateSectionDetails(
-              gradeDetails,
               gradeDetail,
               gradeAssignation.sections,
             );
@@ -263,6 +263,50 @@ export class SchoolYearService {
           );
         }
         await this.gradeDetailRepository.save(gradeDetails.map(gDetail => ({ ...gDetail, counselor })));
+      }
+    }
+  }
+
+  async assignTeachers(assignTeachersDto: AssignTeachersDto): Promise<void> {
+    const currentAssignation = await this.schoolYearRepository.getCurrentAssignation({});
+    if (!currentAssignation) {
+      throw new NotFoundException('No se encontró año escolar en proceso de apertura');
+    }
+
+    for (const [shiftIndex, shiftAssignation] of assignTeachersDto.shifts.entries()) {
+      const shift = await this.shiftRepository.findById(shiftAssignation.shiftId);
+      if (!shift) {
+        throw new BadRequestException(`${shiftIndex}.shiftId: El turno seleccionado no existe o no está activo`);
+      }
+
+      for (const [gradeIndex, gradeAssignation] of shiftAssignation.grades.entries()) {
+        const { sections, gradeId } = gradeAssignation;
+        const grade = await this.gradeRepository.findOne(gradeId);
+        if (!grade || !grade.active) {
+          throw new BadRequestException(
+            `${shiftIndex}.grades.${gradeIndex}.gradeId: El grado seleccionado no existe o no está activo`,
+          );
+        }
+
+        for (const [sectionIndex, sectionAssignation] of sections.entries()) {
+          const { teacherId, sectionId } = sectionAssignation;
+          const teacher = await this.userRepository.findOne(teacherId, {
+            relations: ['roles'],
+          });
+          if (!teacher || !teacher.roles.find(role => role.name === 'Docente')) {
+            throw new BadRequestException(
+              `${shiftIndex}.grades.${gradeIndex}.sections.${sectionIndex}.teacherId: Docente especificado no válido. Asegúrese que el usuario cuente con el rol 'Docente'`,
+            );
+          }
+
+          const sectionDetail = await this.sectionDetailRepository.findSectionDetail(shift.id, gradeId, sectionId);
+          if (!sectionDetail) {
+            throw new BadRequestException(
+              `${shiftIndex}.grades.${gradeIndex}.sections.${sectionIndex}.sectionId: Error al asignar sección`,
+            );
+          }
+          await this.sectionDetailRepository.save({ ...sectionDetail, teacher });
+        }
       }
     }
   }
