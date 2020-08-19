@@ -34,7 +34,7 @@ async function bootstrap() {
   const logService = app.get(LogService);
   app.useGlobalFilters(new AllExceptionsFilter(logService));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, validationError: { target: false } }));
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)), new ActionLogInterceptor(logService));
+  // app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)), new ActionLogInterceptor(logService));
   app.setGlobalPrefix(apiPrefix);
 
   const options = new DocumentBuilder()
