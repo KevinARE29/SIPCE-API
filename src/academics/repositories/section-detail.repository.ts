@@ -2,6 +2,7 @@ import { EntityRepository, Repository, In } from 'typeorm';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { Section } from '@academics/entities/section.entity';
+import { activeSchoolYearStatus } from '@academics/constants/academic.constants';
 
 @EntityRepository(SectionDetail)
 export class SectionDetailRepository extends Repository<SectionDetail> {
@@ -14,7 +15,6 @@ export class SectionDetailRepository extends Repository<SectionDetail> {
   }
 
   async findOrCreateSectionDetails(
-    gradeDetails: GradeDetail[],
     gradeDetail: GradeDetail | undefined,
     sectionIds: number[],
   ): Promise<SectionDetail[]> {
@@ -39,5 +39,22 @@ export class SectionDetailRepository extends Repository<SectionDetail> {
     });
     const newSectionDetails = await this.save(missingSectionDetails);
     return [...existingSectionDetails, ...newSectionDetails];
+  }
+
+  findSectionDetail(shiftId: number, gradeId: number, sectionId: number): Promise<SectionDetail | undefined> {
+    return this.createQueryBuilder('sectionDetail')
+      .leftJoinAndSelect('sectionDetail.section', 'section')
+      .leftJoin('sectionDetail.gradeDetail', 'gradeDetail')
+      .leftJoin('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoin('cycleDetail.schoolYear', 'schoolYear')
+      .leftJoin('cycleDetail.shift', 'shift')
+      .leftJoin('gradeDetail.grade', 'grade')
+      .where(`"shift"."id" = ${shiftId}`)
+      .andWhere(`"grade"."id" = ${gradeId}`)
+      .andWhere(`"section"."id" = ${sectionId}`)
+      .andWhere(`"schoolYear"."status" IN (:...activeSchoolYearStatus)`, {
+        activeSchoolYearStatus: [null, ...activeSchoolYearStatus],
+      })
+      .getOne();
   }
 }
