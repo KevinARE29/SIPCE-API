@@ -37,7 +37,7 @@ export class GradeDetail {
   @ManyToOne(
     () => CycleDetail,
     cycleDetail => cycleDetail.gradeDetails,
-    { nullable: true },
+    { nullable: true, onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'cycle_detail_id' })
   cycleDetail!: CycleDetail;
