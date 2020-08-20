@@ -117,11 +117,13 @@ export class SchoolYearService {
         if (cycleIds.length !== cycles.length) {
           throw new BadRequestException(`${shiftIndex}.cycles: Ciclos especificados no son válidos`);
         }
-        const cycleDetails = await this.cycleDetailRepository.findOrCreateCycleDetails(
-          currentAssignation,
-          shift,
-          cycleIds,
-        );
+        const cycleDetails = shiftAssignation.cycles.length
+          ? await this.cycleDetailRepository.findOrCreateCycleDetails(currentAssignation, shift, cycleIds)
+          : [];
+
+        if (!cycleDetails.length) {
+          await this.cycleDetailRepository.delete({ schoolYear: currentAssignation, shift });
+        }
 
         for (const [cycleIndex, cycleAssignation] of shiftAssignation.cycles.entries()) {
           const cycleDetail = cycleDetails.find(cDetail => cDetail.cycle.id === cycleAssignation.cycleId);
@@ -135,11 +137,9 @@ export class SchoolYearService {
               `${shiftIndex}.cycles.${cycleIndex}.grades: Grados especificados no son válidos`,
             );
           }
-          const gradeDetails = await this.gradeDetailRepository.findOrCreateGradeDetails(
-            cycleDetails,
-            cycleDetail,
-            gradeIds,
-          );
+          const gradeDetails = cycleAssignation.grades.length
+            ? await this.gradeDetailRepository.findOrCreateGradeDetails(cycleDetails, cycleDetail, gradeIds)
+            : [];
 
           const updatedGradeDetails: GradeDetail[] = [];
           for (const [gradeIndex, gradeAssignation] of cycleAssignation.grades.entries()) {
@@ -153,10 +153,9 @@ export class SchoolYearService {
                 `${shiftIndex}.cycles.${cycleIndex}.grades.${gradeIndex}.sections: Secciones especificadas no son válidas`,
               );
             }
-            const sectionDetails = await this.sectionDetailRepository.findOrCreateSectionDetails(
-              gradeDetail,
-              gradeAssignation.sections,
-            );
+            const sectionDetails = gradeAssignation.sections.length
+              ? await this.sectionDetailRepository.findOrCreateSectionDetails(gradeDetail, gradeAssignation.sections)
+              : [];
             gradeDetail.sectionDetails = sectionDetails;
             updatedGradeDetails.push({ ...gradeDetail, cycleDetail: { id: cycleDetail.id } as CycleDetail });
           }
