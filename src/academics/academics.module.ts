@@ -21,6 +21,8 @@ import { ShiftController } from './controllers/shift.controller';
 import { SchoolYearRepository } from './repositories/school-year.repository';
 import { SchoolYearController } from './controllers/school-year.controller';
 import { SchoolYearService } from './services/school-year.service';
+import { CloseSchoolYearController } from './controllers/close-school-year.controller';
+import { CloseSchoolYearService } from './services/close-school-year.service';
 
 @Module({
   imports: [
@@ -43,8 +45,17 @@ import { SchoolYearService } from './services/school-year.service';
     PeriodController,
     ShiftController,
     SchoolYearController,
+    CloseSchoolYearController,
   ],
-  providers: [SectionService, CycleService, GradeService, PeriodService, ShiftService, SchoolYearService],
+  providers: [
+    SectionService,
+    CycleService,
+    GradeService,
+    PeriodService,
+    ShiftService,
+    SchoolYearService,
+    CloseSchoolYearService,
+  ],
   exports: [TypeOrmModule],
 })
 export class AcademicsModule {}
