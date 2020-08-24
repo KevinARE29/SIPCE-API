@@ -47,6 +47,7 @@ export class UserRepository extends Repository<User> {
       .andWhere('user.deletedAt is null');
 
     if (paginate === 'false') {
+      query.andWhere(`user.active is true`);
       query.orderBy({ 'user.firstname': 'ASC' });
       query.addOrderBy('user.lastname', 'ASC');
       if (role) {
