@@ -54,10 +54,7 @@ export class SchoolYearService {
   }
 
   async getCurrentAssignation(): Promise<SchoolYearResponse> {
-    const currentAssignation = await this.schoolYearRepository.getCurrentAssignation({});
-    if (!currentAssignation) {
-      throw new NotFoundException('No se encontró año escolar activo');
-    }
+    const currentAssignation = await this.schoolYearRepository.getCurrentAssignationOrThrow({});
 
     const previousAssignation =
       currentAssignation.status === 1

@@ -5,6 +5,7 @@ import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { CurrentAssignationDto } from '@academics/dtos/school-year/current-assignation.dto';
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(SchoolYear)
 export class SchoolYearRepository extends Repository<SchoolYear> {
@@ -58,5 +59,13 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
     }
     query.orderBy(`"schoolYear"."id"`, 'DESC');
     return query.getOne();
+  }
+
+  async getCurrentAssignationOrThrow(currentAssignationDto: CurrentAssignationDto): Promise<SchoolYear> {
+    const currentAssignation = await this.getCurrentAssignation(currentAssignationDto);
+    if (!currentAssignation) {
+      throw new NotFoundException('No se encontró año escolar activo');
+    }
+    return currentAssignation;
   }
 }
