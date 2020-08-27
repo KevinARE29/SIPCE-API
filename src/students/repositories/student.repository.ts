@@ -7,6 +7,9 @@ import { NotFoundException } from '@nestjs/common';
 import { Image } from '@students/entities/image.entity';
 import { ResponsibleStudent } from '@students/entities/responsible-student.entity';
 import { Responsible } from '@students/entities/responsible.entity';
+import { SchoolYear } from '@academics/entities/school-year.entity';
+import { Shift } from '@academics/entities/shift.entity';
+import { Grade } from '@academics/entities/grade.entity';
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> {
@@ -31,6 +34,7 @@ export class StudentRepository extends Repository<Student> {
     const { sort, code, firstname, lastname, email, currentGrade, status, active } = studentFilterDto;
     const query = this.createQueryBuilder('student')
       .leftJoinAndSelect('student.currentGrade', 'currentGrade')
+      .andWhere('student.deletedAt is null')
       .take(perPage)
       .skip((page - 1) * perPage);
 
@@ -96,8 +100,30 @@ export class StudentRepository extends Repository<Student> {
       .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
       .leftJoinAndSelect('cycleDetail.cycle', 'cycle')
       .where(`student.id = ${id}`)
+      .andWhere('student.deletedAt is null')
       .getOne();
 
     return student;
+  }
+
+  getStudentsAssignation(
+    { id: currentShiftId }: Shift,
+    { id: currentGradeId }: Grade,
+    currentAssignation: SchoolYear,
+  ): Promise<Student[]> {
+    return this.createQueryBuilder('student')
+      .leftJoin('student.currentShift', 'currentShift')
+      .leftJoin('student.currentGrade', 'currentGrade')
+      .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
+      .leftJoinAndSelect('sectionDetail.teacher', 'teacher')
+      .leftJoin('sectionDetail.gradeDetail', 'gradeDetail')
+      .leftJoin('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoin('cycleDetail.schoolYear', 'schoolYear')
+      .andWhere(`"currentShift"."id" = ${currentShiftId}`)
+      .andWhere(`"currentGrade"."id" = ${currentGradeId}`)
+      .andWhere(`"student"."status" = '${EStudentStatus['Cursando Año Escolar']}'`)
+      .andWhere(`("sectionDetail"."id" is null OR "schoolYear"."id" = ${currentAssignation.id})`)
+      .andWhere('student.deletedAt is null')
+      .getMany();
   }
 }

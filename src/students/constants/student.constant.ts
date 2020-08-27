@@ -10,6 +10,7 @@ export enum EStudentStatus {
 
 export const activeStatuses = [1, 2, 6];
 export const inactiveStatuses = [3, 4, 5, 7];
+export const nextYearStatuses = `'1', '6'`;
 
 export const statusValues = Object.values(EStudentStatus).filter(key => typeof key === 'number');
 export const statusKeys = Object.values(EStudentStatus).filter(key => typeof key === 'string');

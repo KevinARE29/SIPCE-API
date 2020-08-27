@@ -5,11 +5,12 @@ import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { CurrentAssignationDto } from '@academics/dtos/school-year/current-assignation.dto';
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(SchoolYear)
 export class SchoolYearRepository extends Repository<SchoolYear> {
   getCurrentAssignation(currentAssignationDto: CurrentAssignationDto): Promise<SchoolYear | undefined> {
-    const { shiftId, cycleId, gradeId, sectionId, status } = currentAssignationDto;
+    const { shiftId, cycleId, gradeId, sectionId, teacherId, status } = currentAssignationDto;
     const query = this.createQueryBuilder('schoolYear')
       .leftJoinAndMapMany(
         'schoolYear.cycleDetails',
@@ -49,6 +50,9 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
     if (sectionId) {
       query.andWhere(`"section"."id" = ${sectionId}`);
     }
+    if (teacherId) {
+      query.andWhere(`"teacher"."id" = ${teacherId}`);
+    }
     if (status) {
       query.andWhere(`"schoolYear"."status" = '${ESchoolYearStatus[status]}'`);
     } else {
@@ -58,5 +62,13 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
     }
     query.orderBy(`"schoolYear"."id"`, 'DESC');
     return query.getOne();
+  }
+
+  async getCurrentAssignationOrThrow(currentAssignationDto: CurrentAssignationDto): Promise<SchoolYear> {
+    const currentAssignation = await this.getCurrentAssignation(currentAssignationDto);
+    if (!currentAssignation) {
+      throw new NotFoundException('No se encontró año escolar activo');
+    }
+    return currentAssignation;
   }
 }

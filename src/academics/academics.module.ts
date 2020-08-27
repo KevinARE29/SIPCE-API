@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { StudentModule } from '@students/students.module';
 import { ShiftRepository } from './repositories/shift.repository';
 import { CycleDetailRepository } from './repositories/cycle-detail.repository';
 import { CycleRepository } from './repositories/cycle.repository';
@@ -37,6 +38,7 @@ import { CloseSchoolYearService } from './services/close-school-year.service';
       PeriodRepository,
       SchoolYearRepository,
     ]),
+    forwardRef(() => StudentModule),
   ],
   controllers: [
     SectionController,
