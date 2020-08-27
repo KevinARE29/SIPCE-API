@@ -10,7 +10,7 @@ import { NotFoundException } from '@nestjs/common';
 @EntityRepository(SchoolYear)
 export class SchoolYearRepository extends Repository<SchoolYear> {
   getCurrentAssignation(currentAssignationDto: CurrentAssignationDto): Promise<SchoolYear | undefined> {
-    const { shiftId, cycleId, gradeId, sectionId, status } = currentAssignationDto;
+    const { shiftId, cycleId, gradeId, sectionId, teacherId, status } = currentAssignationDto;
     const query = this.createQueryBuilder('schoolYear')
       .leftJoinAndMapMany(
         'schoolYear.cycleDetails',
@@ -49,6 +49,9 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
     }
     if (sectionId) {
       query.andWhere(`"section"."id" = ${sectionId}`);
+    }
+    if (teacherId) {
+      query.andWhere(`"teacher"."id" = ${teacherId}`);
     }
     if (status) {
       query.andWhere(`"schoolYear"."status" = '${ESchoolYearStatus[status]}'`);
