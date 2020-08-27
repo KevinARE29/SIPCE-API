@@ -13,13 +13,21 @@ import { ResponsibleService } from './services/responsible.service';
 import { StudentImageService } from './services/student-image.service';
 import { StudentImageController } from './controllers/student-image.controller';
 import { ImageRepository } from './repositories/image.repository';
+import { StudentAssignationController } from './controllers/student-assignation.controller';
+import { StudentAssignationService } from './services/student-assignation.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([StudentRepository, ResponsibleRepository, ResponsibleStudentRepository, ImageRepository]),
     AcademicsModule,
   ],
-  controllers: [StudentController, StudentBulkController, ResponsibleController, StudentImageController],
-  providers: [StudentService, StudentBulkService, ResponsibleService, StudentImageService],
+  controllers: [
+    StudentController,
+    StudentBulkController,
+    ResponsibleController,
+    StudentImageController,
+    StudentAssignationController,
+  ],
+  providers: [StudentService, StudentBulkService, ResponsibleService, StudentImageService, StudentAssignationService],
 })
 export class StudentModule {}
