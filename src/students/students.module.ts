@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AcademicsModule } from '@academics/academics.module';
 import { StudentBulkController } from './controllers/student-bulk.controller';
@@ -19,7 +19,7 @@ import { StudentAssignationService } from './services/student-assignation.servic
 @Module({
   imports: [
     TypeOrmModule.forFeature([StudentRepository, ResponsibleRepository, ResponsibleStudentRepository, ImageRepository]),
-    AcademicsModule,
+    forwardRef(() => AcademicsModule),
   ],
   controllers: [
     StudentController,
@@ -29,5 +29,6 @@ import { StudentAssignationService } from './services/student-assignation.servic
     StudentAssignationController,
   ],
   providers: [StudentService, StudentBulkService, ResponsibleService, StudentImageService, StudentAssignationService],
+  exports: [TypeOrmModule],
 })
 export class StudentModule {}
