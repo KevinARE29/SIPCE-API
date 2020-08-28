@@ -158,7 +158,11 @@ export class SchoolYearService {
           }
           cycleDetail.gradeDetails = updatedGradeDetails;
           await this.gradeDetailRepository.save(updatedGradeDetails);
-          updatedCycleDetails.push(cycleDetail);
+          if (gradeDetails.length) {
+            updatedCycleDetails.push(cycleDetail);
+          } else {
+            await this.cycleDetailRepository.remove(cycleDetail);
+          }
         }
       }
       await this.cycleDetailRepository.save(updatedCycleDetails);
