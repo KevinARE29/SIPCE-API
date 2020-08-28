@@ -17,6 +17,7 @@ import { Grade } from '@academics/entities/grade.entity';
 import { Shift } from '@academics/entities/shift.entity';
 import { ResponsibleStudent } from './responsible-student.entity';
 import { Image } from './image.entity';
+import { Schedule } from '@schedules/entities/schedules.entity';
 
 @Entity()
 export class Student {
@@ -75,6 +76,7 @@ export class Student {
   })
   sectionDetails!: SectionDetail[];
 
+
   @ManyToOne(
     () => Grade,
     grade => grade.startedStudents,
@@ -104,4 +106,10 @@ export class Student {
     image => image.student,
   )
   images!: Image[];
+
+  @OneToMany(
+    () => Schedule,
+    schedule => schedule.studentSchedule,
+  )
+  schedules!: Schedule[];
 }

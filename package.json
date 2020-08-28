@@ -116,7 +116,8 @@
       "^@mails(.*)$": "<rootDir>/mails$1",
       "^@logs(.*)$": "<rootDir>/logs$1",
       "^@academics(.*)$": "<rootDir>/academics$1",
-      "^@students(.*)$": "<rootDir>/students$1"
+      "^@students(.*)$": "<rootDir>/students$1",
+      "^@schedules(.*)$": "<rootDir>/schedules$1"
     },
     "testRegex": ".spec.ts$",
     "transform": {
