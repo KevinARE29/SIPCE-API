@@ -53,6 +53,9 @@ export class UserRepository extends Repository<User> {
       if (role) {
         query.andWhere(`role.id = ${role}`);
       }
+      if (username) {
+        query.andWhere(`user.username ILIKE '%${username}%'`);
+      }
       return query.getManyAndCount();
     }
     query.take(perPage);
