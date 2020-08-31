@@ -4,9 +4,11 @@ import { StudentAssignationFilterDto } from '@students/dtos/student-assignation-
 import { ShiftRepository } from '@academics/repositories/shift.repository';
 import { GradeRepository } from '@academics/repositories/grade.repository';
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
-import { Student } from '@students/entities/student.entity';
-import { Students as StudentsDoc } from '@students/docs/students.doc';
 import { plainToClass } from 'class-transformer';
+import { StudentsAssignation } from '@students/docs/students-assignation.doc';
+import { ConfigService } from '@nestjs/config';
+import * as fs from 'fs';
+import { EStudentStatus } from '@students/constants/student.constant';
 
 @Injectable()
 export class StudentAssignationService {
@@ -15,6 +17,7 @@ export class StudentAssignationService {
     private readonly shiftRepository: ShiftRepository,
     private readonly gradeRepository: GradeRepository,
     private readonly schoolYearRepository: SchoolYearRepository,
+    private readonly configService: ConfigService,
   ) {}
 
   async getStudentsAssignation(userId: number, studentAssignationFilterDto: StudentAssignationFilterDto): Promise<any> {
@@ -41,26 +44,39 @@ export class StudentAssignationService {
       currentAssignation,
     );
 
-    const studentsWithoutAssignation: Student[] = [];
-    const assignedStudents: Student[] = [];
-    const myStudents: Student[] = [];
+    const cloudinaryEnvs = this.configService.get<string>('CLOUDINARY_ENVS')?.split(',') || ['dev', 'uat'];
+    const env = this.configService.get<string>('NODE_ENV') || 'dev';
+
+    const studentsWithoutAssignation: StudentsAssignation[] = [];
+    const assignedStudents: StudentsAssignation[] = [];
+    const myStudents: StudentsAssignation[] = [];
 
     studentsAssignation.forEach(student => {
-      if (!student.sectionDetails.length) {
-        studentsWithoutAssignation.push(student);
-      } else if (student.sectionDetails[0].teacher.id !== userId) {
-        assignedStudents.push(student);
+      const mappedStudent: StudentsAssignation = {
+        ...student,
+        status: EStudentStatus[student.status],
+        section: student.sectionDetails[0]?.section,
+      };
+      const lastImage = student.images[0];
+      if (!cloudinaryEnvs.includes(env) && lastImage) {
+        mappedStudent.images = [{ ...lastImage, path: fs.readFileSync(lastImage.path, 'base64') }];
       } else {
-        myStudents.push(student);
+        mappedStudent.images = lastImage ? [lastImage] : [];
+      }
+      if (!student.sectionDetails.length) {
+        studentsWithoutAssignation.push(mappedStudent);
+      } else if (student.sectionDetails[0].teacher.id !== userId) {
+        assignedStudents.push(mappedStudent);
+      } else {
+        myStudents.push(mappedStudent);
       }
     });
-
     return {
-      studentsWithoutAssignation: plainToClass(StudentsDoc, studentsWithoutAssignation, {
+      studentsWithoutAssignation: plainToClass(StudentsAssignation, studentsWithoutAssignation, {
         excludeExtraneousValues: true,
       }),
-      assignedStudents: plainToClass(StudentsDoc, assignedStudents, { excludeExtraneousValues: true }),
-      myStudents: plainToClass(StudentsDoc, myStudents, { excludeExtraneousValues: true }),
+      assignedStudents: plainToClass(StudentsAssignation, assignedStudents, { excludeExtraneousValues: true }),
+      myStudents: plainToClass(StudentsAssignation, myStudents, { excludeExtraneousValues: true }),
     };
   }
 }
