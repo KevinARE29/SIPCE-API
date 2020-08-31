@@ -53,17 +53,6 @@ export class UsersService {
     return bcrypt.compareSync(password, hash);
   }
 
-  async findByIdOrThrow(id: number): Promise<User> {
-    const user = await this.userRepository.findOne(id, {
-      where: { deletedAt: IsNull() },
-      relations: ['roles', 'permissions'],
-    });
-    if (!user) {
-      throw new NotFoundException(`User with id ${id} not found`);
-    }
-    return user;
-  }
-
   findByUserName(username: string): Promise<User | undefined> {
     return this.userRepository.findUserByUsername(username);
   }
@@ -91,12 +80,12 @@ export class UsersService {
   }
 
   async getSingleUser(userId: number): Promise<UserResponse> {
-    const user = await this.findByIdOrThrow(userId);
+    const user = await this.userRepository.findByIdOrThrow(userId);
     return { data: plainToClass(UserDoc, user, { excludeExtraneousValues: true }) };
   }
 
   async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<UserResponse> {
-    const user = await this.findByIdOrThrow(userId);
+    const user = await this.userRepository.findByIdOrThrow(userId);
     const { roleIds, permissionIds, ...userDto } = updateUserDto;
     const roles = roleIds ? await this.roleRepository.findRoles(roleIds) : [];
     const permissions = permissionIds ? await this.permissionRepository.findPermissions(permissionIds) : [];
@@ -114,7 +103,7 @@ export class UsersService {
 
   async resetPsw(resetPswTokenDto: ResetPswTokenDto, resetPswDto: ResetPswDto): Promise<void> {
     const pswTokenPayload = this.tokensService.getPswTokenPayload(resetPswTokenDto.resetPasswordToken);
-    const user = await this.findByIdOrThrow(pswTokenPayload.id);
+    const user = await this.userRepository.findByIdOrThrow(pswTokenPayload.id);
     if (user.resetPasswordToken !== resetPswTokenDto.resetPasswordToken) {
       throw new BadRequestException('resetPasswordToken: Reset Password Token inválido');
     }
@@ -179,7 +168,7 @@ export class UsersService {
   }
 
   async deleteUser(userId: number): Promise<void> {
-    const user = await this.findByIdOrThrow(userId);
+    const user = await this.userRepository.findByIdOrThrow(userId);
     user.deletedAt = new Date();
     await this.userRepository.save(user);
   }

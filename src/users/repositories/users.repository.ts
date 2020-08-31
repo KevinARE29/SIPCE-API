@@ -1,11 +1,23 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, IsNull } from 'typeorm';
 import { PageDto } from '@core/dtos/page.dto';
 import { UserFilterDto, sortOptionsMap } from '@users/dtos/user-filter.dto';
 import { getOrderBy } from '@core/utils/sort.util';
+import { NotFoundException } from '@nestjs/common';
 import { User } from '../entities/users.entity';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+  async findByIdOrThrow(id: number): Promise<User> {
+    const user = await this.findOne(id, {
+      where: { deletedAt: IsNull() },
+      relations: ['roles', 'permissions'],
+    });
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+    return user;
+  }
+
   findUserByUsername(username: string): Promise<User | undefined> {
     return this.createQueryBuilder('user')
       .leftJoin('user.roles', 'role')

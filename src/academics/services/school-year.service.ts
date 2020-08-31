@@ -61,9 +61,9 @@ export class SchoolYearService {
         ? await this.schoolYearRepository.getCurrentAssignation({ status: 'Histórico' })
         : undefined;
 
-    const mappedCurrentCycleDetails = currentAssignation.cycleDetails.reduce(mapCycleDetails, {} as any);
+    const mappedCurrentCycleDetails = currentAssignation.cycleDetails.reduce(mapCycleDetails(), {} as any);
     const mappedPreviousCycleDetails = previousAssignation
-      ? previousAssignation.cycleDetails.reduce(mapCycleDetails, {} as any)
+      ? previousAssignation.cycleDetails.reduce(mapCycleDetails(), {} as any)
       : undefined;
 
     const mappedCurrentAssignation = {
