@@ -13,6 +13,7 @@ import { UserIdDto } from '@users/dtos/user-id.dto';
 import { CreateUserDto } from '@users/dtos/create-user.dto';
 import { UpdateUserDto } from '@users/dtos/update-user.dto';
 import { UserResponse } from '@users/docs/user-response.doc';
+import { UserRepository } from '@users/repositories/users.repository';
 import { IAuthenticatedUser } from '../interfaces/users.interface';
 import { User } from '../decorators/user.decorator';
 import { UsersService } from '../services/users.service';
@@ -21,7 +22,7 @@ import { UsersService } from '../services/users.service';
 @UseGuards(ContentTypeGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService, private readonly usersRepository: UserRepository) {}
 
   @UseGuards(AuthGuard('jwt'), SessionGuard)
   @ApiBearerAuth()
@@ -32,7 +33,7 @@ export class UsersController {
   @Patch('me/password')
   @HttpCode(204)
   async updatePsw(@User() reqUser: IAuthenticatedUser, @Body() updatePswDto: UpdatePswDto): Promise<void> {
-    const user = await this.usersService.findByIdOrThrow(reqUser.id);
+    const user = await this.usersRepository.findByIdOrThrow(reqUser.id);
     await this.usersService.updatePsw(user, updatePswDto);
   }
 
