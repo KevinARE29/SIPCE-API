@@ -116,7 +116,7 @@ export class User {
 
   @ManyToMany(
     () => Schedule,
-    schedule => schedule.employees,
+    schedule => schedule.employeesSchedule,
   )
   scheduleEmployees!: Schedule[];
   

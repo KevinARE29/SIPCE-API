@@ -7,12 +7,16 @@ import { SchedulesResponse } from '@schedules/docs/schedules-response.doc';
 import { SchedulesService } from '../services/schedules.service';
 import { IAuthenticatedUser } from '@users/interfaces/users.interface';
 import { User } from '@users/decorators/user.decorator';
+import { UsersService } from '@users/services/users.service';
+
 
 @ApiTags('Schedules Endpoints')
 @UseGuards(ContentTypeGuard)
 @Controller('schedules')
 export class SchedulesController {
-  constructor(private readonly schedulesService: SchedulesService) {}
+  constructor(
+    private readonly schedulesService: SchedulesService,
+    private readonly usersService: UsersService) {}
 
   
   @Auth('manage_schedule')
@@ -21,8 +25,9 @@ export class SchedulesController {
     description: 'Use este endpoint para crear nuevos eventos en el calendario de un usuario.',
   })
   @Post('')
-  createEvent(@User() reqUser: IAuthenticatedUser,@Body() createScheduleDto: CreateScheduleDto): Promise<SchedulesResponse> {
-    return this.schedulesService.createEvent(createScheduleDto);
+  async createEvent(@User() reqUser: IAuthenticatedUser,@Body() createScheduleDto: CreateScheduleDto): Promise<SchedulesResponse> {
+    const user = await this.usersService.findByIdOrThrow(reqUser.id);
+    return  this.schedulesService.createEvent( user,createScheduleDto);
   }
 
  

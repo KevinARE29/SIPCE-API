@@ -1,26 +1,35 @@
-import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsEmail, IsNotEmpty, IsDate, IsMilitaryTime, IsJSON } from 'class-validator';
+import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsNotEmpty, IsEnum, IsDateString, IsObject } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
+import { ApiProperty } from '@nestjs/swagger';
+import { EnumEventType, schedulesKeys, TSchedule } from '@schedules/constants/schedule.costants';
+
 
 
 export class CreateScheduleDto {
   @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsDate({ message: validator.isDateString })
+  @IsDateString({ message: validator.isDateString })
   day!: Date;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsDate({ message: validator.isDateString })
+  @IsDateString({ message: validator.isDateString })
   startTime!: Date;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsDate({ message: validator.isDateString })
+  @IsDateString({ message: validator.isDateString })
   endTime!: Date;
 
   @IsNotEmpty({ message: validator.isString })
-  @IsJSON()
+  @IsString()
   subject!: string;
 
+  @ApiProperty({ type: String })
+  @IsEnum(EnumEventType, {
+    message: `EnumEventType: Debe ser uno de los siguientes valores: ${schedulesKeys}`,
+  })
+  eventType!: TSchedule;
+
   @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsJSON()
+  @IsObject()
   jsonData!: Record<string, any>;
 
   @IsOptional()
@@ -28,6 +37,15 @@ export class CreateScheduleDto {
   @IsInt({ each: true, message: validator.isInt })
   @IsPositive({ each: true, message: validator.isPositive })
   participantIds?: number[];
+
+
+  @IsOptional()
+  @IsArray({ message: validator.isArray })
+  @IsInt({ each: true, message: validator.isInt })
+  @IsPositive({ each: true, message: validator.isPositive })
+  studentsIds?: number[];
+
+  
 
 
 }

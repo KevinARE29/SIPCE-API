@@ -9,6 +9,7 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  Timestamp,
 } from 'typeorm';
 import { User } from '@users/entities/users.entity';
 import { Transform } from 'class-transformer';
@@ -34,8 +35,8 @@ export class Schedule {
   @Column('varchar', { length: 128 })
   subject!: string;
 
-  @Column('enum', { enum: EnumEventType, enumName: 'school_year_status_enum', default: 1 })
-  status!: EnumEventType;
+  @Column('enum', {name:'event_type', enum: EnumEventType, enumName: 'schedule_enum', default: 1 })
+  eventType!: EnumEventType;
 
   @Column({name:"json_data",type: 'json' })
   jsonData!: Record<string, any>;
@@ -73,7 +74,14 @@ export class Schedule {
     joinColumns: [{ name: 'employees_id' }],
     inverseJoinColumns: [{ name: 'schedule_employees_id' }],
   })
-  employees!: User[];
+  employeesSchedule!: User[];
 
+  @ManyToMany(() => Schedule)
+  @JoinTable({
+    name: 'event_conflict',
+    joinColumns: [{ name: 'firs_event_id' }],
+    inverseJoinColumns: [{ name: 'second_event_id' }],
+  })
+  eventConflict!: Schedule[];
  
 }

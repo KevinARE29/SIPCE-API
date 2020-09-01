@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { UserRole } from './user-role.doc';
+import { UserPermission } from '@users/docs/user-permission.doc';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ScheduleUser {
@@ -9,8 +9,8 @@ export class ScheduleUser {
   @Expose()
   name!: string;
 
-  @ApiProperty({ type: [UserRole] })
-  @Type(() => UserRole)
+  @ApiProperty({ type: [UserPermission] })
+  @Type(() => UserPermission)
   @Expose()
-  roles!: UserRole[];
+  permissions!: UserPermission[];
 }
