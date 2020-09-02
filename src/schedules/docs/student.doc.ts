@@ -1,6 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 
-export class Student {
+export class ScheduleStudent {
   @Expose()
   id!: number;
 

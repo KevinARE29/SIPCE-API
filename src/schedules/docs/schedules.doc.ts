@@ -1,14 +1,13 @@
 import { Expose, Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+
 import { ScheduleUser } from './schedule-user.doc';
-import { SEmployees } from './employees.doc';
-import { SStudents } from './students.doc';
-import { SEvent } from './event.doc';
+import { UserSchedule } from './user.doc';
+import { ScheduleStudent } from './student.doc';
+import { EventSchedule } from './event.doc';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class Schedule {
 
-  @ApiProperty({ type: ScheduleUser })
-  
   @Expose()
   id!: number;
 
@@ -30,16 +29,18 @@ export class Schedule {
   ownerSchedule!: ScheduleUser;
   
   @Expose()
-  @Type(() => SEvent)
-  eventConflict!: SEvent[];
-
+  @Type(() => EventSchedule)
+  eventConflict!: EventSchedule[];
+  
+  @ApiProperty({ type: [UserSchedule] })
   @Expose()
-  @Type(() => SEmployees)
-  employeesSchedule!: SEmployees[];
-
+  @Type(() => UserSchedule)
+  employeesSchedule!: UserSchedule[];
+  
+  @ApiProperty({ type: [ScheduleStudent] })
   @Expose()
-  @Type(() => SStudents)
-  studentSchedule!: SStudents[];
+  @Type(() => ScheduleStudent)
+  studentSchedule!: ScheduleStudent;
 
   
 }

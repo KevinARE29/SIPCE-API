@@ -62,7 +62,7 @@ export class Schedule {
     { nullable: true },
   )
   @JoinColumn({ name: 'student_id' })
-  studentSchedule!: Student;
+  studentSchedule?: Student;
 
 
   @ManyToMany(
@@ -74,7 +74,7 @@ export class Schedule {
     joinColumns: [{ name: 'employees_id' }],
     inverseJoinColumns: [{ name: 'schedule_employees_id' }],
   })
-  employeesSchedule!: User[];
+  employeesSchedule?: User[];
 
   @ManyToMany(() => Schedule)
   @JoinTable({
@@ -82,6 +82,6 @@ export class Schedule {
     joinColumns: [{ name: 'firs_event_id' }],
     inverseJoinColumns: [{ name: 'second_event_id' }],
   })
-  eventConflict!: Schedule[];
+  eventConflict?: Schedule[];
  
 }

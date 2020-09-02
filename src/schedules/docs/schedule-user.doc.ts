@@ -7,7 +7,7 @@ export class ScheduleUser {
   id!: number;
 
   @Expose()
-  name!: string;
+  username!: string;
 
   @ApiProperty({ type: [UserPermission] })
   @Type(() => UserPermission)

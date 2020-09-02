@@ -13,6 +13,7 @@ import { ScheduleRepository } from '@schedules/repositories/schedules.repository
 import { User } from '@users/entities/users.entity';
 import { UserRepository } from '@users/repositories/users.repository';
 import { EnumEventType } from '@schedules/constants/schedule.costants';
+import { StudentRepository } from '@students/repositories/student.repository';
 
 
 @Injectable()
@@ -21,7 +22,8 @@ export class SchedulesService {
 
   constructor(
     private readonly scheduleRepository: ScheduleRepository,
-   
+    private readonly studentRepository: StudentRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   
@@ -29,21 +31,39 @@ export class SchedulesService {
     
     
     const {
+
+      studentId,
+      participantIds,
       ...scheduleDto
+       
+       
      
     } = createScheduleDto;
+
     const eventConflict= await this.scheduleRepository.findConflict(scheduleDto.startTime,scheduleDto.endTime)
     //const ownerSchedule=ownerScheduleUser.id;
-   
+    let studentSchedule;
+    let employeesSchedule;
+
+    if (studentId)
+    {
+       studentSchedule = await this.studentRepository.findOneOrFail(studentId);
+    }
+    if (participantIds)
+    {
+     employeesSchedule = await this.userRepository.findByIds(participantIds);
+    }
 
     return {
       data: plainToClass(ScheduleDoc, await this.scheduleRepository.save(
-        {...scheduleDto,
+        {
+          ...scheduleDto,
           eventType: EnumEventType[scheduleDto.eventType],
           ownerSchedule,
           eventConflict,
-          
-        
+          studentSchedule,
+          employeesSchedule
+
         }) ,{
           excludeExtraneousValues: true,
         }

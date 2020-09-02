@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 
 
-export class SEvent {
+export class EventSchedule {
   @Expose()
   id!: number;
 

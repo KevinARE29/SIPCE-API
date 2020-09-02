@@ -2,6 +2,7 @@ import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsNotEmpty, IsEnum, I
 import { validator } from '@core/messages/validator.message';
 import { ApiProperty } from '@nestjs/swagger';
 import { EnumEventType, schedulesKeys, TSchedule } from '@schedules/constants/schedule.costants';
+import { IsId } from '@core/decorators/id.decorator';
 
 
 
@@ -38,12 +39,9 @@ export class CreateScheduleDto {
   @IsPositive({ each: true, message: validator.isPositive })
   participantIds?: number[];
 
-
   @IsOptional()
-  @IsArray({ message: validator.isArray })
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
-  studentsIds?: number[];
+  @IsId()
+  studentId?: number;
 
   
 
