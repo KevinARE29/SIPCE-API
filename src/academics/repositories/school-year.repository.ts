@@ -45,7 +45,8 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
         'sectionDetail.gradeDetail = gradeDetail.id',
       )
       .leftJoinAndSelect('sectionDetail.section', 'section')
-      .leftJoinAndSelect('sectionDetail.teacher', 'teacher');
+      .leftJoinAndSelect('sectionDetail.teacher', 'teacher')
+      .leftJoinAndSelect('sectionDetail.students', 'student');
 
     if (shiftId) {
       query.andWhere(`"shift"."id" = ${shiftId}`);

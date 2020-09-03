@@ -9,6 +9,10 @@ import { StudentsAssignation } from '@students/docs/students-assignation.doc';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { EStudentStatus } from '@students/constants/student.constant';
+import { PatchStudentAssignationDto } from '@students/dtos/patch-student-assignation.dto';
+import { SchoolYear } from '@academics/entities/school-year.entity';
+import { SectionDetailRepository } from '@academics/repositories/section-detail.repository';
+import { Student } from '@students/entities/student.entity';
 
 @Injectable()
 export class StudentAssignationService {
@@ -17,8 +21,17 @@ export class StudentAssignationService {
     private readonly shiftRepository: ShiftRepository,
     private readonly gradeRepository: GradeRepository,
     private readonly schoolYearRepository: SchoolYearRepository,
+    private readonly sectionDetailRepository: SectionDetailRepository,
     private readonly configService: ConfigService,
   ) {}
+
+  async validateTeacherAssignation(shiftId: number, gradeId: number, teacherId: number): Promise<SchoolYear> {
+    const assignedTeacher = await this.schoolYearRepository.getCurrentAssignation({ shiftId, gradeId, teacherId });
+    if (!assignedTeacher) {
+      throw new ForbiddenException('Usuario no es docente en el turno y grado específicado');
+    }
+    return assignedTeacher;
+  }
 
   async getStudentsAssignation(userId: number, studentAssignationFilterDto: StudentAssignationFilterDto): Promise<any> {
     const { currentShiftId, currentGradeId } = studentAssignationFilterDto;
@@ -28,21 +41,10 @@ export class StudentAssignationService {
       this.schoolYearRepository.getCurrentAssignationOrThrow({}),
     ]);
 
-    const assignedTeacher = await this.schoolYearRepository.getCurrentAssignation({
-      shiftId: currentShiftId,
-      gradeId: currentGradeId,
-      teacherId: userId,
-    });
-
-    if (!assignedTeacher) {
-      throw new ForbiddenException('Usuario no es docente en el turno y grado específicado');
-    }
-
-    const studentsAssignation = await this.studentRepository.getStudentsAssignation(
-      currentShift,
-      currentGrade,
-      currentAssignation,
-    );
+    const [studentsAssignation] = await Promise.all([
+      this.studentRepository.getStudentsAssignation(currentShift, currentGrade, currentAssignation),
+      await this.validateTeacherAssignation(currentShiftId, currentGradeId, userId),
+    ]);
 
     const cloudinaryEnvs = this.configService.get<string>('CLOUDINARY_ENVS')?.split(',') || ['dev', 'uat'];
     const env = this.configService.get<string>('NODE_ENV') || 'dev';
@@ -78,5 +80,41 @@ export class StudentAssignationService {
       assignedStudents: plainToClass(StudentsAssignation, assignedStudents, { excludeExtraneousValues: true }),
       myStudents: plainToClass(StudentsAssignation, myStudents, { excludeExtraneousValues: true }),
     };
+  }
+
+  async patchStudentsAssignation(
+    userId: number,
+    { currentGradeId, currentShiftId }: StudentAssignationFilterDto,
+    { studentIds, vinculate }: PatchStudentAssignationDto,
+  ): Promise<void> {
+    const [currentShift, currentGrade, currentAssignation] = await Promise.all([
+      this.shiftRepository.getShiftByIdOrThrow(currentShiftId),
+      this.gradeRepository.getGradeByIdOrThrow(currentGradeId),
+      this.schoolYearRepository.getCurrentAssignationOrThrow({}),
+    ]);
+    const [studentsAssignation, schoolYearAssignation] = await Promise.all([
+      this.studentRepository.getStudentsAssignation(currentShift, currentGrade, currentAssignation),
+      await this.validateTeacherAssignation(currentShiftId, currentGradeId, userId),
+    ]);
+
+    const sectionDetail = schoolYearAssignation.cycleDetails[0].gradeDetails[0].sectionDetails[0];
+    if (vinculate) {
+      const studentsWithoutAssignation: Student[] = [];
+      studentsAssignation.forEach(student => {
+        if (!student.sectionDetails.length) {
+          studentsWithoutAssignation.push(student);
+        }
+      });
+      const students = studentsWithoutAssignation.filter(student => studentIds.includes(student.id));
+      sectionDetail.students = [...sectionDetail.students, ...students];
+      await this.sectionDetailRepository.save(sectionDetail);
+    } else {
+      const studentsIdsToRemove = studentIds.join();
+      await this.studentRepository.query(
+        `DELETE FROM student_section_detail ` +
+          `WHERE section_detail_id = ${sectionDetail.id}` +
+          `AND student_id IN (${studentsIdsToRemove})`,
+      );
+    }
   }
 }
