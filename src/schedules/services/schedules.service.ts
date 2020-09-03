@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import {
-  Injectable,
+  Injectable, NotFoundException,
 
 } from '@nestjs/common';
 
@@ -14,6 +14,8 @@ import { User } from '@users/entities/users.entity';
 import { UserRepository } from '@users/repositories/users.repository';
 import { EnumEventType } from '@schedules/constants/schedule.costants';
 import { StudentRepository } from '@students/repositories/student.repository';
+import { UpdateScheduleDto } from '@schedules/dtos/update-schedule.dto';
+import { Schedule } from '@schedules/entities/schedules.entity';
 
 
 @Injectable()
@@ -34,33 +36,43 @@ export class SchedulesService {
 
       studentId,
       participantIds,
+      eventType,
       ...scheduleDto
-       
-       
      
     } = createScheduleDto;
 
-    const eventConflict= await this.scheduleRepository.findConflict(scheduleDto.startTime,scheduleDto.endTime)
-    //const ownerSchedule=ownerScheduleUser.id;
     let studentSchedule;
     let employeesSchedule;
+    const type=EnumEventType[eventType];
 
-    if (studentId)
+    if (type!=4 && type!=5 )
     {
-       studentSchedule = await this.studentRepository.findOneOrFail(studentId);
+      if (type==1 || type==3)
+          if (studentId)
+          {
+            studentSchedule = await this.studentRepository.findOneOrFail(studentId);
+          }
+      else
+        { 
+            if (studentId)
+            {
+              studentSchedule = await this.studentRepository.findOneOrFail(studentId);
+            }
+
+            if (participantIds)
+            {
+            employeesSchedule = await this.userRepository.findByIds(participantIds);
+            }
+        }
     }
-    if (participantIds)
-    {
-     employeesSchedule = await this.userRepository.findByIds(participantIds);
-    }
+
 
     return {
       data: plainToClass(ScheduleDoc, await this.scheduleRepository.save(
         {
           ...scheduleDto,
-          eventType: EnumEventType[scheduleDto.eventType],
+          eventType: EnumEventType[eventType],
           ownerSchedule,
-          eventConflict,
           studentSchedule,
           employeesSchedule
 
@@ -68,11 +80,89 @@ export class SchedulesService {
           excludeExtraneousValues: true,
         }
         )
-      
-      
-      
-      
       }
 
     }
+
+    
+
+    async updateEvent(eventId: number, updateScheduleDto: UpdateScheduleDto): Promise<SchedulesResponse> {
+      const event = await this.scheduleRepository.getScheduleByIdOrThrow(eventId);
+      
+     const {
+      studentId,
+      participantIds,
+      eventType,
+      ...scheduleDto
+     } = updateScheduleDto;
+
+     let studentSchedule;
+     let employeesSchedule;
+     let  type;
+     if (eventType)
+      { type=EnumEventType[eventType];
+       event.eventType=type;
+      }
+      else
+        type=event.eventType;
+ 
+     if (type!=4 && type!=5 )
+     {
+       if (type==1 || type==3)
+           if (studentId)
+           {
+             studentSchedule = await this.studentRepository.findOneOrFail(studentId);
+             event.studentSchedule=studentSchedule;
+             
+           }
+       else
+         { 
+             if (studentId)
+             {
+               studentSchedule = await this.studentRepository.findOneOrFail(studentId);
+               event.studentSchedule=studentSchedule;
+             }
+ 
+             if (participantIds)
+             {
+             employeesSchedule = await this.userRepository.findByIds(participantIds);
+             event.employeesSchedule=employeesSchedule;
+             }
+         }
+     }
+     
+     const updatedEvent = await this.studentRepository.save({
+      ...event,
+      ...scheduleDto,
+    });
+
+
+
+      return {
+        data: plainToClass(ScheduleDoc, await this.scheduleRepository.save({ ...updatedEvent }), {
+          excludeExtraneousValues: true,
+        }),
+      };
+    }
+
+    async deleteEvent(eventId: number): Promise<void> {
+      const event = await this.findByIdOrThrow(eventId);
+      
+      await this.scheduleRepository.query(
+        `DELETE FROM schedule ` +
+          `WHERE id IN (${eventId})`,
+      );
+
+      //await this.scheduleRepository.save(event);
+    }
+
+
+    async findByIdOrThrow(id: number): Promise<Schedule> {
+      const event = await this.scheduleRepository.findOne(id);
+      if (!event) {
+        throw new NotFoundException(`Event with id ${id} not found`);
+      }
+      return event;
+    }
+
 }

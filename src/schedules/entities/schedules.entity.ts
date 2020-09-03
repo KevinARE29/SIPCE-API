@@ -33,7 +33,13 @@ export class Schedule {
   endTime!: Date;
 
   @Column('varchar', { length: 128 })
+  description!: string;
+
+  @Column('varchar', { length: 128 })
   subject!: string;
+
+  @Column()
+  recurrent!: boolean;
 
   @Column('enum', {name:'event_type', enum: EnumEventType, enumName: 'schedule_enum', default: 1 })
   eventType!: EnumEventType;
@@ -68,20 +74,15 @@ export class Schedule {
   @ManyToMany(
     () => User,
     user => user.scheduleEmployees,
+    { onDelete: 'CASCADE' }
   )
   @JoinTable({
     name: 'schedule_employees',
-    joinColumns: [{ name: 'employees_id' }],
-    inverseJoinColumns: [{ name: 'schedule_employees_id' }],
+    joinColumns: [{ name: 'schedule_event' }],
+    inverseJoinColumns: [{ name: 'employees_id' }],
   })
   employeesSchedule?: User[];
 
-  @ManyToMany(() => Schedule)
-  @JoinTable({
-    name: 'event_conflict',
-    joinColumns: [{ name: 'firs_event_id' }],
-    inverseJoinColumns: [{ name: 'second_event_id' }],
-  })
-  eventConflict?: Schedule[];
+ 
  
 }

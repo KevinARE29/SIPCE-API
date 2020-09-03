@@ -2,7 +2,8 @@ export enum EnumEventType {
     'Sesión estudiante' = 1,
     'Entrevista con docente titular',
     'Entrevista con padres de familia',
-    'Otros',
+    'Programa de Intervención',
+    'Otro',
   }
   
   export const schedulesValues = Object.values(EnumEventType).filter(key => typeof key === 'number');

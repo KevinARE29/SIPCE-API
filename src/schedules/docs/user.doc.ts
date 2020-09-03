@@ -19,8 +19,6 @@ export class UserSchedule {
   @Expose()
   email!: string;
 
-  @Expose()
-  active!: boolean;
 
   
 

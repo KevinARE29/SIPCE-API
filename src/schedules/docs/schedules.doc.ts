@@ -1,13 +1,10 @@
 import { Expose, Type } from 'class-transformer';
-
 import { ScheduleUser } from './schedule-user.doc';
 import { UserSchedule } from './user.doc';
 import { ScheduleStudent } from './student.doc';
-import { EventSchedule } from './event.doc';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Schedule {
-
   @Expose()
   id!: number;
 
@@ -21,16 +18,18 @@ export class Schedule {
   endTime!: Date;
 
   @Expose()
+  eventType!: string;
+
+  @Expose()
+  recurrent!: boolean;
+
+  @Expose()
   jsonData!:Record<string, any>;
 
 
   @Expose()
   @Type(() => ScheduleUser)
   ownerSchedule!: ScheduleUser;
-  
-  @Expose()
-  @Type(() => EventSchedule)
-  eventConflict!: EventSchedule[];
   
   @ApiProperty({ type: [UserSchedule] })
   @Expose()

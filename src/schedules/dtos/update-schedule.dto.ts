@@ -6,36 +6,36 @@ import { IsId } from '@core/decorators/id.decorator';
 
 
 
-export class CreateScheduleDto {
+export class UpdateScheduleDto {
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsDateString({ message: validator.isDateString })
-  day!: Date;
+  day?: Date;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsDateString({ message: validator.isDateString })
-  startTime!: Date;
+  startTime?: Date;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsDateString({ message: validator.isDateString })
-  endTime!: Date;
+  endTime?: Date;
 
   @IsNotEmpty({ message: validator.isString })
   @IsString()
-  subject!: string;
+  subject?: string;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsBooleanString({ message: validator.isBoolean })
-  recurrent!: boolean;
+  recurrent?: boolean;
 
   @ApiProperty({ type: String })
   @IsEnum(EnumEventType, {
     message: `EnumEventType: Debe ser uno de los siguientes valores: ${schedulesKeys}`,
   })
-  eventType!: TSchedule;
+  eventType?: TSchedule;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsObject()
-  jsonData!: Record<string, any>;
+  jsonData?: Record<string, any>;
 
   @IsOptional()
   @IsArray({ message: validator.isArray })
