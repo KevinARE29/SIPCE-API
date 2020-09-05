@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AcademicsModule } from '@academics/academics.module';
 import { StudentBulkController } from './controllers/student-bulk.controller';
@@ -13,13 +13,22 @@ import { ResponsibleService } from './services/responsible.service';
 import { StudentImageService } from './services/student-image.service';
 import { StudentImageController } from './controllers/student-image.controller';
 import { ImageRepository } from './repositories/image.repository';
+import { StudentAssignationController } from './controllers/student-assignation.controller';
+import { StudentAssignationService } from './services/student-assignation.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([StudentRepository, ResponsibleRepository, ResponsibleStudentRepository, ImageRepository]),
-    AcademicsModule,
+    forwardRef(() => AcademicsModule),
   ],
-  controllers: [StudentController, StudentBulkController, ResponsibleController, StudentImageController],
-  providers: [StudentService, StudentBulkService, ResponsibleService, StudentImageService],
+  controllers: [
+    StudentController,
+    StudentBulkController,
+    ResponsibleController,
+    StudentImageController,
+    StudentAssignationController,
+  ],
+  providers: [StudentService, StudentBulkService, ResponsibleService, StudentImageService, StudentAssignationService],
+  exports: [TypeOrmModule],
 })
 export class StudentModule {}

@@ -4,12 +4,22 @@ import { activeSchoolYearStatus, ESchoolYearStatus } from '@academics/constants/
 import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
-import { CurrentAssignationDto } from '@academics/dtos/current-assignation.dto';
+import { CurrentAssignationDto } from '@academics/dtos/school-year/current-assignation.dto';
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(SchoolYear)
 export class SchoolYearRepository extends Repository<SchoolYear> {
   getCurrentAssignation(currentAssignationDto: CurrentAssignationDto): Promise<SchoolYear | undefined> {
-    const { shiftId, cycleId, gradeId, sectionId, status } = currentAssignationDto;
+    const {
+      shiftId,
+      cycleId,
+      gradeId,
+      sectionId,
+      teacherId,
+      counselorId,
+      cycleCoordinatorId,
+      status,
+    } = currentAssignationDto;
     const query = this.createQueryBuilder('schoolYear')
       .leftJoinAndMapMany(
         'schoolYear.cycleDetails',
@@ -35,7 +45,8 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
         'sectionDetail.gradeDetail = gradeDetail.id',
       )
       .leftJoinAndSelect('sectionDetail.section', 'section')
-      .leftJoinAndSelect('sectionDetail.teacher', 'teacher');
+      .leftJoinAndSelect('sectionDetail.teacher', 'teacher')
+      .leftJoinAndSelect('sectionDetail.students', 'student');
 
     if (shiftId) {
       query.andWhere(`"shift"."id" = ${shiftId}`);
@@ -49,6 +60,15 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
     if (sectionId) {
       query.andWhere(`"section"."id" = ${sectionId}`);
     }
+    if (teacherId) {
+      query.andWhere(`"teacher"."id" = ${teacherId}`);
+    }
+    if (counselorId) {
+      query.andWhere(`"counselor"."id" = ${counselorId}`);
+    }
+    if (cycleCoordinatorId) {
+      query.andWhere(`"cycleCoordinator"."id" = ${cycleCoordinatorId}`);
+    }
     if (status) {
       query.andWhere(`"schoolYear"."status" = '${ESchoolYearStatus[status]}'`);
     } else {
@@ -58,5 +78,13 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
     }
     query.orderBy(`"schoolYear"."id"`, 'DESC');
     return query.getOne();
+  }
+
+  async getCurrentAssignationOrThrow(currentAssignationDto: CurrentAssignationDto): Promise<SchoolYear> {
+    const currentAssignation = await this.getCurrentAssignation(currentAssignationDto);
+    if (!currentAssignation) {
+      throw new NotFoundException('No se encontró año escolar activo');
+    }
+    return currentAssignation;
   }
 }

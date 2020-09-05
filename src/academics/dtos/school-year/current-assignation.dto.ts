@@ -20,6 +20,18 @@ export class CurrentAssignationDto {
   sectionId?: number;
 
   @IsOptional()
+  @IsId()
+  teacherId?: number;
+
+  @IsOptional()
+  @IsId()
+  counselorId?: number;
+
+  @IsOptional()
+  @IsId()
+  cycleCoordinatorId?: number;
+
+  @IsOptional()
   @IsEnum(ESchoolYearStatus, {
     message: `status: Debe ser uno de los siguientes valores: ${yearStatusValues}`,
   })

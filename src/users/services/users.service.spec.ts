@@ -53,6 +53,7 @@ const mockUpdatedUser = {
 };
 
 const mockUserRepository = () => ({
+  findByIdOrThrow: jest.fn(),
   findOne: jest.fn(),
   save: jest.fn(),
   getAllUsers: jest.fn().mockResolvedValue(mockAllUsers),
@@ -111,7 +112,7 @@ describe('Users Service', () => {
 
   describe('Resert Password', () => {
     it('Should Resert the password of a given user', async () => {
-      (userRepository.findOne as jest.Mock).mockResolvedValue(mockUser);
+      (userRepository.findByIdOrThrow as jest.Mock).mockResolvedValue(mockUser);
       (userRepository.save as jest.Mock).mockResolvedValue(mockUpdatedUser);
       (tokensService.getPswTokenPayload as jest.Mock).mockReturnValue({ id: 1 });
       expect(userRepository.save).not.toHaveBeenCalled();
@@ -122,7 +123,7 @@ describe('Users Service', () => {
 
   describe('Delete User', () => {
     it('Should delete a specific user', async () => {
-      (userRepository.findOne as jest.Mock).mockResolvedValue(mockUser);
+      (userRepository.findByIdOrThrow as jest.Mock).mockResolvedValue(mockUser);
       await usersService.deleteUser(1);
       expect(userRepository.save).toBeCalled();
     });

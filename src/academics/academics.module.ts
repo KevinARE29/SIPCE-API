@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { StudentModule } from '@students/students.module';
 import { ShiftRepository } from './repositories/shift.repository';
 import { CycleDetailRepository } from './repositories/cycle-detail.repository';
 import { CycleRepository } from './repositories/cycle.repository';
@@ -21,6 +22,8 @@ import { ShiftController } from './controllers/shift.controller';
 import { SchoolYearRepository } from './repositories/school-year.repository';
 import { SchoolYearController } from './controllers/school-year.controller';
 import { SchoolYearService } from './services/school-year.service';
+import { CloseSchoolYearController } from './controllers/close-school-year.controller';
+import { CloseSchoolYearService } from './services/close-school-year.service';
 
 @Module({
   imports: [
@@ -35,6 +38,7 @@ import { SchoolYearService } from './services/school-year.service';
       PeriodRepository,
       SchoolYearRepository,
     ]),
+    forwardRef(() => StudentModule),
   ],
   controllers: [
     SectionController,
@@ -43,8 +47,17 @@ import { SchoolYearService } from './services/school-year.service';
     PeriodController,
     ShiftController,
     SchoolYearController,
+    CloseSchoolYearController,
   ],
-  providers: [SectionService, CycleService, GradeService, PeriodService, ShiftService, SchoolYearService],
+  providers: [
+    SectionService,
+    CycleService,
+    GradeService,
+    PeriodService,
+    ShiftService,
+    SchoolYearService,
+    CloseSchoolYearService,
+  ],
   exports: [TypeOrmModule],
 })
 export class AcademicsModule {}
