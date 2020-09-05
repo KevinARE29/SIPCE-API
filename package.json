@@ -42,7 +42,7 @@
     "@nestjs/jwt": "^7.0.0",
     "@nestjs/passport": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
-    "@nestjs/swagger": "^4.5.12",
+    "@nestjs/swagger": "^4.6.0",
     "@nestjs/typeorm": "^7.0.0",
     "@sendgrid/mail": "^7.1.1",
     "bcrypt": "^4.0.1",
@@ -116,7 +116,8 @@
       "^@mails(.*)$": "<rootDir>/mails$1",
       "^@logs(.*)$": "<rootDir>/logs$1",
       "^@academics(.*)$": "<rootDir>/academics$1",
-      "^@students(.*)$": "<rootDir>/students$1"
+      "^@students(.*)$": "<rootDir>/students$1",
+      "^@schedules(.*)$": "<rootDir>/schedules$1"
     },
     "testRegex": ".spec.ts$",
     "transform": {

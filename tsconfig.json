@@ -20,7 +20,8 @@
       "@mails/*": ["src/mails/*"],
       "@logs/*": ["src/logs/*"],
       "@academics/*": ["src/academics/*"],
-      "@students/*": ["src/students/*"]
+      "@students/*": ["src/students/*"],
+      "@schedules/*": ["src/schedules/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

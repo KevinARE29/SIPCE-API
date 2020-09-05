@@ -16,6 +16,7 @@ import { ActionLog } from '@logs/entities/action-log.entity';
 import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
+import { Schedule } from '@schedules/entities/schedules.entity';
 
 @Entity()
 export class User {
@@ -106,4 +107,16 @@ export class User {
     sectionDetail => sectionDetail.teacher,
   )
   sectionDetails!: SectionDetail[];
+
+  @OneToMany(
+    () => Schedule,
+    schedule => schedule.ownerSchedule,
+  )
+  schedules!: Schedule[];
+
+  @ManyToMany(
+    () => Schedule,
+    schedule => schedule.employeesSchedule,
+  )
+  scheduleEmployees!: Schedule[];
 }
