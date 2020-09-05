@@ -42,7 +42,7 @@ export class StudentAssignationService {
     ]);
 
     const [studentsAssignation] = await Promise.all([
-      this.studentRepository.getStudentsAssignation(currentShift, currentGrade, currentAssignation),
+      this.studentRepository.getStudentsAssignation(currentShift, currentGrade),
       await this.validateTeacherAssignation(currentShiftId, currentGradeId, userId),
     ]);
 
@@ -93,7 +93,7 @@ export class StudentAssignationService {
       this.schoolYearRepository.getCurrentAssignationOrThrow({}),
     ]);
     const [studentsAssignation, schoolYearAssignation] = await Promise.all([
-      this.studentRepository.getStudentsAssignation(currentShift, currentGrade, currentAssignation),
+      this.studentRepository.getStudentsAssignation(currentShift, currentGrade),
       await this.validateTeacherAssignation(currentShiftId, currentGradeId, userId),
     ]);
 
@@ -101,7 +101,8 @@ export class StudentAssignationService {
     if (vinculate) {
       const studentsWithoutAssignation: Student[] = [];
       studentsAssignation.forEach(student => {
-        if (!student.sectionDetails.length) {
+        const studentSchoolYearAssignation = student.sectionDetails[0]?.gradeDetail.cycleDetail.schoolYear;
+        if (!student.sectionDetails.length || studentSchoolYearAssignation?.id !== currentAssignation.id) {
           studentsWithoutAssignation.push(student);
         }
       });

@@ -106,11 +106,7 @@ export class StudentRepository extends Repository<Student> {
     return student;
   }
 
-  getStudentsAssignation(
-    { id: currentShiftId }: Shift,
-    { id: currentGradeId }: Grade,
-    currentAssignation: SchoolYear,
-  ): Promise<Student[]> {
+  getStudentsAssignation({ id: currentShiftId }: Shift, { id: currentGradeId }: Grade): Promise<Student[]> {
     return this.createQueryBuilder('student')
       .leftJoin('student.currentShift', 'currentShift')
       .leftJoin('student.currentGrade', 'currentGrade')
