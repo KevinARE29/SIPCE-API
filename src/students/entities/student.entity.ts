@@ -15,9 +15,9 @@ import { EStudentStatus } from '@students/constants/student.constant';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { Grade } from '@academics/entities/grade.entity';
 import { Shift } from '@academics/entities/shift.entity';
+import { Schedule } from '@schedules/entities/schedules.entity';
 import { ResponsibleStudent } from './responsible-student.entity';
 import { Image } from './image.entity';
-import { Schedule } from '@schedules/entities/schedules.entity';
 
 @Entity()
 export class Student {
@@ -78,7 +78,6 @@ export class Student {
     inverseJoinColumns: [{ name: 'section_detail_id' }],
   })
   sectionDetails!: SectionDetail[];
-
 
   @ManyToOne(
     () => Grade,

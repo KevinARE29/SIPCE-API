@@ -1,10 +1,18 @@
-import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsNotEmpty, IsEnum, IsDateString, IsObject, IsBooleanString, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsArray,
+  IsInt,
+  IsPositive,
+  IsOptional,
+  IsEnum,
+  IsDateString,
+  IsObject,
+  IsBoolean,
+} from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import { ApiProperty } from '@nestjs/swagger';
 import { EnumEventType, schedulesKeys, TSchedule } from '@schedules/constants/schedule.costants';
 import { IsId } from '@core/decorators/id.decorator';
-
-
 
 export class UpdateScheduleDto {
   @IsOptional()
@@ -26,7 +34,6 @@ export class UpdateScheduleDto {
   @IsOptional()
   @IsString({ message: validator.isString })
   description?: string;
-  
 
   @IsOptional()
   @IsBoolean({ message: validator.isBoolean })
@@ -52,8 +59,4 @@ export class UpdateScheduleDto {
   @IsOptional()
   @IsId()
   studentId?: number;
-
-  
-
-
 }

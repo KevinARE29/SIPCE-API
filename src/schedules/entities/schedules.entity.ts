@@ -1,4 +1,3 @@
-
 import {
   Entity,
   Column,
@@ -9,27 +8,25 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
-  Timestamp,
 } from 'typeorm';
 import { User } from '@users/entities/users.entity';
 import { Transform } from 'class-transformer';
 import { EnumEventType } from '@schedules/constants/schedule.costants';
 import { Student } from '@students/entities/student.entity';
 
-
 @Entity()
 export class Schedule {
   @PrimaryGeneratedColumn()
   id!: number;
-  
-  @Transform(day => (day).format('DD/MM/YY'))
-  @Column( )
+
+  @Transform(day => day.format('DD/MM/YY'))
+  @Column()
   day!: Date;
 
-  @Column( { name: 'start_time', type: 'timestamptz' })
+  @Column({ name: 'start_time', type: 'timestamptz' })
   startTime!: Date;
 
-  @Column( { name: 'end_time', type: 'timestamptz' })
+  @Column({ name: 'end_time', type: 'timestamptz' })
   endTime!: Date;
 
   @Column('varchar', { length: 128 })
@@ -41,10 +38,10 @@ export class Schedule {
   @Column()
   recurrent!: boolean;
 
-  @Column('enum', {name:'event_type', enum: EnumEventType, enumName: 'schedule_enum', default: 1 })
+  @Column('enum', { name: 'event_type', enum: EnumEventType, enumName: 'schedule_enum', default: 1 })
   eventType!: EnumEventType;
 
-  @Column({name:"json_data",type: 'json' })
+  @Column({ name: 'json_data', type: 'json' })
   jsonData!: Record<string, any>;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
@@ -52,7 +49,6 @@ export class Schedule {
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt!: Date;
-
 
   @ManyToOne(
     () => User,
@@ -70,11 +66,10 @@ export class Schedule {
   @JoinColumn({ name: 'student_id' })
   studentSchedule?: Student;
 
-
   @ManyToMany(
     () => User,
     user => user.scheduleEmployees,
-    { onDelete: 'CASCADE' }
+    { onDelete: 'CASCADE' },
   )
   @JoinTable({
     name: 'schedule_employees',
@@ -82,7 +77,4 @@ export class Schedule {
     inverseJoinColumns: [{ name: 'employees_id' }],
   })
   employeesSchedule?: User[];
-
- 
- 
 }

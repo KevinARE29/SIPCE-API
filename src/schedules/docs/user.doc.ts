@@ -18,8 +18,4 @@ export class UserSchedule {
 
   @Expose()
   email!: string;
-
-
-  
-
 }

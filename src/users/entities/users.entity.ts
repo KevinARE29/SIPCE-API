@@ -119,5 +119,4 @@ export class User {
     schedule => schedule.employeesSchedule,
   )
   scheduleEmployees!: Schedule[];
-  
 }

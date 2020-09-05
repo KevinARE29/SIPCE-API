@@ -7,7 +7,6 @@ import { NotFoundException } from '@nestjs/common';
 import { Image } from '@students/entities/image.entity';
 import { ResponsibleStudent } from '@students/entities/responsible-student.entity';
 import { Responsible } from '@students/entities/responsible.entity';
-import { SchoolYear } from '@academics/entities/school-year.entity';
 import { Shift } from '@academics/entities/shift.entity';
 import { Grade } from '@academics/entities/grade.entity';
 

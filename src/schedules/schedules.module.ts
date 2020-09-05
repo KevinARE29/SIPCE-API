@@ -8,7 +8,7 @@ import { StudentRepository } from '@students/repositories/student.repository';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([ScheduleRepository,StudentRepository,UserRepository])],
+  imports: [TypeOrmModule.forFeature([ScheduleRepository, StudentRepository, UserRepository])],
   controllers: [SchedulesController],
   providers: [SchedulesService],
 })
