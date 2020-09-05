@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { Schedule as ScheduleDoc } from '@schedules/docs/schedules.doc';
 import { SchedulesResponse } from '@schedules/docs/schedules-response.doc';
@@ -11,7 +11,6 @@ import { UserRepository } from '@users/repositories/users.repository';
 import { EnumEventType } from '@schedules/constants/schedule.costants';
 import { StudentRepository } from '@students/repositories/student.repository';
 import { UpdateScheduleDto } from '@schedules/dtos/update-schedule.dto';
-import { Schedule } from '@schedules/entities/schedules.entity';
 
 @Injectable()
 export class SchedulesService {
@@ -54,8 +53,16 @@ export class SchedulesService {
     };
   }
 
-  async updateEvent(eventId: number, updateScheduleDto: UpdateScheduleDto): Promise<SchedulesResponse> {
-    const event = await this.scheduleRepository.getScheduleByIdOrThrow(eventId);
+  async updateEvent(
+    ownerSchedule: User,
+    eventId: number,
+    updateScheduleDto: UpdateScheduleDto,
+  ): Promise<SchedulesResponse> {
+    const event = await this.scheduleRepository.findByIdOrThrow(eventId);
+
+    if (event.ownerSchedule.id !== ownerSchedule.id) {
+      throw new BadRequestException('Solo el propietario del evento puede realizar acciones en el evento');
+    }
 
     const { studentId, participantIds, eventType, ...scheduleDto } = updateScheduleDto;
 
@@ -91,17 +98,11 @@ export class SchedulesService {
     };
   }
 
-  async deleteEvent(eventId: number): Promise<void> {
-    const event = await this.findByIdOrThrow(eventId);
-
-    await this.scheduleRepository.query(`DELETE FROM schedule WHERE id IN (${event.id})`);
-  }
-
-  async findByIdOrThrow(id: number): Promise<Schedule> {
-    const event = await this.scheduleRepository.findOne(id);
-    if (!event) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+  async deleteEvent(ownerSchedule: User, eventId: number): Promise<void> {
+    const event = await this.scheduleRepository.findByIdOrThrow(eventId);
+    if (event.ownerSchedule.id !== ownerSchedule.id) {
+      throw new BadRequestException('Solo el propietario del evento puede realizar acciones en el evento');
     }
-    return event;
+    await this.scheduleRepository.query(`DELETE FROM schedule WHERE id IN (${event.id})`);
   }
 }

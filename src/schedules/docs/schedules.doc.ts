@@ -1,7 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { ScheduleUser } from './schedule-user.doc';
-import { UserSchedule } from './user.doc';
+import { BaseUser } from '@core/docs/base-user.doc';
 import { ScheduleStudent } from './student.doc';
 
 export class Schedule {
@@ -32,16 +31,12 @@ export class Schedule {
   @Expose()
   jsonData!: Record<string, any>;
 
+  @ApiProperty({ type: [BaseUser] })
   @Expose()
-  @Type(() => ScheduleUser)
-  ownerSchedule!: ScheduleUser;
+  @Type(() => BaseUser)
+  employeesSchedule!: BaseUser[];
 
-  @ApiProperty({ type: [UserSchedule] })
-  @Expose()
-  @Type(() => UserSchedule)
-  employeesSchedule!: UserSchedule[];
-
-  @ApiProperty({ type: [ScheduleStudent] })
+  @ApiProperty({ type: ScheduleStudent })
   @Expose()
   @Type(() => ScheduleStudent)
   studentSchedule!: ScheduleStudent;

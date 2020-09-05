@@ -7,8 +7,8 @@ import {
   IsNotEmpty,
   IsEnum,
   IsDateString,
-  IsObject,
   IsBoolean,
+  IsNotEmptyObject,
 } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import { ApiProperty } from '@nestjs/swagger';
@@ -46,8 +46,7 @@ export class CreateScheduleDto {
   })
   eventType!: TSchedule;
 
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsObject()
+  @IsNotEmptyObject({ message: validator.isNotEmpty })
   jsonData!: Record<string, any>;
 
   @IsOptional()

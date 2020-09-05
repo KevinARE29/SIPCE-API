@@ -4,17 +4,11 @@ import { Schedule } from '../entities/schedules.entity';
 
 @EntityRepository(Schedule)
 export class ScheduleRepository extends Repository<Schedule> {
-  findConflict(startTime: Date, endTime: Date): Promise<Schedule[] | undefined> {
-    const query = this.createQueryBuilder('schedule');
-    query.andWhere(`"schedule"."start_time" BETWEEN  '${startTime}' AND   '${endTime}' `);
-    return query.getMany();
-  }
-
-  async getScheduleByIdOrThrow(eventId: number): Promise<Schedule> {
-    const schedule = await this.findOne(eventId);
-    if (!schedule) {
-      throw new NotFoundException('Evento no encontrado');
+  async findByIdOrThrow(id: number): Promise<Schedule> {
+    const event = await this.findOne(id, { relations: ['ownerSchedule'] });
+    if (!event) {
+      throw new NotFoundException(`Event with id ${id} not found`);
     }
-    return schedule;
+    return event;
   }
 }

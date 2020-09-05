@@ -1,5 +1,5 @@
 export enum EnumEventType {
-  'Sesión estudiante' = 1,
+  'Sesión con estudiante' = 1,
   'Entrevista con docente titular',
   'Entrevista con padres de familia',
   'Programa de Intervención',

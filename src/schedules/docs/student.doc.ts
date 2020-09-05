@@ -15,7 +15,4 @@ export class ScheduleStudent {
 
   @Expose()
   email!: string;
-
-  @Expose()
-  status!: string;
 }

@@ -10,7 +10,6 @@ import {
   JoinTable,
 } from 'typeorm';
 import { User } from '@users/entities/users.entity';
-import { Transform } from 'class-transformer';
 import { EnumEventType } from '@schedules/constants/schedule.costants';
 import { Student } from '@students/entities/student.entity';
 
@@ -19,8 +18,7 @@ export class Schedule {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Transform(day => day.format('DD/MM/YY'))
-  @Column()
+  @Column({ type: 'timestamptz' })
   day!: Date;
 
   @Column({ name: 'start_time', type: 'timestamptz' })

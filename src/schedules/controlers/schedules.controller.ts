@@ -37,21 +37,24 @@ export class SchedulesController {
     description: 'Use este endpoint para actualizar los datos de un evento específico',
   })
   @Put('me/:eventId')
-  updateStudent(
+  async updateEvent(
+    @User() reqUser: IAuthenticatedUser,
     @Param() scheduleIdDto: ScheduleIdDto,
     @Body() updateScheduleDto: UpdateScheduleDto,
   ): Promise<SchedulesResponse> {
-    return this.schedulesService.updateEvent(scheduleIdDto.eventId, updateScheduleDto);
+    const user = await this.userRepository.findOneOrFail(reqUser.id);
+    return this.schedulesService.updateEvent(user, scheduleIdDto.eventId, updateScheduleDto);
   }
 
   @Auth('manage_schedule')
   @ApiOperation({
-    summary: 'Eliminar Ciclos',
-    description: 'Use este endpoint para eliminar un ciclo específico',
+    summary: 'Eliminar Eventos',
+    description: 'Use este endpoint para eliminar un evento específico',
   })
   @HttpCode(204)
   @Delete('me/:eventId')
-  deleteCycle(@Param() idDto: ScheduleIdDto): Promise<void> {
-    return this.schedulesService.deleteEvent(idDto.eventId);
+  async deleteEvent(@User() reqUser: IAuthenticatedUser, @Param() idDto: ScheduleIdDto): Promise<void> {
+    const user = await this.userRepository.findOneOrFail(reqUser.id);
+    return this.schedulesService.deleteEvent(user, idDto.eventId);
   }
 }
