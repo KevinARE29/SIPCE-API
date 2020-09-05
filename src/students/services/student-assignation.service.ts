@@ -52,7 +52,6 @@ export class StudentAssignationService {
     const studentsWithoutAssignation: StudentsAssignation[] = [];
     const assignedStudents: StudentsAssignation[] = [];
     const myStudents: StudentsAssignation[] = [];
-
     studentsAssignation.forEach(student => {
       const mappedStudent: StudentsAssignation = {
         ...student,
@@ -65,7 +64,8 @@ export class StudentAssignationService {
       } else {
         mappedStudent.images = lastImage ? [lastImage] : [];
       }
-      if (!student.sectionDetails.length) {
+      const studentSchoolYearAssignation = student.sectionDetails[0]?.gradeDetail.cycleDetail.schoolYear;
+      if (!student.sectionDetails.length || studentSchoolYearAssignation?.id !== currentAssignation.id) {
         studentsWithoutAssignation.push(mappedStudent);
       } else if (student.sectionDetails[0].teacher.id !== userId) {
         assignedStudents.push(mappedStudent);

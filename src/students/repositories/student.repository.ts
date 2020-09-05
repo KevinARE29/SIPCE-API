@@ -118,13 +118,12 @@ export class StudentRepository extends Repository<Student> {
       .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
       .leftJoinAndSelect('sectionDetail.teacher', 'teacher')
       .leftJoinAndSelect('sectionDetail.section', 'section')
-      .leftJoin('sectionDetail.gradeDetail', 'gradeDetail')
-      .leftJoin('gradeDetail.cycleDetail', 'cycleDetail')
-      .leftJoin('cycleDetail.schoolYear', 'schoolYear')
+      .leftJoinAndSelect('sectionDetail.gradeDetail', 'gradeDetail')
+      .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoinAndSelect('cycleDetail.schoolYear', 'schoolYear')
       .andWhere(`"currentShift"."id" = ${currentShiftId}`)
       .andWhere(`"currentGrade"."id" = ${currentGradeId}`)
       .andWhere(`"student"."status" = '${EStudentStatus['Cursando Año Escolar']}'`)
-      .andWhere(`("sectionDetail"."id" is null OR "schoolYear"."id" = ${currentAssignation.id})`)
       .andWhere('student.deletedAt is null')
       .getMany();
   }
