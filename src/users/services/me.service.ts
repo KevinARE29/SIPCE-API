@@ -8,6 +8,7 @@ import { plainToClass } from 'class-transformer';
 import { MyProfileResponse } from '@users/docs/my-profile/my-profile-response.doc';
 import { MyCyclesAssignation } from '@users/docs/my-profile/my-cycles-assignation.doc';
 import { MyGradesAssignation } from '@users/docs/my-profile/my-grades-assignation.doc';
+import { MyTeacherAssignation } from '@users/docs/my-profile/my-teacher-assignation.doc';
 
 @Injectable()
 export class MeService {
@@ -39,7 +40,7 @@ export class MeService {
 
     if (teacherCurrentAssignation && this.hasRole(user?.roles, 'docente')) {
       teacherAssignation = teacherCurrentAssignation.cycleDetails.reduce(
-        mapCycleDetails(MyGradesAssignation),
+        mapCycleDetails(MyTeacherAssignation),
         {} as any,
       );
     }
