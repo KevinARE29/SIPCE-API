@@ -1,4 +1,4 @@
-import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsNotEmpty, IsEnum, IsDateString, IsObject, IsBooleanString } from 'class-validator';
+import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsNotEmpty, IsEnum, IsDateString, IsObject, IsBooleanString, isBoolean, IsBoolean } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import { ApiProperty } from '@nestjs/swagger';
 import { EnumEventType, schedulesKeys, TSchedule } from '@schedules/constants/schedule.costants';
@@ -23,8 +23,12 @@ export class CreateScheduleDto {
   @IsString()
   subject!: string;
 
+  @IsNotEmpty({ message: validator.isString })
+  @IsString()
+  description!: string;
+
   @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsBooleanString({ message: validator.isBoolean })
+  @IsBoolean({ message: validator.isBoolean })
   recurrent!: boolean;
 
   @ApiProperty({ type: String })

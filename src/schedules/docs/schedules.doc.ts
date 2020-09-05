@@ -17,6 +17,13 @@ export class Schedule {
   @Expose()
   endTime!: Date;
 
+
+  @Expose()
+  subject!: string;
+
+  @Expose()
+  description!: string;
+
   @Expose()
   eventType!: string;
 

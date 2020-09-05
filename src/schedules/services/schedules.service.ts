@@ -47,23 +47,16 @@ export class SchedulesService {
 
     if (type!=4 && type!=5 )
     {
-      if (type==1 || type==3)
-          if (studentId)
-          {
-            studentSchedule = await this.studentRepository.findOneOrFail(studentId);
-          }
-      else
-        { 
+      
             if (studentId)
             {
               studentSchedule = await this.studentRepository.findOneOrFail(studentId);
             }
-
             if (participantIds)
             {
             employeesSchedule = await this.userRepository.findByIds(participantIds);
             }
-        }
+        
     }
 
 
@@ -108,15 +101,6 @@ export class SchedulesService {
  
      if (type!=4 && type!=5 )
      {
-       if (type==1 || type==3)
-           if (studentId)
-           {
-             studentSchedule = await this.studentRepository.findOneOrFail(studentId);
-             event.studentSchedule=studentSchedule;
-             
-           }
-       else
-         { 
              if (studentId)
              {
                studentSchedule = await this.studentRepository.findOneOrFail(studentId);
@@ -128,10 +112,10 @@ export class SchedulesService {
              employeesSchedule = await this.userRepository.findByIds(participantIds);
              event.employeesSchedule=employeesSchedule;
              }
-         }
+         
      }
      
-     const updatedEvent = await this.studentRepository.save({
+     const updatedEvent = await this.scheduleRepository.save({
       ...event,
       ...scheduleDto,
     });
