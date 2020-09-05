@@ -23,7 +23,7 @@ export class Schedule {
 
   @Expose()
   description!: string;
-
+  
   @Expose()
   eventType!: string;
 

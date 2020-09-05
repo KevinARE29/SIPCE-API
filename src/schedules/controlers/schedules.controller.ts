@@ -7,9 +7,9 @@ import { SchedulesResponse } from '@schedules/docs/schedules-response.doc';
 import { SchedulesService } from '../services/schedules.service';
 import { IAuthenticatedUser } from '@users/interfaces/users.interface';
 import { User } from '@users/decorators/user.decorator';
-import { UsersService } from '@users/services/users.service';
 import { UpdateScheduleDto } from '@schedules/dtos/update-schedule.dto';
 import { ScheduleIdDto } from '@schedules/dtos/schedule-id.dto';
+import { UserRepository } from '@users/repositories/users.repository';
 
 
 @ApiTags('Schedules Endpoints')
@@ -18,7 +18,7 @@ import { ScheduleIdDto } from '@schedules/dtos/schedule-id.dto';
 export class SchedulesController {
   constructor(
     private readonly schedulesService: SchedulesService,
-    private readonly usersService: UsersService) {}
+    private readonly userRepository: UserRepository) {}
 
   
   @Auth('manage_schedule')
@@ -28,7 +28,7 @@ export class SchedulesController {
   })
   @Post('me')
   async createEvent(@User() reqUser: IAuthenticatedUser,@Body() createScheduleDto: CreateScheduleDto): Promise<SchedulesResponse> {
-    const user = await this.usersService.findByIdOrThrow(reqUser.id);
+    const user = await this.userRepository.findOneOrFail(reqUser.id);
     return  this.schedulesService.createEvent( user,createScheduleDto);
   }
 
