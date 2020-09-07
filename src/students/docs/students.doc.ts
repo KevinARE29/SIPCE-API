@@ -21,6 +21,9 @@ export class Students {
   status!: string;
 
   @Expose()
+  createdAt!: Date;
+
+  @Expose()
   @Type(() => Grade)
   currentGrade!: Grade;
 }

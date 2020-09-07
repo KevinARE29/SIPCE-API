@@ -35,6 +35,7 @@ export class UserRepository extends Repository<User> {
       relations: ['roles'],
       where: {
         code,
+        deletedAt: IsNull(),
       },
     });
   }

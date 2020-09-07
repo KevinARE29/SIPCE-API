@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, IsNull } from 'typeorm';
 import { Student } from '@students/entities/student.entity';
 import { PageDto } from '@core/dtos/page.dto';
 import { StudentFilterDto, sortOptionsMap } from '@students/dtos/student-filter.dto';
@@ -16,12 +16,13 @@ export class StudentRepository extends Repository<Student> {
     return this.findOne({
       where: {
         code,
+        deletedAt: IsNull(),
       },
     });
   }
 
   async findByIdOrFail(id: number): Promise<Student> {
-    const student = await this.findOne(id);
+    const student = await this.findOne(id, { where: { deletedAt: IsNull() } });
     if (!student) {
       throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
     }

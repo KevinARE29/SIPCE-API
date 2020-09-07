@@ -28,8 +28,9 @@ export class ResponsibleService {
     pageDto: PageDto,
     responsibleFilterDto: ResponsibleFilterDto,
   ): Promise<ResponsiblesResponse> {
+    const student = await this.studentRepository.findByIdOrFail(studentId);
     const [responsibles, count] = await this.responsibleRepository.getStudentResponsibles(
-      studentId,
+      student.id,
       pageDto,
       responsibleFilterDto,
     );
