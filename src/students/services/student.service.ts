@@ -42,6 +42,20 @@ export class StudentService {
     return { data: plainToClass(Students, mappedStudents, { excludeExtraneousValues: true }), pagination };
   }
 
+  async deleteStudent(studentId: number): Promise<void> {
+    const student = await this.studentRepository.findByIdOrFail(studentId);
+    const milisecondsDiff = +new Date() - +student.createdAt;
+    const yearsDiff = milisecondsDiff / 31536000000;
+    const monthDiff = yearsDiff * 12;
+    if (!(monthDiff < 3 || yearsDiff > 15 || EStudentStatus[student.status] === 'Egresado')) {
+      throw new BadRequestException(
+        'El estudiante no cumple con los requisitos para poder ser dado de baja del sistema',
+      );
+    }
+    student.deletedAt = new Date();
+    await this.studentRepository.save(student);
+  }
+
   async createStudent(createStudentDto: CreateStudentDto): Promise<any> {
     const queryRunner = this.connection.createQueryRunner();
     const {

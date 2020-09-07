@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, Body, Param, Put } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PageDto } from '@core/dtos/page.dto';
 import { Auth } from '@auth/decorators/auth.decorator';
@@ -57,5 +57,15 @@ export class StudentController {
     @Body() updateStudentDto: UpdateStudentDto,
   ): Promise<UpdatedStudentResponse> {
     return this.studentService.updateStudent(studentIdDto.studentId, updateStudentDto);
+  }
+
+  @Auth('delete_student')
+  @ApiOperation({
+    summary: 'Eliminar un estudiante específico',
+    description: 'Use este endpoint para eliminar un estudiante específico',
+  })
+  @Delete(':studentId')
+  deleteStudent(@Param() studentIdDto: StudentIdDto): Promise<void> {
+    return this.studentService.deleteStudent(studentIdDto.studentId);
   }
 }
