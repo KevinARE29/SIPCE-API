@@ -21,8 +21,7 @@ export class SchedulesController {
   @Auth('manage_schedule')
   @ApiOperation({
     summary: 'Buscar Eventos en calendario',
-    description:
-      'Use este endpoint para  buscar eventos en el calendario de un usuario en un rango específico de tiempo.',
+    description: 'Use este endpoint para buscar eventos en el calendario en un rango específico de tiempo.',
   })
   @Get('')
   async gestEvents(@User() reqUser: IAuthenticatedUser, @Query() scheduleFilterDto: ScheduleFilterDto): Promise<any> {
