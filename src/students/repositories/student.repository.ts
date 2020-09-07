@@ -109,7 +109,7 @@ export class StudentRepository extends Repository<Student> {
     return this.createQueryBuilder('student')
       .leftJoin('student.currentShift', 'currentShift')
       .leftJoin('student.currentGrade', 'currentGrade')
-      .leftJoinAndSelect('student.images', 'images')
+      .leftJoinAndMapMany('student.images', Image, 'image', 'image.student = student.id')
       .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
       .leftJoinAndSelect('sectionDetail.teacher', 'teacher')
       .leftJoinAndSelect('sectionDetail.section', 'section')
