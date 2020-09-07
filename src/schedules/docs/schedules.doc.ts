@@ -8,25 +8,7 @@ export class Schedule {
   id!: number;
 
   @Expose()
-  day!: Date;
-
-  @Expose()
-  startTime!: Date;
-
-  @Expose()
-  endTime!: Date;
-
-  @Expose()
-  subject!: string;
-
-  @Expose()
-  description!: string;
-
-  @Expose()
   eventType!: string;
-
-  @Expose()
-  recurrent!: boolean;
 
   @Expose()
   jsonData!: Record<string, any>;
