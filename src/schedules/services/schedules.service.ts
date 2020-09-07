@@ -8,10 +8,13 @@ import { CreateScheduleDto } from '@schedules/dtos/create-schedule.dto';
 import { ScheduleRepository } from '@schedules/repositories/schedules.repository';
 import { User } from '@users/entities/users.entity';
 import { UserRepository } from '@users/repositories/users.repository';
-import { EnumEventType } from '@schedules/constants/schedule.costants';
+import { EnumEventType, eventsColors } from '@schedules/constants/schedule.costants';
 import { StudentRepository } from '@students/repositories/student.repository';
 import { UpdateScheduleDto } from '@schedules/dtos/update-schedule.dto';
-
+import { shuffle } from 'lodash';
+import { ScheduleStudent } from '@schedules/docs/student.doc';
+import { BaseUser } from '@core/docs/base-user.doc';
+import { ScheduleFilterDto } from '@schedules/dtos/schedule-filter.dto';
 @Injectable()
 export class SchedulesService {
   constructor(
@@ -19,6 +22,32 @@ export class SchedulesService {
     private readonly studentRepository: StudentRepository,
     private readonly userRepository: UserRepository,
   ) {}
+
+  async getEvents(userId: number, scheduleFilterDto: ScheduleFilterDto): Promise<any> {
+    const events = await this.scheduleRepository.getEvents(userId, scheduleFilterDto);
+    const shuffledColors = shuffle(eventsColors);
+    const mappedEvents = [];
+    const colorsLength = shuffledColors.length;
+    for (const [index, event] of events.entries()) {
+      const { id, studentSchedule, employeesSchedule, jsonData } = event;
+      const mappedEvent = {
+        jsonData: {
+          ...jsonData,
+          Id: id,
+          Student: plainToClass(ScheduleStudent, studentSchedule, {
+            excludeExtraneousValues: true,
+          }),
+          Participants: plainToClass(BaseUser, employeesSchedule, {
+            excludeExtraneousValues: true,
+          }),
+          CategoryColor: shuffledColors[((index % colorsLength) + colorsLength) % colorsLength],
+        },
+      };
+      mappedEvents.push(mappedEvent);
+    }
+
+    return mappedEvents;
+  }
 
   async createEvent(ownerSchedule: User, createScheduleDto: CreateScheduleDto): Promise<SchedulesResponse> {
     const { studentId, participantIds, eventType, ...scheduleDto } = createScheduleDto;

@@ -1,6 +1,7 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose, Type, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseUser } from '@core/docs/base-user.doc';
+import { EnumEventType } from '@schedules/constants/schedule.costants';
 import { ScheduleStudent } from './student.doc';
 
 export class Schedule {
@@ -8,25 +9,8 @@ export class Schedule {
   id!: number;
 
   @Expose()
-  day!: Date;
-
-  @Expose()
-  startTime!: Date;
-
-  @Expose()
-  endTime!: Date;
-
-  @Expose()
-  subject!: string;
-
-  @Expose()
-  description!: string;
-
-  @Expose()
+  @Transform(eventType => EnumEventType[eventType])
   eventType!: string;
-
-  @Expose()
-  recurrent!: boolean;
 
   @Expose()
   jsonData!: Record<string, any>;

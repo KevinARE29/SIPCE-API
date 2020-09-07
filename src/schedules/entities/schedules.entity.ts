@@ -18,24 +18,6 @@ export class Schedule {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: 'timestamptz' })
-  day!: Date;
-
-  @Column({ name: 'start_time', type: 'timestamptz' })
-  startTime!: Date;
-
-  @Column({ name: 'end_time', type: 'timestamptz' })
-  endTime!: Date;
-
-  @Column('varchar', { length: 128 })
-  description!: string;
-
-  @Column('varchar', { length: 128 })
-  subject!: string;
-
-  @Column()
-  recurrent!: boolean;
-
   @Column('enum', { name: 'event_type', enum: EnumEventType, enumName: 'schedule_enum', default: 1 })
   eventType!: EnumEventType;
 

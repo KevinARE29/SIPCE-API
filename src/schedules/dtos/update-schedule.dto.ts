@@ -15,30 +15,6 @@ import { EnumEventType, schedulesKeys, TSchedule } from '@schedules/constants/sc
 import { IsId } from '@core/decorators/id.decorator';
 
 export class UpdateScheduleDto {
-  @IsOptional()
-  @IsDateString({ message: validator.isDateString })
-  day?: Date;
-
-  @IsOptional()
-  @IsDateString({ message: validator.isDateString })
-  startTime?: Date;
-
-  @IsOptional()
-  @IsDateString({ message: validator.isDateString })
-  endTime?: Date;
-
-  @IsOptional()
-  @IsString({ message: validator.isString })
-  subject?: string;
-
-  @IsOptional()
-  @IsString({ message: validator.isString })
-  description?: string;
-
-  @IsOptional()
-  @IsBoolean({ message: validator.isBoolean })
-  recurrent?: boolean;
-
   @ApiProperty({ type: String })
   @IsOptional()
   @IsEnum(EnumEventType, {
