@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
+  Column,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@users/entities/users.entity';
@@ -19,6 +20,9 @@ export class SectionDetail {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @Column({ default: false })
+  closed!: boolean;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
