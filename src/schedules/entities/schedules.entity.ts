@@ -53,8 +53,8 @@ export class Schedule {
   )
   @JoinTable({
     name: 'schedule_employees',
-    joinColumns: [{ name: 'schedule_event' }],
-    inverseJoinColumns: [{ name: 'employees_id' }],
+    joinColumns: [{ name: 'schedule_id' }],
+    inverseJoinColumns: [{ name: 'employee_id' }],
   })
   employeesSchedule?: User[];
 }
