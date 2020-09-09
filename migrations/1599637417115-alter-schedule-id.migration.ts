@@ -5,7 +5,7 @@ export class Migration1599637417115 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "public"."schedule_employee" DROP CONSTRAINT "FK_207c6955ea9beeab8cda85e983f"`,
     );
-    await queryRunner.query(`DROP INDEX "public"."IDX_5959a211c75640f964af2b9c2b"`);
+    await queryRunner.query(`DROP INDEX "public"."IDX_207c6955ea9beeab8cda85e983"`);
     await queryRunner.query(`ALTER TABLE "public"."schedule_employee" RENAME COLUMN "schedule_event" TO "schedule_id"`);
     await queryRunner.query(
       `ALTER TABLE "public"."schedule_employee" RENAME CONSTRAINT "PK_0fa400f66b57bd9050213bd47cf" TO "PK_fb7954c812973eeb38a651e7ee9"`,
@@ -28,7 +28,7 @@ export class Migration1599637417115 implements MigrationInterface {
     );
     await queryRunner.query(`ALTER TABLE "public"."schedule_employee" RENAME COLUMN "schedule_id" TO "schedule_event"`);
     await queryRunner.query(
-      `CREATE INDEX "IDX_5959a211c75640f964af2b9c2b" ON "public"."schedule_employee" ("schedule_event") `,
+      `CREATE INDEX "IDX_207c6955ea9beeab8cda85e983" ON "public"."schedule_employee" ("schedule_event") `,
     );
     await queryRunner.query(
       `ALTER TABLE "public"."schedule_employee" ADD CONSTRAINT "FK_207c6955ea9beeab8cda85e983f" FOREIGN KEY ("schedule_event") REFERENCES "public"."schedule"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
