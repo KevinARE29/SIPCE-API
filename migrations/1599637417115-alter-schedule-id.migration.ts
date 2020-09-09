@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class Migration1599637417115 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "public"."schedule_employee" DROP CONSTRAINT "FK_5959a211c75640f964af2b9c2be"`,
+      `ALTER TABLE "public"."schedule_employee" DROP CONSTRAINT "FK_207c6955ea9beeab8cda85e983f"`,
     );
     await queryRunner.query(`DROP INDEX "public"."IDX_5959a211c75640f964af2b9c2b"`);
     await queryRunner.query(`ALTER TABLE "public"."schedule_employee" RENAME COLUMN "schedule_event" TO "schedule_id"`);
@@ -31,7 +31,7 @@ export class Migration1599637417115 implements MigrationInterface {
       `CREATE INDEX "IDX_5959a211c75640f964af2b9c2b" ON "public"."schedule_employee" ("schedule_event") `,
     );
     await queryRunner.query(
-      `ALTER TABLE "public"."schedule_employee" ADD CONSTRAINT "FK_5959a211c75640f964af2b9c2be" FOREIGN KEY ("schedule_event") REFERENCES "public"."schedule"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "public"."schedule_employee" ADD CONSTRAINT "FK_207c6955ea9beeab8cda85e983f" FOREIGN KEY ("schedule_event") REFERENCES "public"."schedule"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
   }
 }
