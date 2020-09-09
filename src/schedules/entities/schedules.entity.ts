@@ -52,9 +52,9 @@ export class Schedule {
     { onDelete: 'CASCADE' },
   )
   @JoinTable({
-    name: 'schedule_employees',
-    joinColumns: [{ name: 'schedule_event' }],
-    inverseJoinColumns: [{ name: 'employees_id' }],
+    name: 'schedule_employee',
+    joinColumns: [{ name: 'schedule_id' }],
+    inverseJoinColumns: [{ name: 'employee_id' }],
   })
   employeesSchedule?: User[];
 }
