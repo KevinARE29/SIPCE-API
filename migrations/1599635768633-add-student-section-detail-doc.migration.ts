@@ -11,7 +11,7 @@ export class Migration1599635768633 implements MigrationInterface {
       undefined,
     );
     await queryRunner.query(
-      `comment on column "student_section_detail".section_detail_id is 'Id del hermano estudiante asociado.';`,
+      `comment on column "student_section_detail".section_detail_id is 'Id del detalle de sección asociado';`,
       undefined,
     );
   }
