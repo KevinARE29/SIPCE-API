@@ -14,7 +14,7 @@ export class CycleDetailRepository extends Repository<CycleDetail> {
   }
 
   async findOrCreateCycleDetails(schoolYear: SchoolYear, shift: Shift, cycleIds: number[]): Promise<CycleDetail[]> {
-    const existingCycleDetails = await this.find({ where: { shift, schoolYear, cycle: In(cycleIds) } });
+    const existingCycleDetails = await this.find({ where: { shift, schoolYear, cycle: In([null, ...cycleIds]) } });
     if (existingCycleDetails.length === cycleIds.length) {
       return existingCycleDetails;
     }
