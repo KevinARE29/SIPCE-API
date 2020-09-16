@@ -48,6 +48,7 @@ API para el Sistema Informático para el control y seguimiento del historial con
 | TYPEORM_MIGRATIONS               | migrations/\*.js, dist/migrations/\_.js                                      |
 | TYPEORM_MIGRATIONS_DIR           | migrations                                                                   |
 | TYPEORM_MIGRATIONS_RUN           | true                                                                         |
+| TYPEORM_LOGGING                  | error                                                                        |
 | SENDGRID_API_KEY                 | [The Sendgrid API Key]                                                       |
 | RESET_PSW_SENDGRID_TEMPLATE_ID   | [Template ID for Reset Password]                                             |
 | GENERATE_CREDENTIALS_TEMPLATE_ID | [Template ID for Generate User Credentials]                                  |
