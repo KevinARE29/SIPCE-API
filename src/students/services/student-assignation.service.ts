@@ -114,7 +114,7 @@ export class StudentAssignationService {
       await this.studentRepository.query(
         `DELETE FROM student_section_detail ` +
           `WHERE section_detail_id = ${sectionDetail.id}` +
-          `AND student_id IN (${studentsIdsToRemove})`,
+          ` AND student_id IN (${studentsIdsToRemove})`,
       );
     }
   }
