@@ -24,13 +24,13 @@ export class Student {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 32, unique: true })
+  @Column('varchar', { length: 8, unique: true })
   code!: string;
 
-  @Column('varchar', { length: 128 })
+  @Column('varchar', { length: 64 })
   firstname!: string;
 
-  @Column('varchar', { length: 128 })
+  @Column('varchar', { length: 64 })
   lastname!: string;
 
   @Column({ type: 'timestamptz' })

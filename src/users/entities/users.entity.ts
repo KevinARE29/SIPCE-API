@@ -23,19 +23,19 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 64, unique: true })
+  @Column('varchar', { length: 32, unique: true })
   username!: string;
 
   @Column('varchar', { length: 32, unique: true })
   code!: string;
 
-  @Column('varchar', { length: 128 })
+  @Column('varchar', { length: 64 })
   firstname!: string;
 
-  @Column('varchar', { length: 128 })
+  @Column('varchar', { length: 64 })
   lastname!: string;
 
-  @Column('varchar', { length: 128, nullable: true })
+  @Column('varchar', { length: 60, nullable: true })
   password!: string;
 
   @Column('varchar', { length: 128, unique: true })

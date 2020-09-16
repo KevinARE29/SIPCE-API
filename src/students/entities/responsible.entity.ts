@@ -7,10 +7,10 @@ export class Responsible {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 128 })
+  @Column('varchar', { length: 64 })
   firstname!: string;
 
-  @Column('varchar', { length: 128 })
+  @Column('varchar', { length: 64 })
   lastname!: string;
 
   @Column('varchar', { length: 128, unique: true })
