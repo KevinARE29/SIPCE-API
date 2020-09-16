@@ -20,8 +20,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost): void {
     const context = host.switchToHttp();
     const res = context.getResponse();
+    const req = context.getRequest<Request>();
+
     const { ip, url } = context.getRequest<Request>();
-    Logger.error({ ip, url, time: new Date() }, exception.stack);
+    Logger.error({ ip, url, time: new Date(), body: req.body }, exception.stack);
 
     let statusCode: number;
     let error: string;

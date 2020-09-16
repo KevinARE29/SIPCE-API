@@ -155,10 +155,8 @@ export class StudentService {
         student.startedGrade = await this.gradeRepository.getGradeByIdOrThrow(startedGradeId);
       }
       // Updates the entire siblings assignation
-      console.log('siblings', siblings?.length);
-      if (siblings?.length) {
-        const currentSiblingsIds = student.siblings.map(currentSibling => currentSibling.id).join();
-        console.log('current siblings', currentSiblingsIds);
+      if (siblings) {
+        const currentSiblingsIds = ['null', ...student.siblings.map(currentSibling => currentSibling.id)].join();
         await this.studentRepository.query(
           `DELETE FROM student_brother ` +
             `WHERE student_id IN (${currentSiblingsIds})` +
