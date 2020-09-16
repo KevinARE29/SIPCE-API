@@ -160,7 +160,7 @@ export class StudentService {
         await this.studentRepository.query(
           `DELETE FROM student_brother ` +
             `WHERE student_id IN (${currentSiblingsIds})` +
-            `OR brother_id IN (${currentSiblingsIds})`,
+            ` OR brother_id IN (${currentSiblingsIds})`,
         );
         const siblingsArray = [...(await this.studentRepository.findByIds(siblings)), student];
         const students = siblingsArray.map(studentSibling => ({
