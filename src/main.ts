@@ -9,6 +9,7 @@ import {
 import { ActionLogInterceptor } from '@logs/interceptors/action-log.interceptor';
 import { ConfigService } from '@nestjs/config';
 import { LogService } from '@logs/services/log.service';
+import { urlencoded, json } from 'express';
 import { AllExceptionsFilter } from './core/filters/http-exception.filter';
 import { AppModule } from './app.module';
 
@@ -18,6 +19,8 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
+  app.use(json({ limit: '50mb' }));
+  app.use(urlencoded({ extended: true, limit: '50mb' }));
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
