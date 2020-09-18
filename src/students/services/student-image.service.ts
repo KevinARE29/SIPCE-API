@@ -49,7 +49,7 @@ export class StudentImageService {
           if (err) {
             reject(err);
           }
-          imagePath = image?.url || '';
+          imagePath = image?.secure_url || '';
           resolve(image);
         },
       );
@@ -73,6 +73,7 @@ export class StudentImageService {
       this.uploadImage(filePath, imageFile),
       this.imageRepository.findOne({ student, grade }),
     ]);
+
     const image = existingImage
       ? await this.imageRepository.save({
           ...existingImage,
