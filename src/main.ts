@@ -2,10 +2,6 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import * as helmet from 'helmet';
-import {
-  initializeTransactionalContext,
-  patchTypeORMRepositoryWithBaseRepository,
-} from 'typeorm-transactional-cls-hooked';
 import { ActionLogInterceptor } from '@logs/interceptors/action-log.interceptor';
 import { ConfigService } from '@nestjs/config';
 import { LogService } from '@logs/services/log.service';
@@ -14,9 +10,6 @@ import { AllExceptionsFilter } from './core/filters/http-exception.filter';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  initializeTransactionalContext();
-  patchTypeORMRepositoryWithBaseRepository();
-
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
   app.use(json({ limit: '50mb' }));
@@ -31,13 +24,13 @@ async function bootstrap() {
   });
 
   const configService = app.get(ConfigService);
-  const port = configService.get('PORT') || 3000;
+  const port = configService.get('PORT');
   const apiPrefix = configService.get('API_PREFIX') || 'api/v1';
 
   const logService = app.get(LogService);
   app.useGlobalFilters(new AllExceptionsFilter(logService));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, validationError: { target: false } }));
-  // app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)), new ActionLogInterceptor(logService));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)), new ActionLogInterceptor(logService));
   app.setGlobalPrefix(apiPrefix);
 
   const options = new DocumentBuilder()
