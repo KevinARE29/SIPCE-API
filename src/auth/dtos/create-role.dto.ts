@@ -4,11 +4,11 @@ import { validator } from '@core/messages/validator.message';
 
 export class CreateRoleDto {
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: validator.isNotEmpty })
+  @IsString({ message: validator.isString })
   name!: string;
 
-  @IsArray()
+  @IsArray({ message: validator.isArray })
   @IsInt({ each: true, message: validator.isInt })
   @IsPositive({ each: true, message: validator.isPositive })
   permissions!: number[];

@@ -2,9 +2,9 @@
   'openapi': '3.0.0',
   'info':
     {
-      'title': 'SIPCE API',
+      'title': 'SIAPCE API',
       'description': 'API para el Sistema Informático para el control y seguimiento del historial conductual y expediente psicológico de los estudiantes del colegio Liceo Salvadoreño',
-      'version': '1.0',
+      'version': '1',
       'contact': {},
     },
   'tags': [],
@@ -14,6 +14,863 @@
       'securitySchemes': { 'bearer': { 'scheme': 'bearer', 'bearerFormat': 'JWT', 'type': 'http' } },
       'schemas':
         {
+          'UpdatePswDto':
+            {
+              'type': 'object',
+              'properties': { 'oldPassword': { 'type': 'string' }, 'newPassword': { 'type': 'string' } },
+              'required': ['oldPassword', 'newPassword'],
+            },
+          'UserRole':
+            {
+              'type': 'object',
+              'properties': { 'id': { 'type': 'number' }, 'name': { 'type': 'string' } },
+              'required': ['id', 'name'],
+            },
+          'UserPermission':
+            {
+              'type': 'object',
+              'properties': { 'id': { 'type': 'number' }, 'name': { 'type': 'string' } },
+              'required': ['id', 'name'],
+            },
+          'User':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'roles': { 'type': 'array', 'items': { '$ref': '#/components/schemas/UserRole' } },
+                  'permissions': { 'type': 'array', 'items': { '$ref': '#/components/schemas/UserPermission' } },
+                  'id': { 'type': 'number' },
+                  'username': { 'type': 'string' },
+                  'code': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'active': { 'type': 'boolean' },
+                  'createdAt': { 'format': 'date-time', 'type': 'string' },
+                },
+              'required':
+                [
+                  'roles',
+                  'permissions',
+                  'id',
+                  'username',
+                  'code',
+                  'firstname',
+                  'lastname',
+                  'email',
+                  'active',
+                  'createdAt',
+                ],
+            },
+          'Pagination':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'totalPages': { 'type': 'number' },
+                  'perPage': { 'type': 'number' },
+                  'totalItems': { 'type': 'number' },
+                  'page': { 'type': 'number' },
+                  'nextPage': { 'type': 'number' },
+                  'previousPage': { 'type': 'number' },
+                },
+              'required': ['totalPages', 'perPage', 'totalItems', 'page'],
+            },
+          'UsersResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/User' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data'],
+            },
+          'CreateUserDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'code': { 'type': 'string' },
+                  'username': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'roleIds': { 'type': 'array', 'items': { 'type': 'number' } },
+                  'permissionIds': { 'type': 'array', 'items': { 'type': 'number' } },
+                },
+              'required': ['code', 'username', 'firstname', 'lastname', 'email'],
+            },
+          'UserResponse':
+            {
+              'type': 'object',
+              'properties': { 'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/User' } } },
+              'required': ['data'],
+            },
+          'UpdateUserDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'active': { 'type': 'boolean' },
+                  'username': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'roleIds': { 'type': 'array', 'items': { 'type': 'number' } },
+                  'permissionIds': { 'type': 'array', 'items': { 'type': 'number' } },
+                },
+            },
+          'GenerateCredentialsDto':
+            {
+              'type': 'object',
+              'properties': { 'ids': { 'type': 'array', 'items': { 'type': 'number' } } },
+              'required': ['ids'],
+            },
+          'BulkUserDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'username': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'code': { 'type': 'string' },
+                  'roleIds': { 'type': 'array', 'items': { 'type': 'number' } },
+                },
+              'required': ['firstname', 'lastname', 'username', 'email', 'code'],
+            },
+          'BulkUsersDto':
+            {
+              'type': 'object',
+              'properties': { 'users': { 'type': 'array', 'items': { '$ref': '#/components/schemas/BulkUserDto' } } },
+              'required': ['users'],
+            },
+          'CoordinatorDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'cycleId': { 'type': 'number' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'username': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'code': { 'type': 'string' },
+                },
+              'required': ['cycleId', 'firstname', 'lastname', 'username', 'email', 'code'],
+            },
+          'BulkCoordinatorDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'coordinators': { 'type': 'array', 'items': { '$ref': '#/components/schemas/CoordinatorDto' } },
+                  'currentYear': { 'type': 'boolean' },
+                  'shiftId': { 'type': 'number' },
+                },
+              'required': ['coordinators', 'currentYear', 'shiftId'],
+            },
+          'CounselorDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'username': { 'type': 'string' },
+                  'grades': { 'type': 'array', 'items': { 'type': 'number' } },
+                  'email': { 'type': 'string' },
+                  'code': { 'type': 'string' },
+                },
+              'required': ['firstname', 'lastname', 'username', 'grades', 'email', 'code'],
+            },
+          'BulkCounselorDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'counselors': { 'type': 'array', 'items': { '$ref': '#/components/schemas/CounselorDto' } },
+                  'currentYear': { 'type': 'boolean' },
+                  'shiftId': { 'type': 'number' },
+                },
+              'required': ['counselors', 'currentYear', 'shiftId'],
+            },
+          'TeacherDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'cycleId': { 'type': 'number' },
+                  'gradeId': { 'type': 'number' },
+                  'sectionId': { 'type': 'number' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'username': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'code': { 'type': 'string' },
+                },
+              'required': ['cycleId', 'gradeId', 'sectionId', 'firstname', 'lastname', 'username', 'email', 'code'],
+            },
+          'BulkTeacherDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'teachers': { 'type': 'array', 'items': { '$ref': '#/components/schemas/TeacherDto' } },
+                  'currentYear': { 'type': 'boolean' },
+                  'shiftId': { 'type': 'number' },
+                },
+              'required': ['teachers', 'currentYear', 'shiftId'],
+            },
+          'MyProfile':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'roles': { 'type': 'array', 'items': { '$ref': '#/components/schemas/UserRole' } },
+                  'permissions': { 'type': 'array', 'items': { '$ref': '#/components/schemas/UserPermission' } },
+                  'id': { 'type': 'number' },
+                  'username': { 'type': 'string' },
+                  'code': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'active': { 'type': 'boolean' },
+                  'createdAt': { 'format': 'date-time', 'type': 'string' },
+                  'teacherAssignation': { 'type': 'object' },
+                  'counselorAssignation': { 'type': 'object' },
+                  'cycleCoordinatorAssignation': { 'type': 'object' },
+                },
+              'required':
+                [
+                  'roles',
+                  'permissions',
+                  'id',
+                  'username',
+                  'code',
+                  'firstname',
+                  'lastname',
+                  'email',
+                  'active',
+                  'createdAt',
+                  'teacherAssignation',
+                  'counselorAssignation',
+                  'cycleCoordinatorAssignation',
+                ],
+            },
+          'MyProfileResponse':
+            {
+              'type': 'object',
+              'properties': { 'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/MyProfile' } } },
+              'required': ['data'],
+            },
+          'Section':
+            {
+              'type': 'object',
+              'properties': { 'id': { 'type': 'number' }, 'name': { 'type': 'string' } },
+              'required': ['id', 'name'],
+            },
+          'SectionsResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Section' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data'],
+            },
+          'CatalogueDto':
+            {
+              'type': 'object',
+              'properties': { 'name': { 'type': 'string', 'example': 'Electrotecnia' } },
+              'required': ['name'],
+            },
+          'SectionResponse':
+            {
+              'type': 'object',
+              'properties': { 'data': { '$ref': '#/components/schemas/Section' } },
+              'required': ['data'],
+            },
+          'Cycle':
+            {
+              'type': 'object',
+              'properties': { 'id': { 'type': 'number' }, 'name': { 'type': 'string' } },
+              'required': ['id', 'name'],
+            },
+          'CyclesResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Cycle' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data', 'pagination'],
+            },
+          'CycleResponse':
+            {
+              'type': 'object',
+              'properties': { 'data': { '$ref': '#/components/schemas/Cycle' } },
+              'required': ['data'],
+            },
+          'Grade':
+            {
+              'type': 'object',
+              'properties':
+                { 'id': { 'type': 'number' }, 'name': { 'type': 'string' }, 'active': { 'type': 'boolean' } },
+              'required': ['id', 'name', 'active'],
+            },
+          'GradesResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Grade' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data'],
+            },
+          'Period':
+            {
+              'type': 'object',
+              'properties':
+                { 'id': { 'type': 'number' }, 'name': { 'type': 'string' }, 'active': { 'type': 'boolean' } },
+              'required': ['id', 'name', 'active'],
+            },
+          'PeriodsResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Period' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data', 'pagination'],
+            },
+          'Shift':
+            {
+              'type': 'object',
+              'properties':
+                { 'id': { 'type': 'number' }, 'name': { 'type': 'string' }, 'active': { 'type': 'boolean' } },
+              'required': ['id', 'name', 'active'],
+            },
+          'ShiftsResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Shift' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data', 'pagination'],
+            },
+          'SchoolYearResponse':
+            {
+              'type': 'object',
+              'properties': { 'currentAssignation': { 'type': 'object' }, 'previousAssignation': { 'type': 'object' } },
+              'required': ['currentAssignation'],
+            },
+          'StartSchoolYearDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'year': { 'type': 'number', 'minimum': 2020, 'maximum': 2021 },
+                  'startDate': { 'format': 'date-time', 'type': 'string' },
+                  'endDate': { 'format': 'date-time', 'type': 'string' },
+                },
+              'required': ['year', 'startDate', 'endDate'],
+            },
+          'BaseUser':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'code': { 'type': 'string' },
+                  'username': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                },
+              'required': ['id', 'code', 'username', 'firstname', 'lastname', 'email'],
+            },
+          'SectionDetail':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'section': { '$ref': '#/components/schemas/Section' },
+                  'teacher': { '$ref': '#/components/schemas/BaseUser' },
+                },
+              'required': ['id', 'section', 'teacher'],
+            },
+          'GradeDetail':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'grade': { '$ref': '#/components/schemas/Grade' },
+                  'counselor': { '$ref': '#/components/schemas/BaseUser' },
+                  'sectionDetails': { 'type': 'array', 'items': { '$ref': '#/components/schemas/SectionDetail' } },
+                },
+              'required': ['id', 'grade', 'counselor', 'sectionDetails'],
+            },
+          'CycleDetail':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'shift': { '$ref': '#/components/schemas/Shift' },
+                  'cycle': { '$ref': '#/components/schemas/Cycle' },
+                  'cycleCoordinator': { '$ref': '#/components/schemas/BaseUser' },
+                  'gradeDetails': { 'type': 'array', 'items': { '$ref': '#/components/schemas/GradeDetail' } },
+                },
+              'required': ['id', 'shift', 'cycle', 'cycleCoordinator', 'gradeDetails'],
+            },
+          'SchoolYear':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'year': { 'type': 'number' },
+                  'status': { 'type': 'string' },
+                  'cycleDetails': { 'type': 'array', 'items': { '$ref': '#/components/schemas/CycleDetail' } },
+                  'startDate': { 'format': 'date-time', 'type': 'string' },
+                  'endDate': { 'format': 'date-time', 'type': 'string' },
+                  'closeDate': { 'format': 'date-time', 'type': 'string' },
+                },
+              'required': ['id', 'year', 'status', 'cycleDetails', 'startDate', 'endDate', 'closeDate'],
+            },
+          'GradeAssignationDto':
+            {
+              'type': 'object',
+              'properties':
+                { 'gradeId': { 'type': 'number' }, 'sections': { 'type': 'array', 'items': { 'type': 'number' } } },
+              'required': ['gradeId', 'sections'],
+            },
+          'CycleAssignationDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'grades': { 'type': 'array', 'items': { '$ref': '#/components/schemas/GradeAssignationDto' } },
+                  'cycleId': { 'type': 'number' },
+                },
+              'required': ['grades', 'cycleId'],
+            },
+          'ShiftAssignationDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'cycles': { 'type': 'array', 'items': { '$ref': '#/components/schemas/CycleAssignationDto' } },
+                  'shiftId': { 'type': 'number' },
+                },
+              'required': ['cycles', 'shiftId'],
+            },
+          'AssignAcademicCataloguesDto':
+            {
+              'type': 'object',
+              'properties':
+                { 'shifts': { 'type': 'array', 'items': { '$ref': '#/components/schemas/ShiftAssignationDto' } } },
+              'required': ['shifts'],
+            },
+          'CycleCoordinatorsAssignationDto':
+            {
+              'type': 'object',
+              'properties': { 'cycleId': { 'type': 'number' }, 'cycleCoordinatorId': { 'type': 'number' } },
+              'required': ['cycleId', 'cycleCoordinatorId'],
+            },
+          'ShiftCycleCoordinatorsDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'cycles':
+                    { 'type': 'array', 'items': { '$ref': '#/components/schemas/CycleCoordinatorsAssignationDto' } },
+                  'shiftId': { 'type': 'number' },
+                },
+              'required': ['cycles', 'shiftId'],
+            },
+          'AssignCycleCoordinatorsDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'shifts': { 'type': 'array', 'items': { '$ref': '#/components/schemas/ShiftCycleCoordinatorsDto' } },
+                },
+              'required': ['shifts'],
+            },
+          'CounselorsAssignationDto':
+            {
+              'type': 'object',
+              'properties':
+                { 'gradeIds': { 'type': 'array', 'items': { 'type': 'number' } }, 'counselorId': { 'type': 'number' } },
+              'required': ['gradeIds', 'counselorId'],
+            },
+          'ShiftCounselorsDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'counselors':
+                    { 'type': 'array', 'items': { '$ref': '#/components/schemas/CounselorsAssignationDto' } },
+                  'shiftId': { 'type': 'number' },
+                },
+              'required': ['counselors', 'shiftId'],
+            },
+          'AssignCounselorsDto':
+            {
+              'type': 'object',
+              'properties':
+                { 'shifts': { 'type': 'array', 'items': { '$ref': '#/components/schemas/ShiftCounselorsDto' } } },
+              'required': ['shifts'],
+            },
+          'SectionTeachersDto':
+            {
+              'type': 'object',
+              'properties': { 'sectionId': { 'type': 'number' }, 'teacherId': { 'type': 'number' } },
+              'required': ['sectionId', 'teacherId'],
+            },
+          'GradeTeachersDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'sections': { 'type': 'array', 'items': { '$ref': '#/components/schemas/SectionTeachersDto' } },
+                  'gradeId': { 'type': 'number' },
+                },
+              'required': ['sections', 'gradeId'],
+            },
+          'ShiftTeachersDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'grades': { 'type': 'array', 'items': { '$ref': '#/components/schemas/GradeTeachersDto' } },
+                  'shiftId': { 'type': 'number' },
+                },
+              'required': ['grades', 'shiftId'],
+            },
+          'AssignTeachersDto':
+            {
+              'type': 'object',
+              'properties':
+                { 'shifts': { 'type': 'array', 'items': { '$ref': '#/components/schemas/ShiftTeachersDto' } } },
+              'required': ['shifts'],
+            },
+          'UpdateSchoolYearStatusDto':
+            { 'type': 'object', 'properties': { 'status': { 'type': 'string' } }, 'required': ['status'] },
+          'Students':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'code': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'status': { 'type': 'string' },
+                  'createdAt': { 'format': 'date-time', 'type': 'string' },
+                  'currentGrade': { '$ref': '#/components/schemas/Grade' },
+                },
+              'required': ['id', 'code', 'firstname', 'lastname', 'email', 'status', 'createdAt', 'currentGrade'],
+            },
+          'StudentsResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Students' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data', 'pagination'],
+            },
+          'ResponsibleDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'relationship': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'phone': { 'type': 'string' },
+                },
+              'required': ['relationship', 'firstname', 'lastname', 'email', 'phone'],
+            },
+          'CreateStudentDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'startedGradeId': { 'type': 'number' },
+                  'registrationYear': { 'type': 'number' },
+                  'responsible': { '$ref': '#/components/schemas/ResponsibleDto' },
+                  'code': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'birthdate': { 'format': 'date-time', 'type': 'string' },
+                  'shiftId': { 'type': 'number' },
+                  'gradeId': { 'type': 'number' },
+                },
+              'required': ['responsible', 'code', 'firstname', 'lastname', 'email', 'birthdate', 'shiftId', 'gradeId'],
+            },
+          'Sibling':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'code': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'status': { 'type': 'string' },
+                },
+              'required': ['id', 'code', 'firstname', 'lastname', 'email', 'status'],
+            },
+          'Image': { 'type': 'object', 'properties': { 'path': { 'type': 'string' } }, 'required': ['path'] },
+          'Responsible':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'phone': { 'type': 'string' },
+                  'relationship': { 'type': 'string' },
+                },
+              'required': ['id', 'firstname', 'lastname', 'email', 'phone', 'relationship'],
+            },
+          'ResponsibleStudent':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'relationship': { 'type': 'string' },
+                  'responsible': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Responsible' } },
+                },
+              'required': ['relationship', 'responsible'],
+            },
+          'SCycleDetail':
+            {
+              'type': 'object',
+              'properties': { 'id': { 'type': 'number' }, 'cycle': { '$ref': '#/components/schemas/Cycle' } },
+              'required': ['id', 'cycle'],
+            },
+          'SGradeDetail':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'grade': { '$ref': '#/components/schemas/Grade' },
+                  'cycleDetail': { '$ref': '#/components/schemas/SCycleDetail' },
+                },
+              'required': ['id', 'grade', 'cycleDetail'],
+            },
+          'SSectionDetail':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'section': { '$ref': '#/components/schemas/Section' },
+                  'gradeDetail': { '$ref': '#/components/schemas/SGradeDetail' },
+                },
+              'required': ['id', 'section', 'gradeDetail'],
+            },
+          'Student':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'code': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'birthdate': { 'format': 'date-time', 'type': 'string' },
+                  'registrationYear': { 'type': 'number' },
+                  'email': { 'type': 'string' },
+                  'status': { 'type': 'string' },
+                  'currentShift': { '$ref': '#/components/schemas/Shift' },
+                  'currentGrade': { '$ref': '#/components/schemas/Grade' },
+                  'startedGrade': { '$ref': '#/components/schemas/Grade' },
+                  'siblings': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Sibling' } },
+                  'images': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Image' } },
+                  'responsibleStudents':
+                    { 'type': 'array', 'items': { '$ref': '#/components/schemas/ResponsibleStudent' } },
+                  'sectionDetails': { 'type': 'array', 'items': { '$ref': '#/components/schemas/SSectionDetail' } },
+                },
+              'required':
+                [
+                  'id',
+                  'code',
+                  'firstname',
+                  'lastname',
+                  'birthdate',
+                  'registrationYear',
+                  'email',
+                  'status',
+                  'currentShift',
+                  'currentGrade',
+                  'startedGrade',
+                  'siblings',
+                  'images',
+                  'responsibleStudents',
+                  'sectionDetails',
+                ],
+            },
+          'StudentResponse':
+            {
+              'type': 'object',
+              'properties': { 'data': { '$ref': '#/components/schemas/Student' } },
+              'required': ['data'],
+            },
+          'UpdateStudentDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'status': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'birthdate': { 'format': 'date-time', 'type': 'string' },
+                  'shiftId': { 'type': 'number' },
+                  'gradeId': { 'type': 'number' },
+                  'sectionId': { 'type': 'number' },
+                  'startedGradeId': { 'type': 'number' },
+                  'registrationYear': { 'type': 'number' },
+                  'siblings': { 'type': 'array', 'items': { 'type': 'number' } },
+                },
+            },
+          'UpdatedStudent':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'birthdate': { 'format': 'date-time', 'type': 'string' },
+                  'registrationYear': { 'type': 'number' },
+                  'email': { 'type': 'string' },
+                  'status': { 'type': 'string' },
+                  'currentShift': { '$ref': '#/components/schemas/Shift' },
+                  'startedGrade': { '$ref': '#/components/schemas/Grade' },
+                  'siblings': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Sibling' } },
+                },
+              'required': ['id'],
+            },
+          'UpdatedStudentResponse':
+            {
+              'type': 'object',
+              'properties': { 'data': { '$ref': '#/components/schemas/UpdatedStudent' } },
+              'required': ['data'],
+            },
+          'StudentDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'startedGradeId': { 'type': 'number' },
+                  'registrationYear': { 'type': 'number' },
+                  'responsibleRelationship': { 'type': 'string' },
+                  'code': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'gradeId': { 'type': 'number' },
+                  'birthdate': { 'format': 'date-time', 'type': 'string' },
+                  'responsibleFirstname': { 'type': 'string' },
+                  'responsibleLastname': { 'type': 'string' },
+                  'responsibleEmail': { 'type': 'string' },
+                  'responsiblePhone': { 'type': 'string' },
+                },
+              'required':
+                [
+                  'responsibleRelationship',
+                  'code',
+                  'firstname',
+                  'lastname',
+                  'email',
+                  'gradeId',
+                  'birthdate',
+                  'responsibleFirstname',
+                  'responsibleLastname',
+                  'responsibleEmail',
+                  'responsiblePhone',
+                ],
+            },
+          'BulkStudentsDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'currentYear': { 'type': 'boolean' },
+                  'students': { 'type': 'array', 'items': { '$ref': '#/components/schemas/StudentDto' } },
+                  'shiftId': { 'type': 'number' },
+                },
+              'required': ['students', 'shiftId'],
+            },
+          'ResponsiblesResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Responsible' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data', 'pagination'],
+            },
+          'ResponsibleResponse':
+            {
+              'type': 'object',
+              'properties': { 'data': { '$ref': '#/components/schemas/Responsible' } },
+              'required': ['data'],
+            },
+          'UpdateResponsibleDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'relationship': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                  'phone': { 'type': 'string' },
+                },
+            },
+          'ImageDto':
+            {
+              'type': 'object',
+              'properties': { 'image': { 'type': 'string', 'format': 'binary' } },
+              'required': ['image'],
+            },
+          'PatchStudentAssignationDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'studentIds': { 'type': 'array', 'items': { 'type': 'number' } },
+                  'vinculate': { 'type': 'boolean' },
+                },
+              'required': ['studentIds', 'vinculate'],
+            },
           'LoginDto':
             {
               'type': 'object',
@@ -68,17 +925,1302 @@
               'properties':
                 {
                   'minLength': { 'type': 'number' },
-                  'capitalLetter': { 'type': 'object' },
-                  'lowerCase': { 'type': 'object' },
-                  'specialChart': { 'type': 'object' },
-                  'numericChart': { 'type': 'object' },
+                  'capitalLetter': { 'type': 'boolean' },
+                  'lowerCase': { 'type': 'boolean' },
+                  'specialChart': { 'type': 'boolean' },
+                  'numericChart': { 'type': 'boolean' },
                   'typeSpecial': { 'type': 'string' },
+                },
+            },
+          'ResetPswDto':
+            { 'type': 'object', 'properties': { 'password': { 'type': 'string' } }, 'required': ['password'] },
+          'Roles':
+            {
+              'type': 'object',
+              'properties':
+                { 'id': { 'type': 'number' }, 'name': { 'type': 'string' }, 'usersCount': { 'type': 'number' } },
+              'required': ['id', 'name', 'usersCount'],
+            },
+          'RolesResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Roles' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data'],
+            },
+          'CreateRoleDto':
+            {
+              'type': 'object',
+              'properties':
+                { 'name': { 'type': 'string' }, 'permissions': { 'type': 'array', 'items': { 'type': 'number' } } },
+              'required': ['name', 'permissions'],
+            },
+          'Permission':
+            {
+              'type': 'object',
+              'properties':
+                { 'id': { 'type': 'number' }, 'name': { 'type': 'string' }, 'codename': { 'type': 'string' } },
+              'required': ['id', 'name', 'codename'],
+            },
+          'Role':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'permissions': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Permission' } },
+                  'name': { 'type': 'string' },
+                },
+              'required': ['id', 'permissions', 'name'],
+            },
+          'RoleResponse':
+            {
+              'type': 'object',
+              'properties': { 'data': { '$ref': '#/components/schemas/Role' } },
+              'required': ['data'],
+            },
+          'UpdateRoleDto':
+            {
+              'type': 'object',
+              'properties':
+                { 'name': { 'type': 'string' }, 'permissions': { 'type': 'array', 'items': { 'type': 'number' } } },
+            },
+          'PermissionsResponse':
+            {
+              'type': 'object',
+              'properties': { 'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Permission' } } },
+              'required': ['data'],
+            },
+          'AccessLogs':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'username': { 'type': 'string' },
+                  'ip': { 'type': 'string' },
+                  'statusCode': { 'type': 'number' },
+                  'attemptTime': { 'format': 'date-time', 'type': 'string' },
+                },
+              'required': ['id', 'username', 'ip', 'statusCode', 'attemptTime'],
+            },
+          'AccessLogsResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/AccessLogs' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data', 'pagination'],
+            },
+          'ActionLogs':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'user': { '$ref': '#/components/schemas/BaseUser' },
+                  'action': { 'type': 'string' },
+                  'endpoint': { 'type': 'string' },
+                  'statusCode': { 'type': 'number' },
+                  'attemptTime': { 'format': 'date-time', 'type': 'string' },
+                },
+              'required': ['id', 'user', 'action', 'endpoint', 'statusCode', 'attemptTime'],
+            },
+          'ActionLogsResponse':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'data': { 'type': 'array', 'items': { '$ref': '#/components/schemas/ActionLogs' } },
+                  'pagination': { '$ref': '#/components/schemas/Pagination' },
+                },
+              'required': ['data', 'pagination'],
+            },
+          'CreateScheduleDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'eventType': { 'type': 'string' },
+                  'jsonData': { 'type': 'object' },
+                  'participantIds': { 'type': 'array', 'items': { 'type': 'number' } },
+                  'studentId': { 'type': 'number' },
+                },
+              'required': ['eventType', 'jsonData'],
+            },
+          'ScheduleStudent':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'id': { 'type': 'number' },
+                  'code': { 'type': 'string' },
+                  'firstname': { 'type': 'string' },
+                  'lastname': { 'type': 'string' },
+                  'email': { 'type': 'string' },
+                },
+              'required': ['id', 'code', 'firstname', 'lastname', 'email'],
+            },
+          'Schedule':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'employeesSchedule': { 'type': 'array', 'items': { '$ref': '#/components/schemas/BaseUser' } },
+                  'studentSchedule': { '$ref': '#/components/schemas/ScheduleStudent' },
+                  'id': { 'type': 'number' },
+                  'eventType': { 'type': 'string' },
+                  'jsonData': { 'type': 'object' },
+                },
+              'required': ['employeesSchedule', 'studentSchedule', 'id', 'eventType', 'jsonData'],
+            },
+          'SchedulesResponse':
+            {
+              'type': 'object',
+              'properties': { 'data': { '$ref': '#/components/schemas/Schedule' } },
+              'required': ['data'],
+            },
+          'UpdateScheduleDto':
+            {
+              'type': 'object',
+              'properties':
+                {
+                  'eventType': { 'type': 'string' },
+                  'jsonData': { 'type': 'object' },
+                  'participantIds': { 'type': 'array', 'items': { 'type': 'number' } },
+                  'studentId': { 'type': 'number' },
                 },
             },
         },
     },
   'paths':
     {
+      '/api/v1/users/me/password':
+        {
+          'patch':
+            {
+              'operationId': 'UsersController_updatePsw',
+              'summary': 'Actualizar contraseña',
+              'description': 'Use este endpoint para un usuario que ha iniciado sesión pueda actualizar su contraseña',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/UpdatePswDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/users':
+        {
+          'get':
+            {
+              'operationId': 'UsersController_getAllUsers',
+              'summary': 'Consultar Usuarios',
+              'description': 'Use este endpoint para consultar los usuarios activos e inactivos',
+              'parameters':
+                [
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema':
+                      {
+                        'enum':
+                          [
+                            'username-asc',
+                            'username-desc',
+                            'firstname-asc',
+                            'firstname-desc',
+                            'lastname-asc',
+                            'lastname-desc',
+                            'email-asc',
+                            'email-desc',
+                            'createdAt-asc',
+                            'createdAt-desc',
+                          ],
+                        'type': 'string',
+                      },
+                  },
+                  { 'name': 'username', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'firstname', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'lastname', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'email', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'role', 'required': false, 'in': 'query', 'schema': { 'type': 'number' } },
+                  { 'name': 'active', 'required': false, 'in': 'query', 'schema': { 'type': 'boolean' } },
+                  { 'name': 'credentials', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'createdAtStart', 'required': false, 'in': 'query', 'schema': { 'type': 'date' } },
+                  { 'name': 'createdAtEnd', 'required': false, 'in': 'query', 'schema': { 'type': 'date' } },
+                  { 'name': 'paginate', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/UsersResponse' } } },
+                    },
+                },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'post':
+            {
+              'operationId': 'UsersController_createUser',
+              'summary': 'Crear Usuarios',
+              'description': 'Use este endpoint para crear nuevos usuarios',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/CreateUserDto' } } },
+                },
+              'responses':
+                {
+                  '201':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/UserResponse' } } },
+                    },
+                },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/users/{userId}':
+        {
+          'get':
+            {
+              'operationId': 'UsersController_getSingleUser',
+              'summary': 'Ver detalle de Usuario',
+              'description': 'Use este endpoint para ver el detalle de un usuario específico',
+              'parameters': [{ 'name': 'userId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/UserResponse' } } },
+                    },
+                },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'put':
+            {
+              'operationId': 'UsersController_updateUser',
+              'summary': 'Actualizar Usuario',
+              'description': 'Use este endpoint para actualizar usuarios',
+              'parameters': [{ 'name': 'userId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/UpdateUserDto' } } },
+                },
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/UserResponse' } } },
+                    },
+                },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'delete':
+            {
+              'operationId': 'UsersController_deleteUser',
+              'summary': 'Eliminar Usuario',
+              'description': 'Use este endpoint para eliminar un usuario específico',
+              'parameters': [{ 'name': 'userId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/users/credentials':
+        {
+          'post':
+            {
+              'operationId': 'UsersController_generateCredentials',
+              'summary': 'Generar Credenciales de Usuarios',
+              'description': 'Use este endpoint para generar credenciales a usuarios recién registrados',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content':
+                    { 'application/json': { 'schema': { '$ref': '#/components/schemas/GenerateCredentialsDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/users/bulk':
+        {
+          'post':
+            {
+              'operationId': 'UserBulkController_bulkUsers',
+              'summary': 'Cargar Usuarios',
+              'description': 'Use este endpoint para hacer una carga masiva de usuarios',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/BulkUsersDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/users/coordinators':
+        {
+          'post':
+            {
+              'operationId': 'UserBulkController_bulkCoordinators',
+              'summary': 'Cargar Usuarios Coordinadores de Ciclo',
+              'description': 'Use este endpoint para hacer una carga masiva de usuarios coordinadores de ciclo',
+              'deprecated': true,
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content':
+                    { 'application/json': { 'schema': { '$ref': '#/components/schemas/BulkCoordinatorDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/users/counselors':
+        {
+          'post':
+            {
+              'operationId': 'UserBulkController_bulkCounselors',
+              'summary': 'Cargar Usuarios Orientadores',
+              'description': 'Use este endpoint para hacer una carga masiva de usuarios orientadores',
+              'deprecated': true,
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/BulkCounselorDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/users/teachers':
+        {
+          'post':
+            {
+              'operationId': 'UserBulkController_bulkTeachers',
+              'summary': 'Cargar Usuarios Docentes',
+              'description': 'Use este endpoint para hacer una carga masiva de usuarios docentes y realizar la asignación de grados y secciones del actual año escolar',
+              'deprecated': true,
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/BulkTeacherDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Users Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/me':
+        {
+          'get':
+            {
+              'operationId': 'MeController_getMyProfile',
+              'summary': 'Obtener información de mi perfil',
+              'description': 'Use este endpoint para obtener la información del perfil del usuario que actualmente ha iniciado sesión',
+              'parameters': [],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/MyProfileResponse' } } },
+                    },
+                },
+              'tags': ['My Profile Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/sections':
+        {
+          'get':
+            {
+              'operationId': 'SectionController_getAllSections',
+              'summary': 'Listar Secciones',
+              'description': 'Use este endpoint para listar las secciones de grados existentes',
+              'parameters':
+                [
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'enum': ['name-asc', 'name-desc'], 'type': 'string' },
+                  },
+                  { 'name': 'name', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'paginate', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/SectionsResponse' } } },
+                    },
+                },
+              'tags': ['Sections Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'post':
+            {
+              'operationId': 'SectionController_createSection',
+              'summary': 'Crear Sección',
+              'description': 'Use este endpoint para crear una nueva sección',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/CatalogueDto' } } },
+                },
+              'responses':
+                {
+                  '201':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/SectionResponse' } } },
+                    },
+                },
+              'tags': ['Sections Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/sections/{sectionId}':
+        {
+          'put':
+            {
+              'operationId': 'SectionController_updateSection',
+              'summary': 'Actualizar Sección',
+              'description': 'Use este endpoint para actualizar una sección específica',
+              'parameters': [{ 'name': 'sectionId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/CatalogueDto' } } },
+                },
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/SectionResponse' } } },
+                    },
+                },
+              'tags': ['Sections Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'delete':
+            {
+              'operationId': 'SectionController_deleteSection',
+              'summary': 'Eliminar Sección',
+              'description': 'Use este endpoint para eliminar una sección específica',
+              'parameters': [{ 'name': 'sectionId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Sections Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/cycles':
+        {
+          'get':
+            {
+              'operationId': 'CycleController_getAllCycles',
+              'summary': 'Listar Ciclos',
+              'description': 'Use este endpoint para listar los ciclos  existentes',
+              'parameters':
+                [
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'enum': ['name-asc', 'name-desc'], 'type': 'string' },
+                  },
+                  { 'name': 'name', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/CyclesResponse' } } },
+                    },
+                },
+              'tags': ['Cycle Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'post':
+            {
+              'operationId': 'CycleController_createCycle',
+              'summary': 'Crear Ciclos',
+              'description': 'Use este endpoint para crear un nuevo ciclo',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/CatalogueDto' } } },
+                },
+              'responses':
+                {
+                  '201':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/CycleResponse' } } },
+                    },
+                },
+              'tags': ['Cycle Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/cycles/{cycleId}':
+        {
+          'put':
+            {
+              'operationId': 'CycleController_updateCycle',
+              'summary': 'Actualizar Ciclo',
+              'description': 'Use este endpoint para actualizar un ciclo específico',
+              'parameters': [{ 'name': 'cycleId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/CatalogueDto' } } },
+                },
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/CycleResponse' } } },
+                    },
+                },
+              'tags': ['Cycle Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'delete':
+            {
+              'operationId': 'CycleController_deleteCycle',
+              'summary': 'Eliminar Ciclos',
+              'description': 'Use este endpoint para eliminar un ciclo específico',
+              'parameters': [{ 'name': 'cycleId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Cycle Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/grades':
+        {
+          'get':
+            {
+              'operationId': 'GradeController_getAllGrades',
+              'summary': 'Listar Grados',
+              'description': 'Use este endpoint para listar los grados  existentes',
+              'parameters':
+                [
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'enum': ['name-asc', 'name-desc'], 'type': 'string' },
+                  },
+                  { 'name': 'name', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'active', 'required': false, 'in': 'query', 'schema': { 'type': 'boolean' } },
+                  { 'name': 'paginate', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/GradesResponse' } } },
+                    },
+                },
+              'tags': ['Grades Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/grades/{gradeId}':
+        {
+          'delete':
+            {
+              'operationId': 'GradeController_deleteGrade',
+              'summary': 'Desactivar Grados',
+              'description': 'Use este endpoint para desactivar/activar un grado específico',
+              'parameters': [{ 'name': 'gradeId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Grades Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/periods':
+        {
+          'get':
+            {
+              'operationId': 'PeriodController_getAllPeriods',
+              'summary': 'Listar Periodos',
+              'description': 'Use este endpoint para listar los Periods  existentes',
+              'parameters':
+                [
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'enum': ['name-asc', 'name-desc'], 'type': 'string' },
+                  },
+                  { 'name': 'name', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'active', 'required': false, 'in': 'query', 'schema': { 'type': 'boolean' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/PeriodsResponse' } } },
+                    },
+                },
+              'tags': ['Periods Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/periods/{periodId}':
+        {
+          'delete':
+            {
+              'operationId': 'PeriodController_deletePeriod',
+              'summary': 'Desactivar Periodo',
+              'description': 'Use este endpoint para desactivar/activar un periodo específico',
+              'parameters': [{ 'name': 'periodId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Periods Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/shifts':
+        {
+          'get':
+            {
+              'operationId': 'ShiftController_getAllShifts',
+              'summary': 'Listar Turnos',
+              'description': 'Use este endpoint para listar los Turnos  existentes',
+              'parameters':
+                [
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'enum': ['name-asc', 'name-desc'], 'type': 'string' },
+                  },
+                  { 'name': 'name', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'active', 'required': false, 'in': 'query', 'schema': { 'type': 'boolean' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/ShiftsResponse' } } },
+                    },
+                },
+              'tags': ['Shifts Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/shifts/{shiftId}':
+        {
+          'delete':
+            {
+              'operationId': 'ShiftController_deleteShift',
+              'summary': 'Desactivar Turnos',
+              'description': 'Use este endpoint para desactivar/activar un turno específico',
+              'parameters': [{ 'name': 'shiftId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Shifts Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/school-year':
+        {
+          'get':
+            {
+              'operationId': 'SchoolYearController_getCurrentAssignation',
+              'summary': 'Mostrar Asignación del Año Escolar',
+              'description': 'Use este endpoint para consultar la asignación actual del año escolar activo',
+              'parameters': [],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/SchoolYearResponse' } } },
+                    },
+                },
+              'tags': ['School Year Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'post':
+            {
+              'operationId': 'SchoolYearController_startSchoolYear',
+              'summary': 'Aperturar Año Escolar',
+              'description': 'Use este endpoint para aperturar año escolar',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content':
+                    { 'application/json': { 'schema': { '$ref': '#/components/schemas/StartSchoolYearDto' } } },
+                },
+              'responses':
+                {
+                  '201':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/SchoolYear' } } },
+                    },
+                },
+              'tags': ['School Year Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'patch':
+            {
+              'operationId': 'CloseSchoolYearController_updateSchoolYearStatus',
+              'summary': 'Actualizar estado del año escolar',
+              'description': 'Use este endpoint para actualizar estado del año escolar',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content':
+                    { 'application/json': { 'schema': { '$ref': '#/components/schemas/UpdateSchoolYearStatusDto' } } },
+                },
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/SchoolYear' } } },
+                    },
+                },
+              'tags': ['School Year Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/school-year/academic-catalogues':
+        {
+          'post':
+            {
+              'operationId': 'SchoolYearController_assignAcademicCatalogues',
+              'summary': 'Asignar catálogos académicos',
+              'description': 'Use este endpoint para asignar ciclos, grados y secciones por turnos',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content':
+                    {
+                      'application/json': { 'schema': { '$ref': '#/components/schemas/AssignAcademicCataloguesDto' } },
+                    },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['School Year Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/school-year/cycle-coordinators':
+        {
+          'post':
+            {
+              'operationId': 'SchoolYearController_assignCycleCoordinators',
+              'summary': 'Asignar coordinadores de ciclo',
+              'description': 'Use este endpoint para asignar coordinadores de ciclo',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content':
+                    { 'application/json': { 'schema': { '$ref': '#/components/schemas/AssignCycleCoordinatorsDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['School Year Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/school-year/counselors':
+        {
+          'post':
+            {
+              'operationId': 'SchoolYearController_assignCounselors',
+              'summary': 'Asignar orientadores de grado',
+              'description': 'Use este endpoint para asignar orientadores de grado',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content':
+                    { 'application/json': { 'schema': { '$ref': '#/components/schemas/AssignCounselorsDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['School Year Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/academics/school-year/teachers':
+        {
+          'post':
+            {
+              'operationId': 'SchoolYearController_assignTeachers',
+              'summary': 'Asignar docentes titulares',
+              'description': 'Use este endpoint para asignar docentes titulares',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/AssignTeachersDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['School Year Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/students':
+        {
+          'get':
+            {
+              'operationId': 'StudentController_getAllStudents',
+              'summary': 'Consulta general de estudiantes',
+              'description': 'Use este endpoint para realizar una consulta general de estudiantes',
+              'parameters':
+                [
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema':
+                      {
+                        'enum':
+                          [
+                            'code-asc',
+                            'code-desc',
+                            'firstname-asc',
+                            'firstname-desc',
+                            'lastname-asc',
+                            'lastname-desc',
+                            'email-asc',
+                            'email-desc',
+                            'status-asc',
+                            'status-desc',
+                            'currentGrade-asc',
+                            'currentGrade-desc',
+                          ],
+                        'type': 'string',
+                      },
+                  },
+                  { 'name': 'status', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'active', 'required': false, 'in': 'query', 'schema': { 'type': 'boolean' } },
+                  { 'name': 'code', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'firstname', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'lastname', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'email', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'currentGrade', 'required': false, 'in': 'query', 'schema': { 'type': 'number' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/StudentsResponse' } } },
+                    },
+                },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'post':
+            {
+              'operationId': 'StudentController_createUser',
+              'summary': 'Crear Estudiantes',
+              'description': 'Use este endpoint para crear nuevos estudiantes',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/CreateStudentDto' } } },
+                },
+              'responses':
+                { '201': { 'description': '', 'content': { 'application/json': { 'schema': { 'type': 'object' } } } } },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/students/{studentId}':
+        {
+          'get':
+            {
+              'operationId': 'StudentController_getStudent',
+              'summary': 'Visualizar un estudiante específico',
+              'description': 'Use este endpoint para visualizar los datos de un estudiante específico',
+              'parameters': [{ 'name': 'studentId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/StudentResponse' } } },
+                    },
+                },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'put':
+            {
+              'operationId': 'StudentController_updateStudent',
+              'summary': 'Actualizar un estudiante específico',
+              'description': 'Use este endpoint para actualizar los datos de un estudiante específico',
+              'parameters': [{ 'name': 'studentId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/UpdateStudentDto' } } },
+                },
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/UpdatedStudentResponse' } } },
+                    },
+                },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'delete':
+            {
+              'operationId': 'StudentController_deleteStudent',
+              'summary': 'Eliminar un estudiante específico',
+              'description': 'Use este endpoint para eliminar un estudiante específico',
+              'parameters': [{ 'name': 'studentId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses': { '200': { 'description': '' } },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/students/bulk':
+        {
+          'post':
+            {
+              'operationId': 'StudentBulkController_bulkStudents',
+              'summary': 'Cargar Estudiantes',
+              'description': 'Use este endpoint para hacer una carga masiva de estudiantes',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/BulkStudentsDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/students/{studentId}/responsibles':
+        {
+          'get':
+            {
+              'operationId': 'ResponsibleController_getStudentResponsibles',
+              'summary': 'Consulta de los responsables de un estudiante',
+              'description': 'Use este endpoint para obtener el listado de los responsables de un estudiante específico',
+              'parameters':
+                [
+                  { 'name': 'studentId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } },
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema':
+                      {
+                        'enum':
+                          [
+                            'firstname-asc',
+                            'firstname-desc',
+                            'lastname-asc',
+                            'lastname-desc',
+                            'email-asc',
+                            'email-desc',
+                            'phone-asc',
+                            'phone-desc',
+                            'relationship-asc',
+                            'relationship-desc',
+                          ],
+                        'type': 'string',
+                      },
+                  },
+                  { 'name': 'relationship', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'firstname', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'lastname', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'email', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'phone', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/ResponsiblesResponse' } } },
+                    },
+                },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'post':
+            {
+              'operationId': 'ResponsibleController_createResponsible',
+              'summary': 'Crear Responsable',
+              'description': 'Use este endpoint para agregar un responsable a un estudiante determinado',
+              'parameters': [{ 'name': 'studentId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/ResponsibleDto' } } },
+                },
+              'responses':
+                {
+                  '201':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/ResponsibleResponse' } } },
+                    },
+                },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/students/{studentId}/responsibles/{responsibleId}':
+        {
+          'put':
+            {
+              'operationId': 'ResponsibleController_updateResponsible',
+              'summary': 'Actualizar Responsable',
+              'description': 'Use este endpoint para actualizar los datos de un responsable de un estudiante determinado',
+              'parameters':
+                [
+                  { 'name': 'studentId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } },
+                  { 'name': 'responsibleId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } },
+                ],
+              'requestBody':
+                {
+                  'required': true,
+                  'content':
+                    { 'application/json': { 'schema': { '$ref': '#/components/schemas/UpdateResponsibleDto' } } },
+                },
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/ResponsibleResponse' } } },
+                    },
+                },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'delete':
+            {
+              'operationId': 'ResponsibleController_deleteResponsible',
+              'summary': 'Eliminar Responsable',
+              'description': 'Use este endpoint para eliminar un responsable de un estudiante determinado',
+              'parameters':
+                [
+                  { 'name': 'studentId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } },
+                  { 'name': 'responsibleId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } },
+                ],
+              'responses': { '200': { 'description': '' } },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/students/{studentId}/images':
+        {
+          'post':
+            {
+              'operationId': 'StudentImageController_uploadImage',
+              'summary': 'Agregar foto a estudiante',
+              'description': 'Use este endpoint para agregar una foto a un estudiante',
+              'parameters':
+                [
+                  { 'name': 'studentId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } },
+                  { 'name': 'gradeId', 'required': true, 'in': 'query', 'schema': { 'type': 'number' } },
+                ],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'multipart/form-data': { 'schema': { '$ref': '#/components/schemas/ImageDto' } } },
+                },
+              'responses':
+                {
+                  '201':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/Image' } } },
+                    },
+                },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'get':
+            {
+              'operationId': 'StudentImageController_getStudentImages',
+              'summary': 'Ver fotos de un estudiante',
+              'description': 'Use este endpoint para visualizar la galería de fotos de un estudiante específico',
+              'parameters': [{ 'name': 'studentId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        {
+                          'application/json':
+                            { 'schema': { 'type': 'array', 'items': { '$ref': '#/components/schemas/Image' } } },
+                        },
+                    },
+                },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/students-assignation':
+        {
+          'get':
+            {
+              'operationId': 'StudentAssignationController_getStudentsAssignation',
+              'summary': 'Consultar asignación de estudiantes',
+              'description': 'Use este endpoint para consultar la asignación de estudiantes',
+              'parameters':
+                [
+                  { 'name': 'currentGradeId', 'required': true, 'in': 'query', 'schema': { 'type': 'number' } },
+                  { 'name': 'currentShiftId', 'required': true, 'in': 'query', 'schema': { 'type': 'number' } },
+                ],
+              'responses':
+                { '200': { 'description': '', 'content': { 'application/json': { 'schema': { 'type': 'object' } } } } },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'patch':
+            {
+              'operationId': 'StudentAssignationController_patchStudentsAssignation',
+              'summary': 'Vincular/Desvincular estudiantes',
+              'description': 'Use este endpoint para vincular o desvincular estudiantes a un docente en un año escolar',
+              'parameters':
+                [
+                  { 'name': 'currentGradeId', 'required': true, 'in': 'query', 'schema': { 'type': 'number' } },
+                  { 'name': 'currentShiftId', 'required': true, 'in': 'query', 'schema': { 'type': 'number' } },
+                ],
+              'requestBody':
+                {
+                  'required': true,
+                  'content':
+                    { 'application/json': { 'schema': { '$ref': '#/components/schemas/PatchStudentAssignationDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Students Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
       '/api/v1/auth/login':
         {
           'post':
@@ -154,8 +2296,7 @@
                   'required': true,
                   'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/ForgotPswDto' } } },
                 },
-              'responses':
-                { '204': { 'description': '', 'content': { 'application/json': { 'schema': { 'type': 'object' } } } } },
+              'responses': { '204': { 'description': '' } },
               'tags': ['Authentication Endpoints'],
             },
         },
@@ -177,7 +2318,6 @@
                     },
                 },
               'tags': ['Authentication Endpoints'],
-              'security': [{ 'bearer': [] }],
             },
         },
       '/api/v1/auth/politics/{politicId}':
@@ -203,6 +2343,346 @@
                     },
                 },
               'tags': ['Authentication Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/auth/reset-password':
+        {
+          'post':
+            {
+              'operationId': 'AuthController_resetPsw',
+              'summary': 'Restablecimiento de una contraseña',
+              'description': 'Use este endpoint para que un usuario pueda restablecer su contraseña usando su reset password token vigente',
+              'parameters':
+                [{ 'name': 'resetPasswordToken', 'required': true, 'in': 'query', 'schema': { 'type': 'string' } }],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/ResetPswDto' } } },
+                },
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Authentication Endpoints'],
+            },
+        },
+      '/api/v1/auth/roles':
+        {
+          'get':
+            {
+              'operationId': 'RoleController_getAllRoles',
+              'summary': 'Listar Roles',
+              'description': 'Use este endpoint para listar los roles existentes',
+              'parameters':
+                [
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'enum': ['name-asc', 'name-desc'], 'type': 'string' },
+                  },
+                  { 'name': 'name', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'paginate', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/RolesResponse' } } },
+                    },
+                },
+              'tags': ['Authentication Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'post':
+            {
+              'operationId': 'RoleController_createRole',
+              'summary': 'Crear Rol',
+              'description': 'Use este endpoint para crear un nuevo rol',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/CreateRoleDto' } } },
+                },
+              'responses':
+                {
+                  '201':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/RoleResponse' } } },
+                    },
+                },
+              'tags': ['Authentication Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/auth/roles/{roleId}':
+        {
+          'get':
+            {
+              'operationId': 'RoleController_getSingleRole',
+              'summary': 'Ver detalle de Rol',
+              'description': 'Use este endpoint para ver el detalle de un rol específico',
+              'parameters': [{ 'name': 'roleId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/RoleResponse' } } },
+                    },
+                },
+              'tags': ['Authentication Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'put':
+            {
+              'operationId': 'RoleController_updateRole',
+              'summary': 'Actualizar Rol',
+              'description': 'Use este endpoint para actualizar un rol específico',
+              'parameters': [{ 'name': 'roleId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/UpdateRoleDto' } } },
+                },
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/RoleResponse' } } },
+                    },
+                },
+              'tags': ['Authentication Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'delete':
+            {
+              'operationId': 'RoleController_deleteRole',
+              'summary': 'Eliminar Rol',
+              'description': 'Use este endpoint para eliminar un rol específico',
+              'parameters': [{ 'name': 'roleId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Authentication Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/auth/permissions':
+        {
+          'get':
+            {
+              'operationId': 'PermissionController_getAllPermissions',
+              'summary': 'Listar Permisos',
+              'description': 'Use este endpoint para listar los permisos existentes',
+              'parameters': [],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/PermissionsResponse' } } },
+                    },
+                },
+              'tags': ['Authentication Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/logs/access-logs':
+        {
+          'get':
+            {
+              'operationId': 'LogController_getAccessLogs',
+              'summary': 'Mostrar bitácora de accesos',
+              'description': 'Use este endpoint para mostrar la bitácora de accesos',
+              'parameters':
+                [
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema':
+                      {
+                        'enum':
+                          [
+                            'username-asc',
+                            'username-desc',
+                            'ip-asc',
+                            'ip-desc',
+                            'statusCode-asc',
+                            'statusCode-desc',
+                            'attemptTime-asc',
+                            'attemptTime-desc',
+                          ],
+                        'type': 'string',
+                      },
+                  },
+                  { 'name': 'username', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'ip', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'statusCode', 'required': false, 'in': 'query', 'schema': { 'type': 'number' } },
+                  { 'name': 'attemptTimeStart', 'required': false, 'in': 'query', 'schema': { 'type': 'date' } },
+                  { 'name': 'attemptTimeEnd', 'required': false, 'in': 'query', 'schema': { 'type': 'date' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/AccessLogsResponse' } } },
+                    },
+                },
+              'tags': ['Logs Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/logs/action-logs':
+        {
+          'get':
+            {
+              'operationId': 'LogController_getActionLogs',
+              'summary': 'Mostrar bitácora de acciones',
+              'description': 'Use este endpoint para mostrar la bitácora de acciones',
+              'parameters':
+                [
+                  { 'name': 'page', 'required': false, 'in': 'query', 'schema': { 'default': 1, 'type': 'number' } },
+                  {
+                    'name': 'perPage',
+                    'required': false,
+                    'in': 'query',
+                    'schema': { 'maximum': 25, 'default': 10, 'type': 'number' },
+                  },
+                  {
+                    'name': 'sort',
+                    'required': false,
+                    'in': 'query',
+                    'schema':
+                      {
+                        'enum':
+                          [
+                            'username-asc',
+                            'username-desc',
+                            'endpoint-asc',
+                            'endpoint-desc',
+                            'action-asc',
+                            'action-desc',
+                            'statusCode-asc',
+                            'statusCode-desc',
+                            'attemptTime-asc',
+                            'attemptTime-desc',
+                          ],
+                        'type': 'string',
+                      },
+                  },
+                  { 'name': 'username', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'endpoint', 'required': false, 'in': 'query', 'schema': { 'type': 'string' } },
+                  { 'name': 'action', 'required': false, 'in': 'query', 'schema': { 'type': 'number' } },
+                  { 'name': 'statusCode', 'required': false, 'in': 'query', 'schema': { 'type': 'number' } },
+                  { 'name': 'attemptTimeStart', 'required': false, 'in': 'query', 'schema': { 'type': 'date' } },
+                  { 'name': 'attemptTimeEnd', 'required': false, 'in': 'query', 'schema': { 'type': 'date' } },
+                ],
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/ActionLogsResponse' } } },
+                    },
+                },
+              'tags': ['Logs Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/me/schedules':
+        {
+          'get':
+            {
+              'operationId': 'SchedulesController_gestEvents',
+              'summary': 'Buscar Eventos en calendario',
+              'description': 'Use este endpoint para buscar eventos en el calendario en un rango específico de tiempo.',
+              'parameters':
+                [
+                  { 'name': 'fromDate', 'required': false, 'in': 'query', 'schema': { 'type': 'date' } },
+                  { 'name': 'toDate', 'required': false, 'in': 'query', 'schema': { 'type': 'date' } },
+                ],
+              'responses':
+                { '200': { 'description': '', 'content': { 'application/json': { 'schema': { 'type': 'object' } } } } },
+              'tags': ['Schedules Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'post':
+            {
+              'operationId': 'SchedulesController_createEvent',
+              'summary': 'Crear Eventos en calendario',
+              'description': 'Use este endpoint para crear nuevos eventos en el calendario de un usuario.',
+              'parameters': [],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/CreateScheduleDto' } } },
+                },
+              'responses':
+                {
+                  '201':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/SchedulesResponse' } } },
+                    },
+                },
+              'tags': ['Schedules Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+        },
+      '/api/v1/me/schedules/{eventId}':
+        {
+          'put':
+            {
+              'operationId': 'SchedulesController_updateEvent',
+              'summary': 'Actualizar un evento específico',
+              'description': 'Use este endpoint para actualizar los datos de un evento específico',
+              'parameters': [{ 'name': 'eventId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'requestBody':
+                {
+                  'required': true,
+                  'content': { 'application/json': { 'schema': { '$ref': '#/components/schemas/UpdateScheduleDto' } } },
+                },
+              'responses':
+                {
+                  '200':
+                    {
+                      'description': '',
+                      'content':
+                        { 'application/json': { 'schema': { '$ref': '#/components/schemas/SchedulesResponse' } } },
+                    },
+                },
+              'tags': ['Schedules Endpoints'],
+              'security': [{ 'bearer': [] }],
+            },
+          'delete':
+            {
+              'operationId': 'SchedulesController_deleteEvent',
+              'summary': 'Eliminar Eventos',
+              'description': 'Use este endpoint para eliminar un evento específico',
+              'parameters': [{ 'name': 'eventId', 'required': true, 'in': 'path', 'schema': { 'type': 'number' } }],
+              'responses': { '204': { 'description': '' } },
+              'tags': ['Schedules Endpoints'],
               'security': [{ 'bearer': [] }],
             },
         },

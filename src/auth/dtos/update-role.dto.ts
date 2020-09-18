@@ -5,12 +5,12 @@ import { validator } from '@core/messages/validator.message';
 export class UpdateRoleDto {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: validator.isNotEmpty })
+  @IsString({ message: validator.isString })
   name?: string;
 
   @IsOptional()
-  @IsArray()
+  @IsArray({ message: validator.isArray })
   @IsInt({ each: true, message: validator.isInt })
   @IsPositive({ each: true, message: validator.isPositive })
   permissions?: number[];

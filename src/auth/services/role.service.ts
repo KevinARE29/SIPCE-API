@@ -21,6 +21,10 @@ export class RoleService {
   ) {}
 
   async getAllRoles(pageDto: PageDto, roleFilterDto: RoleFilterDto): Promise<RolesResponse> {
+    if (roleFilterDto.paginate === 'false') {
+      const [roles] = await this.roleRepository.getAllRoles(pageDto, roleFilterDto);
+      return { data: plainToClass(Roles, roles, { excludeExtraneousValues: true }) };
+    }
     const [roles, count] = await this.roleRepository.getAllRoles(pageDto, roleFilterDto);
     const pagination = getPagination(pageDto, count);
     return { data: plainToClass(Roles, roles, { excludeExtraneousValues: true }), pagination };
@@ -30,6 +34,10 @@ export class RoleService {
     const permissions = await this.permissionRepository.findByIds(createRoleDto.permissions);
     if (permissions.length !== createRoleDto.permissions.length) {
       throw new NotFoundException('Permisos no encontrados');
+    }
+    const duplicatedRole = await this.roleRepository.getRoleByName(createRoleDto.name);
+    if (duplicatedRole) {
+      throw new ConflictException('name: Ya existe un rol con ese nombre');
     }
     return {
       data: plainToClass(Role, await this.roleRepository.save({ ...createRoleDto, permissions }), {
@@ -56,6 +64,10 @@ export class RoleService {
       role.permissions = permissions;
     }
     role.name = updateRoleDto.name || role.name;
+    const duplicatedRole = await this.roleRepository.getRoleByName(role.name);
+    if (duplicatedRole && role.id !== duplicatedRole.id) {
+      throw new ConflictException('name: Ya existe un rol con ese nombre');
+    }
     return {
       data: plainToClass(Role, await this.roleRepository.save({ ...role }), {
         excludeExtraneousValues: true,

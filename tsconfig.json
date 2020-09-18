@@ -17,7 +17,11 @@
       "@auth/*": ["src/auth/*"],
       "@users/*": ["src/users/*"],
       "@core/*": ["src/core/*"],
-      "@mails/*": ["src/mails/*"]
+      "@mails/*": ["src/mails/*"],
+      "@logs/*": ["src/logs/*"],
+      "@academics/*": ["src/academics/*"],
+      "@students/*": ["src/students/*"],
+      "@schedules/*": ["src/schedules/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

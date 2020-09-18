@@ -1,4 +1,6 @@
 export const validator = {
+  isArray: '$property: Debe ser un array',
+  isIn: '$property: Debe ser uno de los siguientes valores: $constraint1',
   isNotEmpty: '$property: No debe ser nulo',
   isEmail: '$property: Debe ser un email válido (i.e. user@mail.com)',
   isString: '$property: Debe ser una cadena de carecteres',
@@ -8,4 +10,6 @@ export const validator = {
   isBoolean: '$property: Debe ser un booleano',
   isMin: '$property: Debe ser mayor o igual a $constraint1',
   isMax: '$property: Debe ser menor o igual a $constraint1',
+  isDateString: '$property: Debe ser una fecha en ISOString',
+  isNumberString: '$property: Debe contener sólo valores numéricos',
 };

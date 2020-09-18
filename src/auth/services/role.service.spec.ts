@@ -22,6 +22,7 @@ const mockRoleRepository = () => ({
   save: jest.fn(),
   delete: jest.fn(),
   getRoleByIdOrThrow: jest.fn(),
+  getRoleByName: jest.fn(),
 });
 
 const mockPermissionRepository = () => ({
@@ -63,6 +64,7 @@ describe('Role Service', () => {
 
     it('Should Create a new role', async () => {
       (permissionRepository.findByIds as jest.Mock).mockResolvedValue([1]);
+      (roleRepository.getRoleByName as jest.Mock).mockResolvedValue(null);
       (roleRepository.save as jest.Mock).mockResolvedValue(mockCreateRoleDto);
       const result = await roleService.createRole(mockCreateRoleDto);
       expect(result).toEqual({ data: mockCreateRoleDto });
@@ -78,13 +80,14 @@ describe('Role Service', () => {
       expect(result).toEqual({ data: mockCreateRoleDto });
     });
     it('Should throw a not found error if the role does not exists', () => {
-      (roleRepository.getRoleByIdOrThrow as jest.Mock).mockResolvedValue(null);
-      expect(roleService.getSingleRole(1)).rejects.toThrowError(NotFoundException);
+      (roleRepository.getRoleByIdOrThrow as jest.Mock).mockRejectedValue(new NotFoundException());
+      expect(roleService.getSingleRole(0)).rejects.toThrowError(NotFoundException);
     });
 
     it('Should Update a specific role', async () => {
       (permissionRepository.findByIds as jest.Mock).mockResolvedValue([1]);
       (roleRepository.getRoleByIdOrThrow as jest.Mock).mockResolvedValue(mockCreateRoleDto);
+      (roleRepository.getRoleByName as jest.Mock).mockResolvedValue(null);
       (roleRepository.save as jest.Mock).mockResolvedValue(mockCreateRoleDto);
       const result = await roleService.updateRole(10, mockCreateRoleDto);
       expect(result).toEqual({ data: mockCreateRoleDto });

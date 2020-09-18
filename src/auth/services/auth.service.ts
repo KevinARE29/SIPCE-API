@@ -12,6 +12,7 @@ import { plainToClass } from 'class-transformer';
 import { MailsService } from '@mails/services/mails.service';
 import { UsersService } from '@users/services/users.service';
 import { IAuthenticatedUser } from '@users/interfaces/users.interface';
+import { UserRepository } from '@users/repositories/users.repository';
 import { TokenResponse } from '../docs/token-response.doc';
 import { TokenRepository } from '../repositories/token.repository';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
@@ -29,6 +30,7 @@ export class AuthService {
   constructor(
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    private readonly userRepository: UserRepository,
     private readonly tokensService: TokensService,
     private readonly configService: ConfigService,
     private readonly tokenRepository: TokenRepository,
@@ -120,14 +122,14 @@ export class AuthService {
       return;
     }
     const resetPasswordToken = this.tokensService.getPswToken(user.id);
-    await this.usersService.updateUser(user, { resetPasswordToken });
+    await this.userRepository.save({ ...user, resetPasswordToken });
 
     const emailToSend = {
       from,
       to: email,
       templateId,
       dynamicTemplateData: {
-        name: user.name,
+        name: `${user.firstname} ${user.lastname}`,
         url: `${frontUrl}/reset-psw?resetPasswordToken=${resetPasswordToken}`,
       },
     };

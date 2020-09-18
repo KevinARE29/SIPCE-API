@@ -1,8 +1,7 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailsModule } from '@mails/mails.module';
-import { UsersModule } from '@users/users.module';
 import { AuthService } from './services/auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthController } from './controllers/auth.controller';
@@ -17,10 +16,10 @@ import { PermissionController } from './controllers/permission.controller';
 import { PermissionService } from './services/permission.service';
 import { PermissionRepository } from './repositories/permission.repository';
 
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forFeature([TokenRepository, PoliticRepository, RoleRepository, PermissionRepository]),
-    forwardRef(() => UsersModule),
     PassportModule,
     MailsModule,
   ],
