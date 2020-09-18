@@ -43,7 +43,6 @@ import * as Joi from '@hapi/joi';
         RESET_PSW_SENDGRID_TEMPLATE_ID: Joi.string().required(),
         GENERATE_CREDENTIALS_TEMPLATE_ID: Joi.string().required(),
         EMAIL_USER: Joi.string().default('noreply.liceo.salvadoreno@gmail.com'),
-        CLOUDDINARY_URL: Joi.string().required(),
         CLOUDINARY_CLOUD_NAME: Joi.string().required(),
         CLOUDINARY_API_KEY: Joi.string().required(),
         CLOUDINARY_API_SECRET: Joi.string().required(),
