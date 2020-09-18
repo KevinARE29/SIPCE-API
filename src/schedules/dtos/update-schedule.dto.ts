@@ -1,14 +1,4 @@
-import {
-  IsString,
-  IsArray,
-  IsInt,
-  IsPositive,
-  IsOptional,
-  IsEnum,
-  IsDateString,
-  IsObject,
-  IsBoolean,
-} from 'class-validator';
+import { IsArray, IsInt, IsPositive, IsOptional, IsEnum, IsObject } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import { ApiProperty } from '@nestjs/swagger';
 import { EnumEventType, schedulesKeys, TSchedule } from '@schedules/constants/schedule.costants';
