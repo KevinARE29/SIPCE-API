@@ -113,8 +113,8 @@ export class StudentService {
     if (!student) {
       throw new NotFoundException(`Estudiante con id ${studentId} no encontrado`);
     }
-    const cloudinaryEnvs = this.configService.get<string>('CLOUDINARY_ENVS')?.split(',') || ['dev', 'uat'];
-    const env = this.configService.get<string>('NODE_ENV') || 'dev';
+    const cloudinaryEnvs = this.configService.get('CLOUDINARY_ENVS').split(',');
+    const env = this.configService.get('NODE_ENV');
     if (!cloudinaryEnvs.includes(env)) {
       student.images = student.images.map(image => ({
         ...image,

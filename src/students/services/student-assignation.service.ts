@@ -46,8 +46,8 @@ export class StudentAssignationService {
       await this.validateTeacherAssignation(currentShiftId, currentGradeId, userId),
     ]);
 
-    const cloudinaryEnvs = this.configService.get<string>('CLOUDINARY_ENVS')?.split(',') || ['dev', 'uat'];
-    const env = this.configService.get<string>('NODE_ENV') || 'dev';
+    const cloudinaryEnvs = this.configService.get('CLOUDINARY_ENVS').split(',');
+    const env = this.configService.get<string>('NODE_ENV');
 
     const studentsWithoutAssignation: StudentsAssignation[] = [];
     const assignedStudents: StudentsAssignation[] = [];

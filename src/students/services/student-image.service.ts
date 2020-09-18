@@ -87,8 +87,8 @@ export class StudentImageService {
   }
 
   async uploadImage(filePath: string, imageFile: Express.Multer.File): Promise<string> {
-    const cloudinaryEnvs = this.configService.get<string>('CLOUDINARY_ENVS')?.split(',') || ['dev', 'uat'];
-    const env = this.configService.get<string>('NODE_ENV') || 'dev';
+    const cloudinaryEnvs = this.configService.get('CLOUDINARY_ENVS').split(',');
+    const env = this.configService.get<string>('NODE_ENV');
     if (cloudinaryEnvs.includes(env)) {
       return this.saveImageOnCloudinary(filePath, imageFile);
     }
@@ -103,8 +103,8 @@ export class StudentImageService {
   }
 
   getImage(imagePath: string): Image {
-    const cloudinaryEnvs = this.configService.get<string>('CLOUDINARY_ENVS')?.split(',') || ['dev', 'uat'];
-    const env = this.configService.get<string>('NODE_ENV') || 'dev';
+    const cloudinaryEnvs = this.configService.get('CLOUDINARY_ENVS').split(',');
+    const env = this.configService.get<string>('NODE_ENV');
     if (cloudinaryEnvs.includes(env)) {
       return { path: imagePath };
     }
@@ -114,8 +114,8 @@ export class StudentImageService {
   async getStudentImages(studentId: number): Promise<Image[]> {
     const student = await this.studentRepository.findByIdOrFail(studentId);
     const images = await this.imageRepository.find({ where: { student } });
-    const cloudinaryEnvs = this.configService.get<string>('CLOUDINARY_ENVS')?.split(',') || ['dev', 'uat'];
-    const env = this.configService.get<string>('NODE_ENV') || 'dev';
+    const cloudinaryEnvs = this.configService.get('CLOUDINARY_ENVS').split(',');
+    const env = this.configService.get<string>('NODE_ENV');
     if (cloudinaryEnvs.includes(env)) {
       return images;
     }
