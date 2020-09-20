@@ -11,10 +11,9 @@ export class CycleFilterDto {
   @ApiPropertyOptional({ enum: sortOptions })
   @IsOptional()
   @Validate(SortOptionsValidator, sortOptions)
-  sort?: string;
+  readonly sort?: string;
 
-  @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: validator.isString })
-  name?: string;
+  readonly name?: string;
 }

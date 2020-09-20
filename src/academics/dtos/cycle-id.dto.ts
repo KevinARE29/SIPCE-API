@@ -4,5 +4,5 @@ import { IsId } from '@core/decorators/id.decorator';
 export class CycleIdDto {
   @IsId()
   @Type(() => Number)
-  cycleId!: number;
+  readonly cycleId!: number;
 }

@@ -4,5 +4,5 @@ import { IsId } from '@core/decorators/id.decorator';
 export class SectionIdDto {
   @IsId()
   @Type(() => Number)
-  sectionId!: number;
+  readonly sectionId!: number;
 }

@@ -6,5 +6,5 @@ export class CatalogueDto {
   @ApiProperty({ example: 'Electrotecnia' })
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  name!: string;
+  readonly name!: string;
 }
