@@ -12,32 +12,27 @@ export class AccessLogFilterDto {
   @ApiPropertyOptional({ enum: sortOptions })
   @IsOptional()
   @Validate(SortOptionsValidator, sortOptions)
-  sort?: string;
+  readonly sort?: string;
 
-  @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: validator.isString })
-  username?: string;
+  readonly username?: string;
 
-  @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: validator.isString })
-  ip?: string;
+  readonly ip?: string;
 
-  @ApiPropertyOptional()
   @IsOptional()
   @IsInt({ message: validator.isInt })
   @IsPositive({ message: validator.isPositive })
   @Type(() => Number)
-  statusCode?: number;
+  readonly statusCode?: number;
 
-  @ApiPropertyOptional()
   @IsOptional()
   @IsDateString({ message: validator.isDateString })
-  attemptTimeStart?: Date;
+  readonly attemptTimeStart?: Date;
 
-  @ApiPropertyOptional()
   @IsOptional()
   @IsDateString({ message: validator.isDateString })
-  attemptTimeEnd?: Date;
+  readonly attemptTimeEnd?: Date;
 }
