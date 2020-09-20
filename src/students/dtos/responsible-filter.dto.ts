@@ -14,28 +14,28 @@ export class ResponsibleFilterDto {
   @ApiPropertyOptional({ enum: sortOptions })
   @IsOptional()
   @Validate(SortOptionsValidator, sortOptions)
-  sort?: string;
+  readonly sort?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  firstname?: string;
+  readonly firstname?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  lastname?: string;
+  readonly lastname?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  email?: string;
+  readonly email?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  phone?: string;
+  readonly phone?: string;
 
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @IsEnum(EResponsibleRelationship, {
     message: `responsibleRelationship: Debe ser uno de los siguientes valores: ${relationshipKeys}`,
   })
-  relationship!: TRelationship;
+  readonly relationship!: TRelationship;
 }

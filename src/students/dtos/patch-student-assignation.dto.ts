@@ -1,10 +1,10 @@
 import { validator } from '@core/messages/validator.message';
-import { IsArray, IsPositive, IsInt, IsBoolean } from 'class-validator';
+import { IsArray, IsBoolean } from 'class-validator';
+import { IsId } from '@core/decorators/id.decorator';
 
 export class PatchStudentAssignationDto {
-  @IsArray()
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
+  @IsArray({ message: validator.isArray })
+  @IsId({ each: true })
   studentIds!: number[];
 
   @IsBoolean({ message: validator.isBoolean })
