@@ -1,9 +1,9 @@
-import { IsInt, IsPositive, ArrayNotEmpty } from 'class-validator';
+import { ArrayNotEmpty } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
+import { IsId } from '@core/decorators/id.decorator';
 
 export class GenerateCredentialsDto {
   @ArrayNotEmpty({ message: validator.isArray })
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
-  ids!: number[];
+  @IsId({ each: true })
+  readonly ids!: number[];
 }
