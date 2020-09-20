@@ -85,7 +85,7 @@ export class ResponsibleService {
     try {
       await queryRunner.connect();
       await queryRunner.startTransaction();
-      await this.responsibleRepository.save({ ...responsible, ...respDto });
+      const updatedResponsible = await this.responsibleRepository.save({ ...responsible, ...respDto });
       if (relationship) {
         await this.responsibleStudentRepository.save({
           student,
@@ -96,7 +96,7 @@ export class ResponsibleService {
 
       await queryRunner.commitTransaction();
       await queryRunner.release();
-      return { data: plainToClass(Responsible, responsible, { excludeExtraneousValues: true }) };
+      return { data: plainToClass(Responsible, updatedResponsible, { excludeExtraneousValues: true }) };
     } catch (err) {
       await queryRunner.rollbackTransaction();
       await queryRunner.release();

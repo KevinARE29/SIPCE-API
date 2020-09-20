@@ -5,55 +5,49 @@ import {
   IsString,
   IsEmail,
   IsDateString,
-  ValidateNested,
   IsNotEmptyObject,
   IsOptional,
   IsInt,
   IsPositive,
 } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { IsDto } from '@core/decorators/is-dto.decorator';
 import { ResponsibleDto } from './responsible.dto';
 
 export class CreateStudentDto {
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  code!: string;
+  readonly code!: string;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  firstname!: string;
+  readonly firstname!: string;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  lastname!: string;
+  readonly lastname!: string;
 
   @IsEmail({}, { message: validator.isEmail })
-  email!: string;
+  readonly email!: string;
 
   @IsDateString({ message: validator.isDateString })
-  birthdate!: Date;
+  readonly birthdate!: Date;
 
   @IsId()
-  shiftId!: number;
+  readonly shiftId!: number;
 
   @IsId()
-  gradeId!: number;
+  readonly gradeId!: number;
 
-  @ApiPropertyOptional()
   @IsOptional()
   @IsId()
-  startedGradeId?: number;
+  readonly startedGradeId?: number;
 
-  @ApiPropertyOptional()
   @IsOptional()
   @IsInt({ message: validator.isInt })
   @IsPositive({ message: validator.isPositive })
-  registrationYear?: number;
+  readonly registrationYear?: number;
 
-  @ApiProperty({ type: ResponsibleDto })
   @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => ResponsibleDto)
-  responsible!: ResponsibleDto;
+  @IsDto(ResponsibleDto)
+  readonly responsible!: ResponsibleDto;
 }

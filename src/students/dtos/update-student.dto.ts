@@ -18,52 +18,51 @@ export class UpdateStudentDto {
   @IsOptional()
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  firstname?: string;
+  readonly firstname?: string;
 
   @IsOptional()
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  lastname?: string;
+  readonly lastname?: string;
 
   @IsOptional()
   @IsEmail({}, { message: validator.isEmail })
-  email?: string;
+  readonly email?: string;
 
   @IsOptional()
   @IsDateString({ message: validator.isDateString })
-  birthdate?: Date;
+  readonly birthdate?: Date;
 
   @IsOptional()
   @IsId()
-  shiftId?: number;
+  readonly shiftId?: number;
 
   @IsOptional()
   @IsId()
-  gradeId?: number;
+  readonly gradeId?: number;
 
   @IsOptional()
   @IsId()
-  sectionId?: number;
+  readonly sectionId?: number;
 
   @IsOptional()
   @IsId()
-  startedGradeId?: number;
+  readonly startedGradeId?: number;
 
   @IsOptional()
   @IsInt({ message: validator.isInt })
   @IsPositive({ message: validator.isPositive })
-  registrationYear?: number;
+  readonly registrationYear?: number;
 
   @IsOptional()
   @ApiProperty({ type: String })
   @IsEnum(EStudentStatus, {
     message: `status: Debe ser uno de los siguientes valores: ${statusKeys}`,
   })
-  status?: TStatus;
+  readonly status?: TStatus;
 
   @IsOptional()
   @IsArray()
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
-  siblings?: number[];
+  @IsId({ each: true })
+  readonly siblings?: number[];
 }

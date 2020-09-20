@@ -11,60 +11,57 @@ import {
   IsNumberString,
   IsEnum,
 } from 'class-validator';
-import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { EResponsibleRelationship, relationshipKeys, TRelationship } from '@students/constants/student.constant';
 
 export class StudentDto {
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  code!: string;
+  readonly code!: string;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  firstname!: string;
+  readonly firstname!: string;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  lastname!: string;
+  readonly lastname!: string;
 
   @IsEmail({}, { message: validator.isEmail })
-  email!: string;
+  readonly email!: string;
 
   @IsId()
-  gradeId!: number;
+  readonly gradeId!: number;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsId()
+  readonly startedGradeId?: number;
+
   @IsOptional()
   @IsInt({ message: validator.isInt })
   @IsPositive({ message: validator.isPositive })
-  startedGradeId?: number;
+  readonly registrationYear?: number;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsInt({ message: validator.isInt })
-  @IsPositive({ message: validator.isPositive })
-  registrationYear?: number;
-
-  @IsDateString()
-  birthdate!: Date;
+  @IsDateString({ message: validator.isDateString })
+  readonly birthdate!: Date;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  responsibleFirstname!: string;
+  readonly responsibleFirstname!: string;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  responsibleLastname!: string;
+  readonly responsibleLastname!: string;
 
   @ApiProperty({ type: String })
   @IsEnum(EResponsibleRelationship, {
     message: `responsibleRelationship: Debe ser uno de los siguientes valores: ${relationshipKeys}`,
   })
-  responsibleRelationship!: TRelationship;
+  readonly responsibleRelationship!: TRelationship;
 
   @IsEmail({}, { message: validator.isEmail })
-  responsibleEmail!: string;
+  readonly responsibleEmail!: string;
 
   @IsNumberString({}, { message: validator.isNumberString })
-  responsiblePhone!: string;
+  readonly responsiblePhone!: string;
 }
