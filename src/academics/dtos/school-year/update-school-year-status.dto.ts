@@ -7,5 +7,5 @@ export class UpdateSchoolYearStatusDto {
   @IsEnum(ESchoolYearStatus, {
     message: `status: Debe ser uno de los siguientes valores: ${yearStatusKeys}`,
   })
-  status!: TYearStatus;
+  readonly status!: TYearStatus;
 }

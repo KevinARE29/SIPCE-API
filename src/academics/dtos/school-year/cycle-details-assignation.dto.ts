@@ -1,17 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, ValidateNested } from 'class-validator';
-import { validator } from '@core/messages/validator.message';
-import { Type } from 'class-transformer/decorators';
 import { IsId } from '@core/decorators/id.decorator';
+import { IsDtoArray } from '@core/decorators/is-dto-array.decorator';
 import { GradeAssignationDto } from './grade-details-assignation.dto';
 
 export class CycleAssignationDto {
   @IsId()
-  cycleId!: number;
+  readonly cycleId!: number;
 
-  @ApiProperty({ type: [GradeAssignationDto] })
-  @IsArray({ message: validator.isArray })
-  @ValidateNested({ each: true })
-  @Type(() => GradeAssignationDto)
-  grades!: GradeAssignationDto[];
+  @IsDtoArray(GradeAssignationDto)
+  readonly grades!: GradeAssignationDto[];
 }
