@@ -1,29 +1,11 @@
-import { IsNotEmpty, IsString, IsEmail, IsArray, IsOptional, IsInt, IsPositive } from 'class-validator';
+import { IsArray, IsOptional } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
+import { IsId } from '@core/decorators/id.decorator';
+import { UserDto } from '../user.dto';
 
-export class BulkUserDto {
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  firstname!: string;
-
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  lastname!: string;
-
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  username!: string;
-
-  @IsEmail({}, { message: validator.isEmail })
-  email!: string;
-
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  code!: string;
-
+export class BulkUserDto extends UserDto {
   @IsOptional()
   @IsArray({ message: validator.isArray })
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
+  @IsId({ each: true })
   roleIds?: number[];
 }

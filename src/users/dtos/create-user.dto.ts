@@ -1,27 +1,9 @@
-import { IsString, IsArray, IsOptional, IsEmail, IsNotEmpty } from 'class-validator';
+import { IsArray, IsOptional } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import { IsId } from '@core/decorators/id.decorator';
+import { UserDto } from './user.dto';
 
-export class CreateUserDto {
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  readonly code!: string;
-
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  readonly username!: string;
-
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  readonly firstname!: string;
-
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  readonly lastname!: string;
-
-  @IsEmail({}, { message: validator.isEmail })
-  readonly email!: string;
-
+export class CreateUserDto extends UserDto {
   @IsOptional()
   @IsArray({ message: validator.isArray })
   @IsId({ each: true })
