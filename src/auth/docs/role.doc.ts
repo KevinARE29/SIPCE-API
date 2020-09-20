@@ -3,7 +3,6 @@ import { Expose, Type } from 'class-transformer';
 import { Permission } from './permission.doc';
 
 export class Role {
-  @ApiProperty()
   @Expose()
   id!: number;
 

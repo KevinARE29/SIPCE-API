@@ -7,6 +7,5 @@ export class StudentsResponse implements IApiResponse<Students[]> {
   @ApiProperty({ type: [Students] })
   data!: Students[];
 
-  @ApiProperty()
   pagination!: Pagination;
 }

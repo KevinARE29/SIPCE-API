@@ -7,6 +7,5 @@ export class SectionsResponse implements IApiResponse<Section[]> {
   @ApiProperty({ type: [Section] })
   data!: Section[];
 
-  @ApiProperty()
   pagination?: Pagination;
 }

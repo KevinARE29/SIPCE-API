@@ -1,7 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-
 export class Pagination {
-  @ApiProperty()
   totalPages!: number;
 
   perPage!: number;

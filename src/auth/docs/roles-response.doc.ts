@@ -7,6 +7,5 @@ export class RolesResponse implements IApiResponse<Roles[]> {
   @ApiProperty({ type: [Roles] })
   data!: Roles[];
 
-  @ApiProperty()
   pagination?: Pagination;
 }

@@ -1,8 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
 export class Politic {
-  @ApiProperty()
   @Expose()
   id!: number;
 
