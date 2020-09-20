@@ -4,5 +4,5 @@ import { IsId } from '@core/decorators/id.decorator';
 export class PoliticIdDto {
   @IsId()
   @Type(() => Number)
-  politicId!: number;
+  readonly politicId!: number;
 }

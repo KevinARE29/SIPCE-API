@@ -1,15 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsArray, IsInt, IsPositive } from 'class-validator';
+import { IsNotEmpty, IsString, IsArray } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
+import { IsId } from '@core/decorators/id.decorator';
 
 export class CreateRoleDto {
-  @ApiProperty()
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  name!: string;
+  readonly name!: string;
 
   @IsArray({ message: validator.isArray })
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
-  permissions!: number[];
+  @IsId({ each: true })
+  readonly permissions!: number[];
 }

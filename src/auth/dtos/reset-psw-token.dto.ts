@@ -4,5 +4,5 @@ import { validator } from '@core/messages/validator.message';
 export class ResetPswTokenDto {
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsJWT({ message: validator.isJwt })
-  resetPasswordToken!: string;
+  readonly resetPasswordToken!: string;
 }

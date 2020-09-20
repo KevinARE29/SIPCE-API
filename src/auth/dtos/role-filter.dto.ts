@@ -11,14 +11,13 @@ export class RoleFilterDto {
   @ApiPropertyOptional({ enum: sortOptions })
   @IsOptional()
   @Validate(SortOptionsValidator, sortOptions)
-  sort?: string;
+  readonly sort?: string;
 
-  @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: validator.isString })
-  name?: string;
+  readonly name?: string;
 
   @IsOptional()
   @IsIn(['false'], { message: validator.isIn })
-  paginate?: string;
+  readonly paginate?: string;
 }
