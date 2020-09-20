@@ -3,7 +3,7 @@ import { IsBoolean, IsOptional } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import { IsId } from '@core/decorators/id.decorator';
 import { IsDtoArray } from '@core/decorators/is-dto-array.decorator';
-import { StudentDto } from './student.dto';
+import { BulkStudentDto } from './bulk-student.dto';
 
 export class BulkStudentsDto {
   @IsId()
@@ -14,6 +14,6 @@ export class BulkStudentsDto {
   @IsBoolean({ message: validator.isBoolean })
   readonly currentYear?: boolean;
 
-  @IsDtoArray(StudentDto)
-  readonly students!: StudentDto[];
+  @IsDtoArray(BulkStudentDto)
+  readonly students!: BulkStudentDto[];
 }
