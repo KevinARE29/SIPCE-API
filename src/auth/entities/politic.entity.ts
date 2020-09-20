@@ -22,6 +22,6 @@ export class Politic {
   @Column({ type: 'boolean', name: 'numeric_char', nullable: true })
   numericChart!: boolean;
 
-  @Column('varchar', { name: 'type_special', length: 512, nullable: true })
+  @Column('varchar', { name: 'type_special', length: 32, nullable: true })
   typeSpecial!: string;
 }
