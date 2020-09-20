@@ -12,4 +12,6 @@ export const validator = {
   isMax: '$property: Debe ser menor o igual a $constraint1',
   isDateString: '$property: Debe ser una fecha en ISOString',
   isNumberString: '$property: Debe contener sólo valores numéricos',
+  minLength: '$property: La longitud de la cadena debe ser mayor o igual a $constraint1 caracteres',
+  maxLength: '$property: La longitud de la cadena debe ser menor o igual a $constraint1 caracteres',
 };
