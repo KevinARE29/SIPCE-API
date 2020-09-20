@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsPositive, IsOptional, IsEnum, IsObject } from 'class-validator';
+import { IsArray, IsOptional, IsEnum, IsObject } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import { ApiProperty } from '@nestjs/swagger';
 import { EnumEventType, schedulesKeys, TSchedule } from '@schedules/constants/schedule.costants';
@@ -10,19 +10,18 @@ export class UpdateScheduleDto {
   @IsEnum(EnumEventType, {
     message: `EnumEventType: Debe ser uno de los siguientes valores: ${schedulesKeys}`,
   })
-  eventType?: TSchedule;
+  readonly eventType?: TSchedule;
 
   @IsOptional()
   @IsObject()
-  jsonData?: Record<string, any>;
+  readonly jsonData?: Record<string, any>;
 
   @IsOptional()
   @IsArray({ message: validator.isArray })
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
-  participantIds?: number[];
+  @IsId({ each: true })
+  readonly participantIds?: number[];
 
   @IsOptional()
   @IsId()
-  studentId?: number;
+  readonly studentId?: number;
 }
