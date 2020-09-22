@@ -4,9 +4,9 @@ import { validator } from '@core/messages/validator.message';
 export class UpdatePswDto {
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  oldPassword!: string;
+  readonly oldPassword!: string;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
   @IsString({ message: validator.isString })
-  newPassword!: string;
+  readonly newPassword!: string;
 }

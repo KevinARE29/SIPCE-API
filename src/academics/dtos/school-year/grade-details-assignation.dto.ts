@@ -1,11 +1,12 @@
-import { IsPositive, IsInt } from 'class-validator';
 import { IsId } from '@core/decorators/id.decorator';
+import { IsArray } from 'class-validator';
+import { validator } from '@core/messages/validator.message';
 
 export class GradeAssignationDto {
   @IsId()
-  gradeId!: number;
+  readonly gradeId!: number;
 
-  @IsInt({ each: true })
-  @IsPositive({ each: true })
-  sections!: number[];
+  @IsArray({ message: validator.isArray })
+  @IsId({ each: true })
+  readonly sections!: number[];
 }

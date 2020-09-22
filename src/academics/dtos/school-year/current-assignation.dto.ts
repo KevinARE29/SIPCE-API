@@ -5,35 +5,35 @@ import { ESchoolYearStatus, yearStatusValues, TYearStatus } from '@academics/con
 export class CurrentAssignationDto {
   @IsOptional()
   @IsId()
-  shiftId?: number;
+  readonly shiftId?: number;
 
   @IsOptional()
   @IsId()
-  cycleId?: number;
+  readonly cycleId?: number;
 
   @IsOptional()
   @IsId()
-  gradeId?: number;
+  readonly gradeId?: number;
 
   @IsOptional()
   @IsId()
-  sectionId?: number;
+  readonly sectionId?: number;
 
   @IsOptional()
   @IsId()
-  teacherId?: number;
+  readonly teacherId?: number;
 
   @IsOptional()
   @IsId()
-  counselorId?: number;
+  readonly counselorId?: number;
 
   @IsOptional()
   @IsId()
-  cycleCoordinatorId?: number;
+  readonly cycleCoordinatorId?: number;
 
   @IsOptional()
   @IsEnum(ESchoolYearStatus, {
     message: `status: Debe ser uno de los siguientes valores: ${yearStatusValues}`,
   })
-  status?: TYearStatus;
+  readonly status?: TYearStatus;
 }

@@ -3,5 +3,5 @@ import { validator } from '@core/messages/validator.message';
 
 export class RefreshTokenDto {
   @IsJWT({ message: validator.isJwt })
-  refreshToken!: string;
+  readonly refreshToken!: string;
 }

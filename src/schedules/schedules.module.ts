@@ -1,14 +1,13 @@
-import { Module, Global } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleRepository } from '@schedules/repositories/schedules.repository';
-import { SchedulesController } from '@schedules/controlers/schedules.controller';
+import { SchedulesController } from '@schedules/controllers/schedules.controller';
 import { SchedulesService } from '@schedules/services/schedules.service';
-import { UserRepository } from '@users/repositories/users.repository';
-import { StudentRepository } from '@students/repositories/student.repository';
+import { UsersModule } from '@users/users.module';
+import { StudentModule } from '@students/students.module';
 
-@Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([ScheduleRepository, StudentRepository, UserRepository])],
+  imports: [TypeOrmModule.forFeature([ScheduleRepository]), UsersModule, StudentModule],
   controllers: [SchedulesController],
   providers: [SchedulesService],
 })

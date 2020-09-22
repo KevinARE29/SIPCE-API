@@ -1,22 +1,19 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, ValidateNested, IsBoolean, IsOptional } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsBoolean, IsOptional } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
-import { Type } from 'class-transformer/decorators';
 import { IsId } from '@core/decorators/id.decorator';
-import { StudentDto } from './student.dto';
+import { IsDtoArray } from '@core/decorators/is-dto-array.decorator';
+import { BulkStudentDto } from './bulk-student.dto';
 
 export class BulkStudentsDto {
   @IsId()
-  shiftId!: number;
+  readonly shiftId!: number;
 
   @ApiPropertyOptional({ type: Boolean })
   @IsOptional()
   @IsBoolean({ message: validator.isBoolean })
-  currentYear?: boolean;
+  readonly currentYear?: boolean;
 
-  @ApiProperty({ type: [StudentDto] })
-  @IsArray({ message: validator.isArray })
-  @ValidateNested({ each: true })
-  @Type(() => StudentDto)
-  students!: StudentDto[];
+  @IsDtoArray(BulkStudentDto)
+  readonly students!: BulkStudentDto[];
 }

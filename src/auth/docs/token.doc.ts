@@ -1,10 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 
 export class Token {
-  @ApiProperty()
+  @Expose()
   accessToken!: string;
 
+  @Expose()
   refreshToken!: string;
 
+  @Expose()
   exp?: number;
 }

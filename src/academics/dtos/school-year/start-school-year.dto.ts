@@ -6,11 +6,11 @@ export class StartSchoolYearDto {
   @Max(new Date().getFullYear() + 1, { message: validator.isMax })
   @IsInt({ message: validator.isInt })
   @IsPositive({ message: validator.isPositive })
-  year!: number;
+  readonly year!: number;
 
   @IsDateString({ message: validator.isDateString })
-  startDate!: Date;
+  readonly startDate!: Date;
 
   @IsDateString({ message: validator.isDateString })
-  endDate!: Date;
+  readonly endDate!: Date;
 }

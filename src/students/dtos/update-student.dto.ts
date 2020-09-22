@@ -1,69 +1,27 @@
 import { IsId } from '@core/decorators/id.decorator';
-import { validator } from '@core/messages/validator.message';
-import {
-  IsNotEmpty,
-  IsString,
-  IsEmail,
-  IsDateString,
-  IsOptional,
-  IsEnum,
-  IsArray,
-  IsPositive,
-  IsInt,
-} from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsEnum, IsArray } from 'class-validator';
+import { ApiProperty, PartialType, OmitType } from '@nestjs/swagger';
 import { EStudentStatus, TStatus, statusKeys } from '@students/constants/student.constant';
+import { StudentDto } from './student.dto';
 
-export class UpdateStudentDto {
-  @IsOptional()
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  firstname?: string;
-
-  @IsOptional()
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  lastname?: string;
-
-  @IsOptional()
-  @IsEmail({}, { message: validator.isEmail })
-  email?: string;
-
-  @IsOptional()
-  @IsDateString({ message: validator.isDateString })
-  birthdate?: Date;
-
-  @IsOptional()
-  @IsId()
-  shiftId?: number;
-
-  @IsOptional()
-  @IsId()
-  gradeId?: number;
-
-  @IsOptional()
-  @IsId()
-  sectionId?: number;
-
-  @IsOptional()
-  @IsId()
-  startedGradeId?: number;
-
-  @IsOptional()
-  @IsInt({ message: validator.isInt })
-  @IsPositive({ message: validator.isPositive })
-  registrationYear?: number;
-
+export class UpdateStudentDto extends PartialType(OmitType(StudentDto, ['code'] as const)) {
   @IsOptional()
   @ApiProperty({ type: String })
   @IsEnum(EStudentStatus, {
     message: `status: Debe ser uno de los siguientes valores: ${statusKeys}`,
   })
-  status?: TStatus;
+  readonly status?: TStatus;
+
+  @IsOptional()
+  @IsId()
+  readonly shiftId?: number;
+
+  @IsOptional()
+  @IsId()
+  readonly sectionId?: number;
 
   @IsOptional()
   @IsArray()
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
-  siblings?: number[];
+  @IsId({ each: true })
+  readonly siblings?: number[];
 }

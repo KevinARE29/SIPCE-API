@@ -1,13 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, ValidateNested } from 'class-validator';
-import { validator } from '@core/messages/validator.message';
-import { Type } from 'class-transformer/decorators';
+import { IsDtoArray } from '@core/decorators/is-dto-array.decorator';
 import { ShiftCycleCoordinatorsDto } from './shift-cycle-coordinators.dto';
 
 export class AssignCycleCoordinatorsDto {
-  @ApiProperty({ type: [ShiftCycleCoordinatorsDto] })
-  @IsArray({ message: validator.isArray })
-  @ValidateNested({ each: true })
-  @Type(() => ShiftCycleCoordinatorsDto)
+  @IsDtoArray(ShiftCycleCoordinatorsDto)
   readonly shifts!: ShiftCycleCoordinatorsDto[];
 }

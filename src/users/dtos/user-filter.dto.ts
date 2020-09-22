@@ -13,46 +13,46 @@ export class UserFilterDto {
   @ApiPropertyOptional({ enum: sortOptions })
   @IsOptional()
   @Validate(SortOptionsValidator, sortOptions)
-  sort?: string;
+  readonly sort?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  username?: string;
+  readonly username?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  firstname?: string;
+  readonly firstname?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  lastname?: string;
+  readonly lastname?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  email?: string;
+  readonly email?: string;
 
   @IsOptional()
   @Type(() => Number)
   @IsId()
-  role?: number;
+  readonly role?: number;
 
   @IsOptional()
   @IsBooleanString({ message: validator.isBoolean })
-  active?: boolean;
+  readonly active?: boolean;
 
   @IsOptional()
   @IsIn(['false'], { message: validator.isIn })
-  credentials?: string;
+  readonly credentials?: string;
 
   @IsOptional()
   @IsDateString({ message: validator.isDateString })
-  createdAtStart?: Date;
+  readonly createdAtStart?: Date;
 
   @IsOptional()
   @IsDateString({ message: validator.isDateString })
-  createdAtEnd?: Date;
+  readonly createdAtEnd?: Date;
 
   @IsOptional()
   @IsIn(['false'], { message: validator.isIn })
-  paginate?: string;
+  readonly paginate?: string;
 }

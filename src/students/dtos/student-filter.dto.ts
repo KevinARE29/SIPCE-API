@@ -1,10 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, Validate, IsString, IsPositive, IsInt, IsEnum, IsIn } from 'class-validator';
+import { IsOptional, Validate, IsString, IsEnum, IsIn } from 'class-validator';
 import { SortOptionsValidator } from '@core/validators/sort-options.validator';
 import { validator } from '@core/messages/validator.message';
 import { Type } from 'class-transformer';
 import { getSortOptions, getSortOptionsMap } from '@core/utils/sort.util';
 import { EStudentStatus, statusKeys, TStatus } from '@students/constants/student.constant';
+import { IsId } from '@core/decorators/id.decorator';
 
 const sortOptions = getSortOptions('code', 'firstname', 'lastname', 'email', 'status', 'currentGrade');
 export const sortOptionsMap = getSortOptionsMap('student', sortOptions);
@@ -13,39 +14,38 @@ export class StudentFilterDto {
   @ApiPropertyOptional({ enum: sortOptions })
   @IsOptional()
   @Validate(SortOptionsValidator, sortOptions)
-  sort?: string;
+  readonly sort?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  code?: string;
+  readonly code?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  firstname?: string;
+  readonly firstname?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  lastname?: string;
+  readonly lastname?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  email?: string;
+  readonly email?: string;
 
   @IsOptional()
-  @IsInt({ message: validator.isInt })
-  @IsPositive({ message: validator.isPositive })
+  @IsId()
   @Type(() => Number)
-  currentGrade?: number;
+  readonly currentGrade?: number;
 
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @IsEnum(EStudentStatus, {
     message: `status: Debe ser uno de los siguientes valores: ${statusKeys}`,
   })
-  status?: TStatus;
+  readonly status?: TStatus;
 
   @ApiPropertyOptional({ type: Boolean })
   @IsOptional()
   @IsIn(['true', 'false'], { message: validator.isIn })
-  active?: string;
+  readonly active?: string;
 }

@@ -1,13 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, ValidateNested } from 'class-validator';
-import { validator } from '@core/messages/validator.message';
-import { Type } from 'class-transformer/decorators';
+import { IsDtoArray } from '@core/decorators/is-dto-array.decorator';
 import { ShiftCounselorsDto } from './shift-counselors.dto';
 
 export class AssignCounselorsDto {
-  @ApiProperty({ type: [ShiftCounselorsDto] })
-  @IsArray({ message: validator.isArray })
-  @ValidateNested({ each: true })
-  @Type(() => ShiftCounselorsDto)
+  @IsDtoArray(ShiftCounselorsDto)
   readonly shifts!: ShiftCounselorsDto[];
 }

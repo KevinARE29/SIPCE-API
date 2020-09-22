@@ -1,17 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsNotEmpty } from 'class-validator';
-import { validator } from '@core/messages/validator.message';
+import { PartialType } from '@nestjs/swagger';
+import { CreateRoleDto } from './create-role.dto';
 
-export class UpdateRoleDto {
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  name?: string;
-
-  @IsOptional()
-  @IsArray({ message: validator.isArray })
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
-  permissions?: number[];
-}
+export class UpdateRoleDto extends PartialType(CreateRoleDto) {}

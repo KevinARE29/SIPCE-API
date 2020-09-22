@@ -4,9 +4,9 @@ import { Type } from 'class-transformer';
 export class StudentAssignationFilterDto {
   @IsId()
   @Type(() => Number)
-  currentGradeId!: number;
+  readonly currentGradeId!: number;
 
   @IsId()
   @Type(() => Number)
-  currentShiftId!: number;
+  readonly currentShiftId!: number;
 }

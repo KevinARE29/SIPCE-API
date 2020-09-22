@@ -1,35 +1,16 @@
-import { IsString, IsArray, IsInt, IsPositive, IsOptional, IsEmail, IsNotEmpty } from 'class-validator';
+import { IsArray, IsOptional } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
+import { IsId } from '@core/decorators/id.decorator';
+import { UserDto } from './user.dto';
 
-export class CreateUserDto {
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  code!: string;
-
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  username!: string;
-
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  firstname!: string;
-
-  @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
-  lastname!: string;
-
-  @IsEmail({}, { message: validator.isEmail })
-  email!: string;
+export class CreateUserDto extends UserDto {
+  @IsOptional()
+  @IsArray({ message: validator.isArray })
+  @IsId({ each: true })
+  readonly roleIds?: number[];
 
   @IsOptional()
   @IsArray({ message: validator.isArray })
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
-  roleIds?: number[];
-
-  @IsOptional()
-  @IsArray({ message: validator.isArray })
-  @IsInt({ each: true, message: validator.isInt })
-  @IsPositive({ each: true, message: validator.isPositive })
-  permissionIds?: number[];
+  @IsId({ each: true })
+  readonly permissionIds?: number[];
 }

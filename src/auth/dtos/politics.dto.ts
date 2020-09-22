@@ -6,27 +6,27 @@ import { MinLengthValidator } from '../validators/min-length.validator';
 export class PolitcDto {
   @IsOptional()
   @Validate(MinLengthValidator)
-  minLength?: number;
+  readonly minLength?: number;
 
   @IsOptional()
   @IsBoolean({ message: validator.isBoolean })
-  capitalLetter?: boolean;
+  readonly capitalLetter?: boolean;
 
   @IsOptional()
   @IsBoolean({ message: validator.isBoolean })
-  lowerCase?: boolean;
+  readonly lowerCase?: boolean;
 
   @IsOptional()
   @IsBoolean({ message: validator.isBoolean })
-  specialChart?: boolean;
+  readonly specialChart?: boolean;
 
   @IsOptional()
   @IsBoolean({ message: validator.isBoolean })
-  numericChart?: boolean;
+  readonly numericChart?: boolean;
 
   @IsOptional()
   @IsString({ message: validator.isString })
   @IsNotEmpty({ message: validator.isNotEmpty })
   @Validate(TypeSpecialValidator)
-  typeSpecial?: string;
+  readonly typeSpecial?: string;
 }
