@@ -18,7 +18,7 @@ export class ShiftRepository extends Repository<Shift> {
       const order = getOrderBy(sort, sortOptionsMap);
       query.orderBy(order);
     } else {
-      query.orderBy({ 'shift.id': 'DESC' });
+      query.orderBy({ 'shift.id': 'ASC' });
     }
 
     if (name) {
