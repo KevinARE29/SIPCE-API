@@ -6,6 +6,7 @@ import { GradeFilterDto } from '@academics/dtos/grade-filter.dto';
 import { GradesResponse } from '@academics/docs/grades-response.doc';
 import { Grades } from '@academics/docs/grades.doc';
 import { plainToClass } from 'class-transformer';
+import { Not } from 'typeorm';
 
 @Injectable()
 export class GradeService {
@@ -23,6 +24,15 @@ export class GradeService {
 
   async deleteGrade(gradeId: number): Promise<void> {
     const grade = await this.gradeRepository.getGradeByIdOrThrow(gradeId);
+    if (grade.active) {
+      // If the operation is 'deactivate' and there is not another active grade throw an error.
+      const activeGrade = await this.gradeRepository.findOne({ where: { id: Not(gradeId), active: true } });
+      if (!activeGrade) {
+        throw new BadRequestException(
+          'gradeId: No es posible desactivar todos los grados. Debe haber al menos un grado activo',
+        );
+      }
+    }
 
     if (gradeId === 1 || gradeId === 15) {
       if (gradeId === 15 && !grade.active) {
