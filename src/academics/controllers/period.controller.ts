@@ -7,6 +7,7 @@ import { Auth } from '@auth/decorators/auth.decorator';
 import { PeriodFilterDto } from '@academics/dtos/period-filter.dto';
 import { PeriodsResponse } from '@academics/docs/periods-response.doc';
 import { PeriodIdDto } from '@academics/dtos/period-id.dto';
+import { SchoolYearGuard } from '@academics/guards/school-year.guard';
 
 @ApiTags('Periods Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -29,6 +30,7 @@ export class PeriodController {
     summary: 'Desactivar Periodo',
     description: 'Use este endpoint para desactivar/activar un periodo específico',
   })
+  @UseGuards(SchoolYearGuard)
   @HttpCode(204)
   @Delete(':periodId')
   deletePeriod(@Param() idDto: PeriodIdDto): Promise<void> {

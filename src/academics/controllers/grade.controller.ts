@@ -7,6 +7,7 @@ import { Auth } from '@auth/decorators/auth.decorator';
 import { GradeFilterDto } from '@academics/dtos/grade-filter.dto';
 import { GradesResponse } from '@academics/docs/grades-response.doc';
 import { GradeIdDto } from '@academics/dtos/grade-id.dto';
+import { SchoolYearGuard } from '@academics/guards/school-year.guard';
 
 @ApiTags('Grades Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -29,6 +30,7 @@ export class GradeController {
     summary: 'Desactivar Grados',
     description: 'Use este endpoint para desactivar/activar un grado específico',
   })
+  @UseGuards(SchoolYearGuard)
   @HttpCode(204)
   @Delete(':gradeId')
   deleteGrade(@Param() idDto: GradeIdDto): Promise<void> {
