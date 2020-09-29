@@ -1,4 +1,4 @@
-import { Injectable, CanActivate } from '@nestjs/common';
+import { Injectable, CanActivate, BadRequestException } from '@nestjs/common';
 import { SchoolYearRepository } from '@academics/repositories';
 import { ESchoolYearStatus } from '@academics/constants/academic.constants';
 
@@ -12,10 +12,10 @@ export class SchoolYearGuard implements CanActivate {
       .orderBy(`"schoolYear"."id"`, 'DESC')
       .getOne();
 
-    if (!mostRecentSchoolYear) {
-      return true;
+    if (mostRecentSchoolYear && ESchoolYearStatus[mostRecentSchoolYear.status] === 'En curso') {
+      throw new BadRequestException('Operación no permitida mientras el actual año escolar esté en curso');
     }
 
-    return ESchoolYearStatus[mostRecentSchoolYear.status] !== 'En curso';
+    return true;
   }
 }
