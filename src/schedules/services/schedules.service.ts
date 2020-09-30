@@ -54,15 +54,12 @@ export class SchedulesService {
 
     let studentSchedule;
     let employeesSchedule;
-    const type = EnumEventType[eventType];
 
-    if (type !== 4 && type !== 5) {
-      if (studentId) {
-        studentSchedule = await this.studentRepository.findOneOrFail(studentId);
-      }
-      if (participantIds) {
-        employeesSchedule = await this.userRepository.findByIds(participantIds);
-      }
+    if (studentId) {
+      studentSchedule = await this.studentRepository.findOneOrFail(studentId);
+    }
+    if (participantIds) {
+      employeesSchedule = await this.userRepository.findByIds(participantIds);
     }
 
     return {
@@ -103,16 +100,14 @@ export class SchedulesService {
       event.eventType = type;
     } else type = event.eventType;
 
-    if (type !== 4 && type !== 5) {
-      if (studentId) {
-        studentSchedule = await this.studentRepository.findOneOrFail(studentId);
-        event.studentSchedule = studentSchedule;
-      }
+    if (studentId) {
+      studentSchedule = await this.studentRepository.findOneOrFail(studentId);
+      event.studentSchedule = studentSchedule;
+    }
 
-      if (participantIds) {
-        employeesSchedule = await this.userRepository.findByIds(participantIds);
-        event.employeesSchedule = employeesSchedule;
-      }
+    if (participantIds) {
+      employeesSchedule = await this.userRepository.findByIds(participantIds);
+      event.employeesSchedule = employeesSchedule;
     }
 
     const updatedEvent = await this.scheduleRepository.save({
