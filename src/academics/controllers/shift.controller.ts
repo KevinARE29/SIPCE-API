@@ -7,6 +7,7 @@ import { Auth } from '@auth/decorators/auth.decorator';
 import { ShiftFilterDto } from '@academics/dtos/shift-filter.dto';
 import { ShiftsResponse } from '@academics/docs/shifts-response.doc';
 import { ShiftIdDto } from '@academics/dtos/shift-id.dto';
+import { SchoolYearGuard } from '@academics/guards/school-year.guard';
 
 @ApiTags('Shifts Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -29,6 +30,7 @@ export class ShiftController {
     summary: 'Desactivar Turnos',
     description: 'Use este endpoint para desactivar/activar un turno específico',
   })
+  @UseGuards(SchoolYearGuard)
   @HttpCode(204)
   @Delete(':shiftId')
   deleteShift(@Param() idDto: ShiftIdDto): Promise<void> {
