@@ -8,10 +8,15 @@ import { AcademicsModule } from '@academics/academics.module';
 import { StudentModule } from '@students/students.module';
 import { SchedulesModule } from '@schedules/schedules.module';
 import * as Joi from '@hapi/joi';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { mailerFactory } from '@mails/factories/mailer.factory';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
+    MailerModule.forRootAsync({
+      useFactory: mailerFactory,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -39,10 +44,8 @@ import * as Joi from '@hapi/joi';
         TYPEORM_MIGRATIONS_DIR: Joi.string().default('migrations'),
         TYPEORM_MIGRATIONS_RUN: Joi.boolean().default(true),
         TYPEORM_LOGGING: Joi.string().default('error'),
-        SENDGRID_API_KEY: Joi.string().required(),
-        RESET_PSW_SENDGRID_TEMPLATE_ID: Joi.string().required(),
-        GENERATE_CREDENTIALS_TEMPLATE_ID: Joi.string().required(),
-        EMAIL_USER: Joi.string().default('noreply.liceo.salvadoreno@gmail.com'),
+        EMAIL_USER: Joi.string().required(),
+        EMAIL_PSW: Joi.string().required(),
         CLOUDINARY_CLOUD_NAME: Joi.string().required(),
         CLOUDINARY_API_KEY: Joi.string().required(),
         CLOUDINARY_API_SECRET: Joi.string().required(),
