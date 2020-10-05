@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-import { Injectable, BadRequestException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { IsNull, In } from 'typeorm';
 import { ResetPswTokenDto } from '@auth/dtos/reset-psw-token.dto';
@@ -112,13 +112,7 @@ export class UsersService {
 
   async generateCredentials(generateCredentialsDto: GenerateCredentialsDto): Promise<void> {
     const { ids } = generateCredentialsDto;
-    const from = this.configService.get<string>('EMAIL_USER');
-    const templateId = this.configService.get<string>('GENERATE_CREDENTIALS_TEMPLATE_ID');
     const frontUrl = this.configService.get<string>('FRONT_URL');
-
-    if (!(from && templateId && frontUrl)) {
-      throw new InternalServerErrorException('Error en la configuración de Emails');
-    }
 
     const users = await this.userRepository.find({
       where: {
@@ -142,9 +136,9 @@ export class UsersService {
 
       const email: IEmail = {
         to: user.email,
-        from,
-        templateId,
-        dynamicTemplateData: {
+        template: 'generate-credentials',
+        subject: 'Credenciales para SIAPCE',
+        context: {
           firstname: user.firstname,
           lastname: user.lastname,
           username: user.username,

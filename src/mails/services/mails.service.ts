@@ -1,16 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { setApiKey, send } from '@sendgrid/mail';
-import { ClientResponse } from '@sendgrid/client/src/response';
+import { MailerService } from '@nestjs-modules/mailer';
 import { IEmail } from '../interfaces/email.interface';
 
 @Injectable()
 export class MailsService {
-  constructor(private readonly configService: ConfigService) {
-    setApiKey(this.configService.get('SENDGRID_API_KEY') || '');
-  }
+  constructor(private readonly mailerService: MailerService) {}
 
-  sendEmail(email: IEmail): Promise<[ClientResponse, {}]> {
-    return send(email);
+  sendEmail(email: IEmail): Promise<any> {
+    return this.mailerService.sendMail(email);
   }
 }
