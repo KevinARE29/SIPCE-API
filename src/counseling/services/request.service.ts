@@ -29,7 +29,7 @@ export class RequestService {
     try {
       return verify(confirmationToken, confirmationTokenSecret) as IConfirmationTokenPayload;
     } catch {
-      throw new ConflictException('Invalid Confirmation Token');
+      throw new ConflictException('Token de confirmación no válido');
     }
   }
 
