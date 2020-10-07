@@ -129,4 +129,13 @@ export class SchedulesService {
     }
     await this.scheduleRepository.query(`DELETE FROM schedule WHERE id IN (${event.id})`);
   }
+
+  async readNotification(ownerSchedule: User, eventId: number): Promise<void> {
+    const event = await this.scheduleRepository.findByIdOrThrow(eventId);
+    if (event.ownerSchedule.id !== ownerSchedule.id) {
+      throw new BadRequestException('Solo el propietario del evento puede realizar acciones en el evento');
+    }
+    event.notification = true;
+    await this.scheduleRepository.save(event);
+  }
 }
