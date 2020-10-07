@@ -14,7 +14,7 @@ export class ScheduleRepository extends Repository<Schedule> {
   }
 
   getEvents(userId: number, scheduleFilterDto: ScheduleFilterDto): Promise<Schedule[]> {
-    const { fromDate, toDate } = scheduleFilterDto;
+    const { fromDate, toDate, notification } = scheduleFilterDto;
     const orCondition = `OR schedule.jsonData ->> 'RecurrenceRule' is not null`;
     const query = this.createQueryBuilder('schedule')
       .leftJoin('schedule.ownerSchedule', 'ownerSchedule')
@@ -31,6 +31,9 @@ export class ScheduleRepository extends Repository<Schedule> {
       query.andWhere(`((schedule.jsonData ->> 'EndTime')::timestamp <= '${toDate}' ${orCondition})`);
     } else {
       query.andWhere(`((schedule.jsonData ->> 'EndTime')::timestamp <= NOW() + INTERVAL '1' MONTH ${orCondition})`);
+    }
+    if (notification) {
+      query.andWhere(`schedule.notification is ${notification}`);
     }
 
     query.orderBy(`(schedule.jsonData ->> 'EndTime')::timestamp`);

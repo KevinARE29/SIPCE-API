@@ -24,6 +24,9 @@ export class Schedule {
   @Column({ name: 'json_data', type: 'json' })
   jsonData!: Record<string, any>;
 
+  @Column({ default: false })
+  notification!: boolean;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 

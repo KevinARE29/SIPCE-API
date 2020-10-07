@@ -68,4 +68,15 @@ export class SchedulesController {
     const user = await this.userRepository.findOneOrFail(reqUser.id);
     return this.schedulesService.deleteEvent(user, idDto.eventId);
   }
+
+  @Auth('manage_schedule')
+  @ApiOperation({
+    summary: 'marcar evento como leido',
+    description: 'Use este endpoint para marcar las notificaciones de evntos como leidas',
+  })
+  @Put('/notification:eventId')
+  async readNotification(@User() reqUser: IAuthenticatedUser, @Param() idDto: ScheduleIdDto): Promise<void> {
+    const user = await this.userRepository.findOneOrFail(reqUser.id);
+    return this.schedulesService.readNotification(user, idDto.eventId);
+  }
 }
