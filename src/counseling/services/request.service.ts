@@ -1,12 +1,19 @@
 import { ConfigService } from '@nestjs/config';
 import { sign, verify } from 'jsonwebtoken';
-import { ConflictException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { GenerateRequestDto } from '@counseling/dtos/generate-request.dto';
 import { StudentRepository } from '@students/repositories';
-import { In, IsNull } from 'typeorm';
-import { activeStatuses } from '@students/constants/student.constant';
 import { RequestRepository } from '@counseling/repositories/request.repository';
 import { MailsService } from '@mails/services/mails.service';
+import { ConfirmationTokenDto } from '@counseling/dtos/confirmation-token.dto';
+import { ERequestStatus } from '@counseling/constants/request.constant';
 import { IConfirmationTokenPayload } from '../interfaces/confirmation-token.interface';
 
 @Injectable()
@@ -18,10 +25,10 @@ export class RequestService {
     private readonly studentRepository: StudentRepository,
   ) {}
 
-  getConfirmationToken(email: string): string {
+  getConfirmationToken(email: string, requestId: number): string {
     const confirmationTokenSecret = this.configService.get('JWT_SECRET_CONFIRMATION_TOKEN');
     const confirmationTokenExp = this.configService.get('TOKEN_CONFIRMATION_EXPIRATION');
-    return sign({ email }, confirmationTokenSecret, { expiresIn: confirmationTokenExp });
+    return sign({ email, requestId }, confirmationTokenSecret, { expiresIn: confirmationTokenExp });
   }
 
   getConfirmationTokenPayload(confirmationToken: string): IConfirmationTokenPayload {
@@ -38,19 +45,15 @@ export class RequestService {
     const frontUrl = this.configService.get<string>('FRONT_URL');
     const apiUrl = this.configService.get<string>('API_URL');
 
-    const student = await this.studentRepository.findOne({
-      where: { email, deletedAt: IsNull(), status: In(activeStatuses) },
-    });
-
+    const student = await this.studentRepository.findByEmail(email);
     if (!student) {
       return;
     }
 
-    const confirmationToken = this.getConfirmationToken(email);
-    await Promise.all([
-      this.requestRepository.save({ ...requestDto, student }),
-      this.studentRepository.save({ ...student, confirmationToken }),
-    ]);
+    const { id } = await this.requestRepository.save({ ...requestDto, student });
+    const confirmationToken = this.getConfirmationToken(email, id);
+
+    await this.studentRepository.save({ ...student, confirmationToken });
 
     const emailToSend = {
       to: email,
@@ -62,11 +65,35 @@ export class RequestService {
         apiUrl,
       },
     };
+
     try {
       await this.mailsService.sendEmail(emailToSend);
     } catch (err) {
       Logger.error(err);
       throw new InternalServerErrorException('Error enviando el email');
     }
+  }
+
+  async confirmRequest({ confirmationToken }: ConfirmationTokenDto): Promise<void> {
+    const { email, requestId } = this.getConfirmationTokenPayload(confirmationToken);
+
+    const student = await this.studentRepository.findByEmail(email);
+    if (!student) {
+      throw new NotFoundException(`confirmationToken: Estudiante con email ${email} no encontrado`);
+    }
+
+    if (student.confirmationToken !== confirmationToken) {
+      throw new BadRequestException('confirmationToken: Token de confirmación no válido');
+    }
+
+    const request = await this.requestRepository.preload({ id: requestId, status: ERequestStatus.Verificada });
+    if (!request) {
+      throw new NotFoundException(`confirmationToken: Solicitud de consulta de consejería no encontrada`);
+    }
+
+    await Promise.all([
+      this.requestRepository.save(request),
+      this.studentRepository.save({ ...student, confirmationToken: null }),
+    ]);
   }
 }
