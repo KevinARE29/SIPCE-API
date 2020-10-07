@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, IsNull } from 'typeorm';
+import { EntityRepository, Repository, IsNull, In } from 'typeorm';
 import { Student } from '@students/entities/student.entity';
 import { PageDto } from '@core/dtos/page.dto';
 import { StudentFilterDto, sortOptionsMap } from '@students/dtos/student-filter.dto';
@@ -12,6 +12,12 @@ import { Grade } from '@academics/entities/grade.entity';
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> {
+  findByEmail(email: string): Promise<Student | undefined> {
+    return this.findOne({
+      where: { email, deletedAt: IsNull(), status: In(activeStatuses) },
+    });
+  }
+
   findByCode(code: string): Promise<Student | undefined> {
     return this.findOne({
       where: {
