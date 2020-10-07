@@ -10,6 +10,7 @@ import { SchedulesModule } from '@schedules/schedules.module';
 import * as Joi from '@hapi/joi';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { mailerFactory } from '@mails/factories/mailer.factory';
+import { CounselingModule } from '@counseling/counseling.module';
 
 @Module({
   imports: [
@@ -27,9 +28,11 @@ import { mailerFactory } from '@mails/factories/mailer.factory';
         JWT_SECRET_ACCESS_TOKEN: Joi.string().required(),
         JWT_SECRET_REFRESH_TOKEN: Joi.string().required(),
         JWT_SECRET_PASSWORD_RESET: Joi.string().required(),
+        JWT_SECRET_CONFIRMATION_TOKEN: Joi.string().required(),
         ACCESS_TOKEN_EXPIRATION: Joi.number().default(1200000), // 20 min
         REFRESH_TOKEN_EXPIRATION: Joi.number().default(7200000), // 2 hours
         PASSWORD_RESET_EXPIRATION: Joi.number().default(86400000), // 24 hours
+        TOKEN_CONFIRMATION_EXPIRATION: Joi.number().default(86400000), // 24 hours
         TYPEORM_CONNECTION: Joi.string().default('postgres'),
         TYPEORM_HOST: Joi.string().default('localhost'),
         TYPEORM_USERNAME: Joi.string().required(),
@@ -60,6 +63,7 @@ import { mailerFactory } from '@mails/factories/mailer.factory';
     AcademicsModule,
     StudentModule,
     SchedulesModule,
+    CounselingModule,
   ],
 })
 export class AppModule {}
