@@ -16,6 +16,7 @@ import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { Grade } from '@academics/entities/grade.entity';
 import { Shift } from '@academics/entities/shift.entity';
 import { Schedule } from '@schedules/entities/schedules.entity';
+import { Request } from '@counseling/entities/request.entity';
 import { ResponsibleStudent } from './responsible-student.entity';
 import { Image } from './image.entity';
 
@@ -44,6 +45,9 @@ export class Student {
 
   @Column('enum', { enum: EStudentStatus, enumName: 'student_status_enum', default: 1 })
   status!: EStudentStatus;
+
+  @Column('varchar', { name: 'confirmation_token', length: 512, unique: true, nullable: true })
+  confirmationToken!: string | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
@@ -114,4 +118,10 @@ export class Student {
     schedule => schedule.studentSchedule,
   )
   schedules!: Schedule[];
+
+  @OneToMany(
+    () => Request,
+    request => request.student,
+  )
+  requests!: Request[];
 }
