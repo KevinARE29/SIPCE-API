@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 import { ERequestStatus } from '@counseling/constants/request.constant';
 import { Student } from '@students/entities/student.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
 
 @Entity()
 export class Request {
@@ -16,6 +16,12 @@ export class Request {
 
   @Column('enum', { enum: ERequestStatus, enumName: 'request_status_enum', default: 1 })
   status!: ERequestStatus;
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  createdAt!: Date;
+
+  @CreateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  updatedAt!: Date;
 
   @ManyToOne(
     () => Student,
