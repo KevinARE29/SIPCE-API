@@ -13,8 +13,6 @@ import { ResponsibleRepository } from '@students/repositories/responsible.reposi
 import { ResponsibleStudentRepository } from '@students/repositories/responsible-student.repository';
 import { Connection } from 'typeorm';
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
-import { ConfigService } from '@nestjs/config';
-import * as fs from 'fs';
 import { Student } from '@students/docs/student.doc';
 import { StudentResponse } from '@students/docs/student-response.doc';
 import { UpdateStudentDto } from '@students/dtos/update-student.dto';
@@ -31,7 +29,6 @@ export class StudentService {
     private readonly schoolYearRepository: SchoolYearRepository,
     private readonly responsibleRepository: ResponsibleRepository,
     private readonly responsibleStudentRepository: ResponsibleStudentRepository,
-    private readonly configService: ConfigService,
     private connection: Connection,
   ) {}
 
@@ -112,14 +109,6 @@ export class StudentService {
     const student = await this.studentRepository.getStudentDetails(studentId);
     if (!student) {
       throw new NotFoundException(`Estudiante con id ${studentId} no encontrado`);
-    }
-    const cloudinaryEnvs = this.configService.get('CLOUDINARY_ENVS').split(',');
-    const env = this.configService.get('NODE_ENV');
-    if (!cloudinaryEnvs.includes(env)) {
-      student.images = student.images.map(image => ({
-        ...image,
-        path: fs.readFileSync(image.path, 'base64'),
-      }));
     }
 
     const mappedStudent = {

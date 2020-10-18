@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* istanbul ignore file */
 import {
   Entity,
@@ -10,6 +11,7 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+  AfterLoad,
 } from 'typeorm';
 import { EStudentStatus } from '@students/constants/student.constant';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
@@ -124,4 +126,16 @@ export class Student {
     request => request.student,
   )
   requests!: Request[];
+
+  currentPhoto!: Image;
+
+  @AfterLoad()
+  getLastImage() {
+    if (this.images?.length) {
+      const orderedImages = this.images.sort((a, b) => {
+        return a.grade.id - b.grade.id;
+      });
+      this.currentPhoto = orderedImages.slice(-1)[0];
+    }
+  }
 }

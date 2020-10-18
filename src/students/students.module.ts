@@ -21,6 +21,7 @@ import {
   ResponsibleStudentRepository,
   ImageRepository,
 } from './repositories';
+import { ImageSubscriber } from './subscribers/image.subscriber';
 
 @Module({
   imports: [
@@ -34,7 +35,14 @@ import {
     StudentImageController,
     StudentAssignationController,
   ],
-  providers: [StudentService, StudentBulkService, ResponsibleService, StudentImageService, StudentAssignationService],
+  providers: [
+    StudentService,
+    StudentBulkService,
+    ResponsibleService,
+    StudentImageService,
+    StudentAssignationService,
+    ImageSubscriber,
+  ],
   exports: [TypeOrmModule],
 })
 export class StudentModule {}

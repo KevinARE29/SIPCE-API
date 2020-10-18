@@ -37,9 +37,10 @@ export class StudentRepository extends Repository<Student> {
 
   getAllStudents(pageDto: PageDto, studentFilterDto: StudentFilterDto): Promise<[Student[], number]> {
     const { page, perPage } = pageDto;
-    const { sort, code, firstname, lastname, email, currentGrade, status, active } = studentFilterDto;
+    const { sort, code, firstname, lastname, email, currentGrade, currentShift, status, active } = studentFilterDto;
     const query = this.createQueryBuilder('student')
       .leftJoinAndSelect('student.currentGrade', 'currentGrade')
+      .leftJoinAndSelect('student.currentShift', 'currentShift')
       .andWhere('student.deletedAt is null')
       .take(perPage)
       .skip((page - 1) * perPage);
@@ -72,6 +73,10 @@ export class StudentRepository extends Repository<Student> {
 
     if (currentGrade) {
       query.andWhere(`"currentGrade"."id" = ${currentGrade}`);
+    }
+
+    if (currentShift) {
+      query.andWhere(`"currentShift"."id" = ${currentShift}`);
     }
 
     if (status) {
@@ -114,9 +119,10 @@ export class StudentRepository extends Repository<Student> {
 
   getStudentsAssignation({ id: currentShiftId }: Shift, { id: currentGradeId }: Grade): Promise<Student[]> {
     return this.createQueryBuilder('student')
-      .leftJoin('student.currentShift', 'currentShift')
-      .leftJoin('student.currentGrade', 'currentGrade')
-      .leftJoinAndMapMany('student.images', Image, 'image', 'image.student = student.id')
+      .leftJoinAndSelect('student.currentShift', 'currentShift')
+      .leftJoinAndSelect('student.currentGrade', 'currentGrade')
+      .leftJoinAndSelect('student.images', 'image')
+      .leftJoinAndSelect('image.grade', 'grade')
       .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
       .leftJoinAndSelect('sectionDetail.teacher', 'teacher')
       .leftJoinAndSelect('sectionDetail.section', 'section')
