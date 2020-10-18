@@ -42,6 +42,7 @@ import { CounselingModule } from '@counseling/counseling.module';
         TYPEORM_PORT: Joi.number().default(5432),
         TYPEORM_SYNCHRONIZE: Joi.boolean().default(false),
         TYPEORM_ENTITIES: Joi.string().default('src/**/entities/*.js,dist/**/entities/*.js'),
+        TYPEORM_SUBSCRIBERS: Joi.string().default('src/**/subscribers/*.js,dist/**/subscribers/*.js'),
         TYPEORM_MIGRATIONS_TABLE_NAME: Joi.string().default('migration'),
         TYPEORM_MIGRATIONS: Joi.string().default('migrations/*.js, dist/migrations/*.js'),
         TYPEORM_MIGRATIONS_DIR: Joi.string().default('migrations'),
