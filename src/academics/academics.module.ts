@@ -30,6 +30,7 @@ import {
   SchoolYearService,
   CloseSchoolYearService,
 } from './services';
+import { AssignationService } from './services/assignation.service';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import {
     CloseSchoolYearController,
   ],
   providers: [
+    AssignationService,
     SectionService,
     CycleService,
     GradeService,
@@ -64,6 +66,6 @@ import {
     SchoolYearService,
     CloseSchoolYearService,
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, AssignationService],
 })
 export class AcademicsModule {}

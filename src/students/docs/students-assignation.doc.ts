@@ -10,5 +10,5 @@ export class StudentsAssignation extends Students {
 
   @Expose()
   @Type(() => Image)
-  images!: Image[];
+  currentPhoto!: Image;
 }

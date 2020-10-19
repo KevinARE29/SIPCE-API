@@ -21,3 +21,20 @@ export function getOrderBy(sort: string, sortOptionsMap: Map<string, any>) {
     return { ...acum, ...orderOption };
   }, {});
 }
+
+// TODO: Refactor all Filters DTOs to use this v2
+export function getSortOptionsv2(
+  options: string[],
+  defaultTable: string,
+): [string[], Map<string, Record<string, any>>] {
+  const sortOptions: string[] = [];
+  const sortOptionsMap: Map<string, Record<string, any>> = new Map();
+  options.forEach(option => {
+    const [attr, table] = option.split('.').reverse();
+    sortOptions.push(`${attr}-asc`, `${attr}-desc`);
+    sortOptionsMap.set(`${attr}-asc`, { [`${table || defaultTable}.${attr}`]: 'ASC' });
+    sortOptionsMap.set(`${attr}-desc`, { [`${table || defaultTable}.${attr}`]: 'DESC' });
+  });
+
+  return [sortOptions, sortOptionsMap];
+}

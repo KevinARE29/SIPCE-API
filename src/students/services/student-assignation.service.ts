@@ -7,7 +7,6 @@ import { SchoolYearRepository } from '@academics/repositories/school-year.reposi
 import { plainToClass } from 'class-transformer';
 import { StudentsAssignation } from '@students/docs/students-assignation.doc';
 import { ConfigService } from '@nestjs/config';
-import * as fs from 'fs';
 import { EStudentStatus } from '@students/constants/student.constant';
 import { PatchStudentAssignationDto } from '@students/dtos/patch-student-assignation.dto';
 import { SchoolYear } from '@academics/entities/school-year.entity';
@@ -46,9 +45,6 @@ export class StudentAssignationService {
       await this.validateTeacherAssignation(currentShiftId, currentGradeId, userId),
     ]);
 
-    const cloudinaryEnvs = this.configService.get('CLOUDINARY_ENVS').split(',');
-    const env = this.configService.get<string>('NODE_ENV');
-
     const studentsWithoutAssignation: StudentsAssignation[] = [];
     const assignedStudents: StudentsAssignation[] = [];
     const myStudents: StudentsAssignation[] = [];
@@ -58,12 +54,7 @@ export class StudentAssignationService {
         status: EStudentStatus[student.status],
         section: student.sectionDetails[0]?.section,
       };
-      const lastImage = student.images[0];
-      if (!cloudinaryEnvs.includes(env) && lastImage) {
-        mappedStudent.images = [{ ...lastImage, path: fs.readFileSync(lastImage.path, 'base64') }];
-      } else {
-        mappedStudent.images = lastImage ? [lastImage] : [];
-      }
+
       const studentSchoolYearAssignation = student.sectionDetails[0]?.gradeDetail.cycleDetail.schoolYear;
       if (!student.sectionDetails.length || studentSchoolYearAssignation?.id !== currentAssignation.id) {
         studentsWithoutAssignation.push(mappedStudent);

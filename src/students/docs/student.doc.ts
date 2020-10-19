@@ -52,6 +52,10 @@ export class Student {
   images!: Image[];
 
   @Expose()
+  @Type(() => Image)
+  currentPhoto!: Image;
+
+  @Expose()
   @Type(() => ResponsibleStudent)
   responsibleStudents!: ResponsibleStudent[];
 
