@@ -2,7 +2,7 @@ import { TCounselorAssignation } from '@academics/constants/academic.constants';
 import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
 import { mapCycleDetails } from '@academics/utils/school-year.util';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { MyGradesAssignation } from '@users/docs/my-profile/my-grades-assignation.doc';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class AssignationService {
     const counselorCurrentAssignation = await this.schoolYearRepository.getCurrentAssignation({ counselorId });
 
     if (!counselorCurrentAssignation) {
-      return;
+      throw new BadRequestException('Orientador no posee grados asignados');
     }
 
     const counselorAssignation = counselorCurrentAssignation.cycleDetails.reduce(

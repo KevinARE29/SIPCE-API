@@ -14,6 +14,13 @@ import { RequestRepository } from '@counseling/repositories/request.repository';
 import { MailsService } from '@mails/services/mails.service';
 import { ConfirmationTokenDto } from '@counseling/dtos/confirmation-token.dto';
 import { ERequestStatus } from '@counseling/constants/request.constant';
+import { RequestFilterDto } from '@counseling/dtos/request-filter.dto';
+import { PageDto } from '@core/dtos/page.dto';
+import { AssignationService } from '@academics/services/assignation.service';
+import { getPagination } from '@core/utils/pagination.util';
+import { plainToClass } from 'class-transformer';
+import { Requests } from '@counseling/docs/requests.doc';
+import { RequestsResponse } from '@counseling/docs/requests-response.doc';
 import { IConfirmationTokenPayload } from '../interfaces/confirmation-token.interface';
 
 @Injectable()
@@ -21,6 +28,7 @@ export class RequestService {
   constructor(
     private readonly configService: ConfigService,
     private readonly mailsService: MailsService,
+    private readonly assignationService: AssignationService,
     private readonly requestRepository: RequestRepository,
     private readonly studentRepository: StudentRepository,
   ) {}
@@ -95,5 +103,17 @@ export class RequestService {
       this.requestRepository.save(request),
       this.studentRepository.save({ ...student, confirmationToken: null }),
     ]);
+  }
+
+  async getRequests(
+    counselorId: number,
+    pageDto: PageDto,
+    requestFilterDto: RequestFilterDto,
+  ): Promise<RequestsResponse> {
+    const counselorAssignation = await this.assignationService.getCounselorAssignation(counselorId);
+    const [requests, count] = await this.requestRepository.getRequests(counselorAssignation, pageDto, requestFilterDto);
+    const pagination = getPagination(pageDto, count);
+
+    return { data: plainToClass(Requests, requests, { excludeExtraneousValues: true }), pagination };
   }
 }

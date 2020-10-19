@@ -7,7 +7,6 @@ import { SchoolYearRepository } from '@academics/repositories/school-year.reposi
 import { plainToClass } from 'class-transformer';
 import { StudentsAssignation } from '@students/docs/students-assignation.doc';
 import { ConfigService } from '@nestjs/config';
-import * as fs from 'fs';
 import { EStudentStatus } from '@students/constants/student.constant';
 import { PatchStudentAssignationDto } from '@students/dtos/patch-student-assignation.dto';
 import { SchoolYear } from '@academics/entities/school-year.entity';

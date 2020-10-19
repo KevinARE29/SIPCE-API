@@ -26,11 +26,11 @@ export class RequestFilterDto {
 
   @IsOptional()
   @IsId()
-  readonly currentShiftId?: number;
+  readonly currentShift?: number;
 
   @IsOptional()
   @IsId()
-  readonly currentGradeId?: number;
+  readonly currentGrade?: number;
 
   @IsOptional()
   @IsString({ message: validator.isString })
