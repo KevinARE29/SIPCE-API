@@ -45,7 +45,7 @@ export class Student {
   @Column('varchar', { length: 128, unique: true })
   email!: string;
 
-  @Column('enum', { enum: EStudentStatus, enumName: 'student_status_enum', default: 1 })
+  @Column('enum', { enum: EStudentStatus, enumName: 'student_status_enum', default: 2 })
   status!: EStudentStatus;
 
   @Column('varchar', { name: 'confirmation_token', length: 512, unique: true, nullable: true })
