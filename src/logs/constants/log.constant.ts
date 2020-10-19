@@ -26,6 +26,7 @@ export const excludedUrls = [
   'auth/politics',
   'auth/permissions',
   'users/me/password',
+  'me',
   'logs/access-logs',
   'logs/action-logs',
 ];
