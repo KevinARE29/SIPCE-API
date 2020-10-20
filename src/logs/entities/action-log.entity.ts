@@ -8,7 +8,7 @@ export class ActionLog {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 128 })
+  @Column('varchar', { length: 512 })
   endpoint!: string;
 
   @Column('enum', { enum: EActions, enumName: 'action_enum' })
