@@ -13,7 +13,7 @@ export class UserRepository extends Repository<User> {
       relations: ['roles', 'permissions'],
     });
     if (!user) {
-      throw new NotFoundException(`User with id ${id} not found`);
+      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
     }
     return user;
   }
