@@ -33,8 +33,8 @@ export class MeRequestsController {
 
   @Auth('manage_requests')
   @ApiOperation({
-    summary: 'Aceptar o Rechazar solicitudes de Consulta de Consejería',
-    description: 'Use este endpoint para aceptar o Rechazar solicitudes de Consulta de Consejería',
+    summary: 'Aceptar o rechazar solicitudes de consulta de consejería',
+    description: 'Use este endpoint para aceptar o rechazar solicitudes de consulta de consejería',
   })
   @HttpCode(204)
   @Patch('me/requests/:requestId')
