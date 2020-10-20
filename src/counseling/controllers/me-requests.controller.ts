@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Query } from '@nestjs/common';
+import { Controller, UseGuards, Get, Query, Patch, HttpCode, Param, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PageDto } from '@core/dtos/page.dto';
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
@@ -8,6 +8,8 @@ import { RequestFilterDto } from '@counseling/dtos/request-filter.dto';
 import { RequestsResponse } from '@counseling/docs/requests-response.doc';
 import { IAuthenticatedUser } from '@users/interfaces/users.interface';
 import { User } from '@users/decorators/user.decorator';
+import { PatchRequestDto } from '@counseling/dtos/patch-request.dto';
+import { RequestIdDto } from '@counseling/dtos/request-id.dto';
 
 @ApiTags('Counseling Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -27,5 +29,20 @@ export class MeRequestsController {
     @Query() requestFilterDto: RequestFilterDto,
   ): Promise<RequestsResponse> {
     return this.requestService.getRequests(userId, pageDto, requestFilterDto);
+  }
+
+  @Auth('manage_requests')
+  @ApiOperation({
+    summary: 'Aceptar o Rechazar solicitudes de Consulta de Consejería',
+    description: 'Use este endpoint para aceptar o Rechazar solicitudes de Consulta de Consejería',
+  })
+  @HttpCode(204)
+  @Patch('me/requests/:requestId')
+  patchRequest(
+    @User() { id: userId }: IAuthenticatedUser,
+    @Param() { requestId }: RequestIdDto,
+    @Body() patchRequestDto: PatchRequestDto,
+  ): Promise<void> {
+    return this.requestService.patchRequest(userId, requestId, patchRequestDto);
   }
 }

@@ -3,6 +3,7 @@ import { PageDto } from '@core/dtos/page.dto';
 import { getOrderBy } from '@core/utils/sort.util';
 import { ERequestStatus } from '@counseling/constants/request.constant';
 import { RequestFilterDto, sortOptionsMap } from '@counseling/dtos/request-filter.dto';
+import { generateWhereCounselorAssignation } from '@counseling/utils/counseling.util';
 import { EntityRepository, Repository } from 'typeorm';
 import { Request } from '../entities/request.entity';
 
@@ -26,14 +27,7 @@ export class RequestRepository extends Repository<Request> {
       createdAtEnd,
     } = requestFilterDto;
 
-    let whereCounselorAssignation = '';
-    counselorAssignation.forEach((cAssignation, index) => {
-      const grades = cAssignation.grades.join();
-      whereCounselorAssignation += `("currentShift"."id" = ${cAssignation.shiftId} AND "currentGrade"."id" IN (${grades}))`;
-      if (index !== counselorAssignation.length - 1) {
-        whereCounselorAssignation += ' OR ';
-      }
-    });
+    const whereCounselorAssignation = generateWhereCounselorAssignation(counselorAssignation);
 
     const query = this.createQueryBuilder('request')
       .leftJoinAndSelect('request.student', 'student')
@@ -86,5 +80,18 @@ export class RequestRepository extends Repository<Request> {
     }
 
     return query.getManyAndCount();
+  }
+
+  getRequest(counselorAssignation: TCounselorAssignation, requestId: number): Promise<Request | undefined> {
+    const whereCounselorAssignation = generateWhereCounselorAssignation(counselorAssignation);
+
+    return this.createQueryBuilder('request')
+      .leftJoinAndSelect('request.student', 'student')
+      .leftJoinAndSelect('student.currentGrade', 'currentGrade')
+      .leftJoinAndSelect('student.currentShift', 'currentShift')
+      .andWhere(`"request"."status" = '${ERequestStatus.Verificada}'`)
+      .andWhere(`(${whereCounselorAssignation})`)
+      .andWhere(`"request"."id" = ${requestId}`)
+      .getOne();
   }
 }

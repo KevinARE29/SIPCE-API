@@ -21,6 +21,7 @@ import { getPagination } from '@core/utils/pagination.util';
 import { plainToClass } from 'class-transformer';
 import { Requests } from '@counseling/docs/requests.doc';
 import { RequestsResponse } from '@counseling/docs/requests-response.doc';
+import { PatchRequestDto } from '@counseling/dtos/patch-request.dto';
 import { IConfirmationTokenPayload } from '../interfaces/confirmation-token.interface';
 
 @Injectable()
@@ -115,5 +116,16 @@ export class RequestService {
     const pagination = getPagination(pageDto, count);
 
     return { data: plainToClass(Requests, requests, { excludeExtraneousValues: true }), pagination };
+  }
+
+  async patchRequest(counselorId: number, requestId: number, patchRequestDto: PatchRequestDto): Promise<void> {
+    const { status } = patchRequestDto;
+    const counselorAssignation = await this.assignationService.getCounselorAssignation(counselorId);
+    const request = await this.requestRepository.getRequest(counselorAssignation, requestId);
+    if (!request) {
+      throw new NotFoundException(`Solicitud con id ${requestId} no encontrada`);
+    }
+
+    await this.requestRepository.save({ ...request, status: ERequestStatus[status] });
   }
 }
