@@ -1,4 +1,4 @@
-import { IsBoolean, IsDateString, IsOptional } from 'class-validator';
+import { IsBooleanString, IsDateString, IsOptional } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 
 export class ScheduleFilterDto {
@@ -11,6 +11,6 @@ export class ScheduleFilterDto {
   readonly toDate?: Date;
 
   @IsOptional()
-  @IsBoolean({ message: validator.isBoolean })
+  @IsBooleanString({ message: validator.isBoolean })
   readonly notification?: boolean;
 }

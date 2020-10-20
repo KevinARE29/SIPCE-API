@@ -15,6 +15,7 @@ import { shuffle } from 'lodash';
 import { ScheduleStudent } from '@schedules/docs/student.doc';
 import { BaseUser } from '@core/docs/base-user.doc';
 import { ScheduleFilterDto } from '@schedules/dtos/schedule-filter.dto';
+import { SchedulesIdDto } from '@schedules/dtos/schedules-id.dto';
 @Injectable()
 export class SchedulesService {
   constructor(
@@ -130,12 +131,9 @@ export class SchedulesService {
     await this.scheduleRepository.query(`DELETE FROM schedule WHERE id IN (${event.id})`);
   }
 
-  async readNotification(ownerSchedule: User, eventId: number): Promise<void> {
-    const event = await this.scheduleRepository.findByIdOrThrow(eventId);
-    if (event.ownerSchedule.id !== ownerSchedule.id) {
-      throw new BadRequestException('Solo el propietario del evento puede realizar acciones en el evento');
+  async readNotification(schedulesIdDto: SchedulesIdDto): Promise<void> {
+    const events = await this.scheduleRepository.findByIds(schedulesIdDto.eventsId);
+    const updatedEvents = events.map((event)=>({...event,notification: true }))
+    await this.studentRepository.save(updatedEvents);
     }
-    event.notification = true;
-    await this.scheduleRepository.save(event);
-  }
 }
