@@ -78,11 +78,11 @@ export class RequestRepository extends Repository<Request> {
     }
 
     if (createdAtStart) {
-      query.andWhere(`student.createdAt >= '${createdAtStart}'`);
+      query.andWhere(`request.createdAt >= '${createdAtStart}'`);
     }
 
     if (createdAtEnd) {
-      query.andWhere(`student.createdAt <= '${createdAtEnd}'`);
+      query.andWhere(`request.createdAt <= '${createdAtEnd}'`);
     }
 
     return query.getManyAndCount();
