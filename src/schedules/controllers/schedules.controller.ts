@@ -75,7 +75,7 @@ export class SchedulesController {
     summary: 'Marcar eventos como leídos',
     description: 'Use este endpoint para marcar las notificaciones de eventos como leídas',
   })
-  @Post('notification')
+  @Put('notifications')
   async readNotification(@Body() schedulesIdDto: SchedulesIdDto): Promise<void> {
     return this.schedulesService.readNotification(schedulesIdDto);
   }
