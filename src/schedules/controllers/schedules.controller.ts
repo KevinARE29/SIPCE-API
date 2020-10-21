@@ -10,6 +10,7 @@ import { UpdateScheduleDto } from '@schedules/dtos/update-schedule.dto';
 import { ScheduleIdDto } from '@schedules/dtos/schedule-id.dto';
 import { UserRepository } from '@users/repositories/users.repository';
 import { ScheduleFilterDto } from '@schedules/dtos/schedule-filter.dto';
+import { SchedulesIdDto } from '@schedules/dtos/schedules-id.dto';
 import { SchedulesService } from '../services/schedules.service';
 
 @ApiTags('Schedules Endpoints')
@@ -71,12 +72,11 @@ export class SchedulesController {
 
   @Auth('manage_schedule')
   @ApiOperation({
-    summary: 'Marcar evento como leído',
+    summary: 'Marcar eventos como leídos',
     description: 'Use este endpoint para marcar las notificaciones de eventos como leídas',
   })
-  @Put('notification/:eventId')
-  async readNotification(@User() reqUser: IAuthenticatedUser, @Param() idDto: ScheduleIdDto): Promise<void> {
-    const user = await this.userRepository.findOneOrFail(reqUser.id);
-    return this.schedulesService.readNotification(user, idDto.eventId);
+  @Put('notifications')
+  async readNotification(@Body() schedulesIdDto: SchedulesIdDto): Promise<void> {
+    return this.schedulesService.readNotification(schedulesIdDto);
   }
 }
