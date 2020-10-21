@@ -13,8 +13,8 @@ export const [sortOptions, sortOptionsMap] = getSortOptionsv2(
     'student.firstname',
     'student.lastname',
     'student.email',
-    'student.currentShiftId',
-    'student.currentGradeId',
+    'student.currentShift',
+    'student.currentGrade',
   ],
   'request',
 );
