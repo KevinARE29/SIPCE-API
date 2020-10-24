@@ -44,7 +44,7 @@ export class FoulsController {
 
   @Auth('manage_fouls')
   @ApiOperation({
-    summary: 'Actualizar una falta especifica',
+    summary: 'Actualizar una falta específica',
     description: 'Use este endpoint para actualizar los datos de una falta específica',
   })
   @Put(':foulsId')
