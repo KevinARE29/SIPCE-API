@@ -7,5 +7,5 @@ export class FoulsResponse implements IApiResponse<Fouls[]> {
   @ApiProperty({ type: [Fouls] })
   data!: Fouls[];
 
-  pagination!: Pagination;
+  pagination?: Pagination;
 }
