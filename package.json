@@ -125,7 +125,8 @@
       "^@academics(.*)$": "<rootDir>/academics$1",
       "^@students(.*)$": "<rootDir>/students$1",
       "^@schedules(.*)$": "<rootDir>/schedules$1",
-      "^@counseling(.*)$": "<rootDir>/counseling$1"
+      "^@counseling(.*)$": "<rootDir>/counseling$1",
+      "^@fouls(.*)$": "<rootDir>/fouls$1"
     },
     "testRegex": ".spec.ts$",
     "transform": {

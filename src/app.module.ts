@@ -11,6 +11,7 @@ import * as Joi from '@hapi/joi';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { mailerFactory } from '@mails/factories/mailer.factory';
 import { CounselingModule } from '@counseling/counseling.module';
+import { FoulsModule } from '@fouls/fouls.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { CounselingModule } from '@counseling/counseling.module';
     StudentModule,
     SchedulesModule,
     CounselingModule,
+    FoulsModule,
   ],
 })
 export class AppModule {}
