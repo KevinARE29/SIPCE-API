@@ -134,6 +134,6 @@ export class SchedulesService {
   async readNotification(schedulesIdDto: SchedulesIdDto): Promise<void> {
     const events = await this.scheduleRepository.findByIds(schedulesIdDto.eventsId);
     const updatedEvents = events.map((event)=>({...event,notification: true }))
-    await this.studentRepository.save(updatedEvents);
+    await this.scheduleRepository.save(updatedEvents);
     }
 }
