@@ -21,10 +21,21 @@ export class FoulsRepository extends Repository<Fouls> {
 
   getAllFouls(pageDto: PageDto, foulsFilterDto: FoulsFilterDto): Promise<[Fouls[], number]> {
     const { page, perPage } = pageDto;
-    const { sort, foulsType  } = foulsFilterDto;
+    const { sort,paginate, foulsType  } = foulsFilterDto;
     const query = this.createQueryBuilder('fouls')
-      .take(perPage)
-      .skip((page - 1) * perPage);
+    .andWhere('fouls.deletedAt is null')
+
+    if (foulsType) {
+      query.andWhere(`"fouls"."fouls_type" = '${EnumFoulsType[foulsType]}'`);
+    } 
+    if (paginate === 'false') {
+      query.orderBy({ 'fouls.id': 'ASC' });
+      return query.getManyAndCount();
+    }
+    
+    query.take(perPage)
+    query.skip((page - 1) * perPage);
+    
 
     if (sort) {
       const order = sort.split(',').reduce((acum, sortItem) => {
@@ -35,9 +46,7 @@ export class FoulsRepository extends Repository<Fouls> {
     } else {
       query.orderBy({ 'fouls.id': 'DESC' });
     }
-    if (foulsType) {
-      query.andWhere(`"fouls"."fouls_type" = '${EnumFoulsType[foulsType]}'`);
-    } 
+  
     return query.getManyAndCount();
   }
   

@@ -26,4 +26,7 @@ export class Fouls {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt!: Date;
 
+  @Column({ name: 'deleted_at', nullable: true, type: 'timestamptz' })
+  deletedAt!: Date;
+
 }

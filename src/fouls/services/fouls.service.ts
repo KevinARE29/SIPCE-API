@@ -72,7 +72,8 @@ export class FoulsService {
 
   async deleteFouls(foulsId: number): Promise<void> {
     const fouls = await this.foulsRepository.findByIdOrThrow(foulsId);
-    await this.foulsRepository.query(`DELETE FROM fouls WHERE id IN (${fouls.id})`);
+    fouls.deletedAt= new Date();
+    await this.foulsRepository.save(fouls);
   }
 
 }
