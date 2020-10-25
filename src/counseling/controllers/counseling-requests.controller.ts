@@ -4,6 +4,7 @@ import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { RequestService } from '@counseling/services/request.service';
 import { GenerateRequestDto } from '@counseling/dtos/generate-request.dto';
 import { ConfirmationTokenDto } from '@counseling/dtos/confirmation-token.dto';
+import { SchoolYear } from '@academics/decorators/school-year.decorator';
 
 @ApiTags('Counseling Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -15,6 +16,7 @@ export class CounselingRequestsController {
     summary: 'Generar una solicitud de consulta de consejería',
     description: 'Use este endpoint para generar una solicitud de consulta de consejería',
   })
+  @SchoolYear(true)
   @Post('')
   create(@Body() generateRequestDto: GenerateRequestDto): Promise<void> {
     return this.requestService.generateRequest(generateRequestDto);
@@ -24,6 +26,7 @@ export class CounselingRequestsController {
     summary: 'Confirmar solicitud de consulta de consejería',
     description: 'Use este endpoint para confirmar solicitud de consulta de consejería',
   })
+  @SchoolYear(true)
   @Post('verification')
   @HttpCode(204)
   confirmRequest(@Query() confirmationTokenDto: ConfirmationTokenDto): Promise<void> {

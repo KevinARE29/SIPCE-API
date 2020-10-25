@@ -9,7 +9,7 @@ import { CyclesResponse } from '@academics/docs/cycles-response.doc';
 import { CycleResponse } from '@academics/docs/cycle-response.doc';
 import { CatalogueDto } from '@academics/dtos/catalogue.dto';
 import { CycleIdDto } from '@academics/dtos/cycle-id.dto';
-import { SchoolYearGuard } from '@academics/guards/school-year.guard';
+import { SchoolYear } from '@academics/decorators/school-year.decorator';
 
 @ApiTags('Cycle Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -32,7 +32,7 @@ export class CycleController {
     summary: 'Crear Ciclos',
     description: 'Use este endpoint para crear un nuevo ciclo',
   })
-  @UseGuards(SchoolYearGuard)
+  @SchoolYear(false)
   @Post('')
   createCycle(@Body() createCatalogueDto: CatalogueDto): Promise<CycleResponse> {
     return this.cycleService.createCycle(createCatalogueDto);
@@ -43,7 +43,7 @@ export class CycleController {
     summary: 'Actualizar Ciclo',
     description: 'Use este endpoint para actualizar un ciclo específico',
   })
-  @UseGuards(SchoolYearGuard)
+  @SchoolYear(false)
   @Put(':cycleId')
   updateCycle(@Param() idDto: CycleIdDto, @Body() updateCycleDto: CatalogueDto): Promise<CycleResponse> {
     return this.cycleService.updateCycle(idDto.cycleId, updateCycleDto);
@@ -54,7 +54,7 @@ export class CycleController {
     summary: 'Eliminar Ciclos',
     description: 'Use este endpoint para eliminar un ciclo específico',
   })
-  @UseGuards(SchoolYearGuard)
+  @SchoolYear(false)
   @HttpCode(204)
   @Delete(':cycleId')
   deleteCycle(@Param() idDto: CycleIdDto): Promise<void> {
