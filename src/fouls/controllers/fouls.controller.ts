@@ -23,7 +23,7 @@ export class FoulsController {
   })
   @Get('')
   async getAllFouls(@Query() pageDto: PageDto, @Query() foulsFilterDto: FoulsFilterDto): Promise<FoulsResponse> {
-    return this.foulsService.getAllFouls( pageDto,foulsFilterDto);
+    return this.foulsService.getAllFouls(pageDto, foulsFilterDto);
   }
 
   @Auth('manage_fouls')
@@ -32,10 +32,7 @@ export class FoulsController {
     description: 'Use este endpoint para crear nuevas faltas en el sistema informático.',
   })
   @Post('')
-  async createFouls(
-    @Body() createFoulsDto: CreateFoulsDto,
-  ): Promise<FoulResponse> {
-    
+  async createFouls(@Body() createFoulsDto: CreateFoulsDto): Promise<FoulResponse> {
     return this.foulsService.createFouls(createFoulsDto);
   }
 
@@ -45,13 +42,8 @@ export class FoulsController {
     description: 'Use este endpoint para actualizar los datos de una falta específica.',
   })
   @Put(':foulsId')
-  async updateEvent(
-    
-    @Param() foulsIdDto: FoulsIdDto,
-    @Body() updateFoulsDto: UpdateFoulsDto,
-  ): Promise<FoulResponse> {
-
-    return this.foulsService.updateFouls( foulsIdDto.foulsId, updateFoulsDto);
+  async updateEvent(@Param() foulsIdDto: FoulsIdDto, @Body() updateFoulsDto: UpdateFoulsDto): Promise<FoulResponse> {
+    return this.foulsService.updateFouls(foulsIdDto.foulsId, updateFoulsDto);
   }
 
   @Auth('manage_fouls')
@@ -64,6 +56,4 @@ export class FoulsController {
   async deleteFouls(@Param() idDto: FoulsIdDto): Promise<void> {
     return this.foulsService.deleteFouls(idDto.foulsId);
   }
-
-  
 }

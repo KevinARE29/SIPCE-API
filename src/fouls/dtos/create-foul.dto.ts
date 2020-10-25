@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { EnumFoulsType, foulsKeys, TFouls } from '@fouls/constants/fouls.costants';
+import { EnumFoulsType, foulsKeys, TFouls } from '@fouls/constants/fouls.constants';
 import { validator } from '@core/messages/validator.message';
 
 export class CreateFoulsDto {
@@ -9,9 +9,8 @@ export class CreateFoulsDto {
     message: `EnumFoulsType: Debe ser uno de los siguientes valores: ${foulsKeys}`,
   })
   readonly foulsType!: TFouls;
-  
+
   @IsNotEmpty()
   @IsString({ message: validator.isString })
   readonly description!: string;
-
 }

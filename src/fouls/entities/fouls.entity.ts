@@ -1,13 +1,5 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-
-} from 'typeorm';
-import { EnumFoulsType } from '@fouls/constants/fouls.costants';
-
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { EnumFoulsType } from '@fouls/constants/fouls.constants';
 
 @Entity()
 export class Fouls {
@@ -28,5 +20,4 @@ export class Fouls {
 
   @Column({ name: 'deleted_at', nullable: true, type: 'timestamptz' })
   deletedAt!: Date;
-
 }

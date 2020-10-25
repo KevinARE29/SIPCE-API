@@ -8,7 +8,7 @@ import { CreateScheduleDto } from '@schedules/dtos/create-schedule.dto';
 import { ScheduleRepository } from '@schedules/repositories/schedules.repository';
 import { User } from '@users/entities/users.entity';
 import { UserRepository } from '@users/repositories/users.repository';
-import { EnumEventType, eventsColors } from '@schedules/constants/schedule.costants';
+import { EnumEventType, eventsColors } from '@schedules/constants/schedule.constants';
 import { StudentRepository } from '@students/repositories/student.repository';
 import { UpdateScheduleDto } from '@schedules/dtos/update-schedule.dto';
 import { shuffle } from 'lodash';
