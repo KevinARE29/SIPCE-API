@@ -14,6 +14,7 @@ import { Grade } from '@academics/entities/grade.entity';
 export class StudentRepository extends Repository<Student> {
   findByEmail(email: string): Promise<Student | undefined> {
     return this.findOne({
+      relations: ['currentShift', 'currentGrade'],
       where: { email, deletedAt: IsNull(), status: In(activeStatuses) },
     });
   }
