@@ -1,7 +1,7 @@
 import { Expose, Type, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseUser } from '@core/docs/base-user.doc';
-import { EnumEventType } from '@schedules/constants/schedule.costants';
+import { EnumEventType } from '@schedules/constants/schedule.constants';
 import { ScheduleStudent } from './student.doc';
 
 export class Schedule {

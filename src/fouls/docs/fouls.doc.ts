@@ -1,4 +1,4 @@
-import { EnumFoulsType } from '@fouls/constants/fouls.costants';
+import { EnumFoulsType } from '@fouls/constants/fouls.constants';
 import { Expose, Transform } from 'class-transformer';
 
 export class Fouls {
@@ -11,5 +11,4 @@ export class Fouls {
 
   @Expose()
   description!: string;
-
 }
