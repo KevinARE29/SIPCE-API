@@ -10,7 +10,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { User } from '@users/entities/users.entity';
-import { EnumEventType } from '@schedules/constants/schedule.costants';
+import { EnumEventType } from '@schedules/constants/schedule.constants';
 import { Student } from '@students/entities/student.entity';
 
 @Entity()
