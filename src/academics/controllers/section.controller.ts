@@ -9,7 +9,7 @@ import { SectionsResponse } from '@academics/docs/sections-response.doc';
 import { SectionResponse } from '@academics/docs/section-response.doc';
 import { CatalogueDto } from '@academics/dtos/catalogue.dto';
 import { SectionIdDto } from '@academics/dtos/section-id.dto';
-import { SchoolYearGuard } from '@academics/guards/school-year.guard';
+import { SchoolYear } from '@academics/decorators/school-year.decorator';
 
 @ApiTags('Sections Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -32,7 +32,7 @@ export class SectionController {
     summary: 'Crear Sección',
     description: 'Use este endpoint para crear una nueva sección',
   })
-  @UseGuards(SchoolYearGuard)
+  @SchoolYear(false)
   @Post('')
   createSection(@Body() createCatalogueDto: CatalogueDto): Promise<SectionResponse> {
     return this.sectionService.createSection(createCatalogueDto);
@@ -43,7 +43,7 @@ export class SectionController {
     summary: 'Actualizar Sección',
     description: 'Use este endpoint para actualizar una sección específica',
   })
-  @UseGuards(SchoolYearGuard)
+  @SchoolYear(false)
   @Put(':sectionId')
   updateSection(@Param() idDto: SectionIdDto, @Body() updateSectionDto: CatalogueDto): Promise<SectionResponse> {
     return this.sectionService.updateSection(idDto.sectionId, updateSectionDto);
@@ -54,7 +54,7 @@ export class SectionController {
     summary: 'Eliminar Sección',
     description: 'Use este endpoint para eliminar una sección específica',
   })
-  @UseGuards(SchoolYearGuard)
+  @SchoolYear(false)
   @HttpCode(204)
   @Delete(':sectionId')
   deleteSection(@Param() idDto: SectionIdDto): Promise<void> {

@@ -59,7 +59,8 @@ export class RequestService {
     const apiUrl = this.configService.get<string>('API_URL');
 
     const student = await this.studentRepository.findByEmail(email);
-    if (!student) {
+    if (!student || student.currentGrade.id < 9) {
+      // Students must be in 6th or higher in order to generate a counseling request.
       return;
     }
 
