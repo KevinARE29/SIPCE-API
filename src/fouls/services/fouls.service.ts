@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-restricted-syntax */
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { Fouls as FoulsDoc } from '@fouls/docs/fouls.doc';
@@ -23,17 +21,14 @@ export class FoulsService {
       const [fouls] = await this.foulsRepository.getAllFouls(pageDto, foulsFilterDto);
       return { data: plainToClass(FoulsDoc, fouls, { excludeExtraneousValues: true }) };
     }
-
     const [fouls, count] = await this.foulsRepository.getAllFouls(pageDto, foulsFilterDto);
     const pagination = getPagination(pageDto, count);
     const mappedFouls = fouls.map(foul => ({ ...foul, status: EnumFoulsType[foul.foulsType] }));
     return { data: plainToClass(FoulsDoc, mappedFouls, { excludeExtraneousValues: true }), pagination };
   }
 
-  
   async createFouls(createFoulsDto: CreateFoulsDto): Promise<FoulResponse> {
     const { foulsType, ...foulsDto } = createFoulsDto;
-
     return {
       data: plainToClass(
         FoulsDoc,
@@ -48,8 +43,7 @@ export class FoulsService {
     };
   }
 
- 
-  async updateFouls(
+async updateFouls(
     foulsId: number,
     updateFoulsDto: UpdateFoulsDto,
   ): Promise<FoulResponse> {
@@ -67,7 +61,6 @@ export class FoulsService {
       ...fouls,
       ...foulsDto,
     });
-
     return {
       data: plainToClass(FoulsDoc, await this.foulsRepository.save({ ...updatedEvent }), {
         excludeExtraneousValues: true,

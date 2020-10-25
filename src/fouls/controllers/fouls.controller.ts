@@ -10,19 +10,16 @@ import { FoulsIdDto } from '@fouls/dtos/fouls-id.dto';
 import { FoulsResponse } from '@fouls/docs/fouls-response.doc';
 import { PageDto } from '@core/dtos/page.dto';
 import { FoulsFilterDto } from '@fouls/dtos/fouls-filter.dto';
-
-
 @ApiTags('Fouls Endpoints')
 @UseGuards(ContentTypeGuard)
 @Controller('fouls')
 export class FoulsController {
   constructor(private readonly foulsService: FoulsService) {}
 
-
   @Auth('manage_fouls')
   @ApiOperation({
     summary: 'Buscar Faltas',
-    description: 'Use este endpoint para buscar faltas',
+    description: 'Use este endpoint para buscar faltas.',
   })
   @Get('')
   async getAllFouls(@Query() pageDto: PageDto, @Query() foulsFilterDto: FoulsFilterDto): Promise<FoulsResponse> {
@@ -32,7 +29,7 @@ export class FoulsController {
   @Auth('manage_fouls')
   @ApiOperation({
     summary: 'Crear faltas aplicables a los estudiantes',
-    description: 'Use este endpoint para crear nuevas faltas en el sistema informatico.',
+    description: 'Use este endpoint para crear nuevas faltas en el sistema informático.',
   })
   @Post('')
   async createFouls(
@@ -45,7 +42,7 @@ export class FoulsController {
   @Auth('manage_fouls')
   @ApiOperation({
     summary: 'Actualizar una falta específica',
-    description: 'Use este endpoint para actualizar los datos de una falta específica',
+    description: 'Use este endpoint para actualizar los datos de una falta específica.',
   })
   @Put(':foulsId')
   async updateEvent(
@@ -60,7 +57,7 @@ export class FoulsController {
   @Auth('manage_fouls')
   @ApiOperation({
     summary: 'Eliminar Faltas',
-    description: 'Use este endpoint para eliminar una falta específica',
+    description: 'Use este endpoint para eliminar una falta específica.',
   })
   @HttpCode(204)
   @Delete(':foulsId')
