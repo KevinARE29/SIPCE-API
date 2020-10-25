@@ -22,6 +22,8 @@ import { plainToClass } from 'class-transformer';
 import { Requests } from '@counseling/docs/requests.doc';
 import { RequestsResponse } from '@counseling/docs/requests-response.doc';
 import { PatchRequestDto } from '@counseling/dtos/patch-request.dto';
+import { RequestGateway } from '@counseling/gateways/request.gateway';
+import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
 import { IConfirmationTokenPayload } from '../interfaces/confirmation-token.interface';
 
 @Injectable()
@@ -32,6 +34,8 @@ export class RequestService {
     private readonly assignationService: AssignationService,
     private readonly requestRepository: RequestRepository,
     private readonly studentRepository: StudentRepository,
+    private readonly schoolYearRepository: SchoolYearRepository,
+    private readonly requestGateway: RequestGateway,
   ) {}
 
   getConfirmationToken(email: string, requestId: number): string {
@@ -100,10 +104,16 @@ export class RequestService {
       throw new NotFoundException(`confirmationToken: Solicitud de consulta de consejería no encontrada`);
     }
 
-    await Promise.all([
+    const [counselorAssignation] = await Promise.all([
+      this.schoolYearRepository.getCurrentAssignationOrThrow({
+        shiftId: student.currentShift.id,
+        gradeId: student.currentGrade.id,
+      }),
       this.requestRepository.save(request),
       this.studentRepository.save({ ...student, confirmationToken: null }),
     ]);
+    const { username } = counselorAssignation.cycleDetails[0].gradeDetails[0].counselor;
+    this.requestGateway.alertCounselor(username);
   }
 
   async getRequests(
