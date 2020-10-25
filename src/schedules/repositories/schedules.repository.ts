@@ -8,7 +8,7 @@ export class ScheduleRepository extends Repository<Schedule> {
   async findByIdOrThrow(id: number): Promise<Schedule> {
     const event = await this.findOne(id, { relations: ['ownerSchedule'] });
     if (!event) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+      throw new NotFoundException(`Evento con id ${id} no encontrado`);
     }
     return event;
   }

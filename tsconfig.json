@@ -23,7 +23,8 @@
       "@academics/*": ["src/academics/*"],
       "@students/*": ["src/students/*"],
       "@schedules/*": ["src/schedules/*"],
-      "@counseling/*": ["src/counseling/*"]
+      "@counseling/*": ["src/counseling/*"],
+      "@fouls/*": ["src/fouls/*"],
     }
   },
   "exclude": ["node_modules", "dist"]
