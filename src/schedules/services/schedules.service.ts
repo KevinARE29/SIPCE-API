@@ -16,12 +16,15 @@ import { ScheduleStudent } from '@schedules/docs/student.doc';
 import { BaseUser } from '@core/docs/base-user.doc';
 import { ScheduleFilterDto } from '@schedules/dtos/schedule-filter.dto';
 import { SchedulesIdDto } from '@schedules/dtos/schedules-id.dto';
+import { Student } from '@students/entities/student.entity';
+import { MailsService } from '@mails/services/mails.service';
 @Injectable()
 export class SchedulesService {
   constructor(
     private readonly scheduleRepository: ScheduleRepository,
     private readonly studentRepository: StudentRepository,
     private readonly userRepository: UserRepository,
+    private readonly mailsService: MailsService,
   ) {}
 
   async getEvents(userId: number, scheduleFilterDto: ScheduleFilterDto): Promise<any> {
@@ -51,23 +54,42 @@ export class SchedulesService {
   }
 
   async createEvent(ownerSchedule: User, createScheduleDto: CreateScheduleDto): Promise<SchedulesResponse> {
-    const { studentId, participantIds, eventType, ...scheduleDto } = createScheduleDto;
+    const { studentId, participantIds, eventType, jsonData } = createScheduleDto;
 
     let studentSchedule;
     let employeesSchedule;
+    const participants: Array<User | Student> = [];
 
     if (studentId) {
       studentSchedule = await this.studentRepository.findOneOrFail(studentId);
+      participants.push(studentSchedule);
     }
     if (participantIds) {
       employeesSchedule = await this.userRepository.findByIds(participantIds);
+      participants.push(...employeesSchedule);
     }
 
+    if (participants.length) {
+      const subject = 'Invitación a sesión de consejería';
+      const mailList = participants.map(participant => participant.email);
+      const emailToSend = {
+        to: mailList,
+        template: 'event',
+        subject,
+        context: {
+          apiUrl: this.mailsService.apiUrl,
+          jsonData,
+          participants,
+        },
+      };
+      console.log('mail', emailToSend);
+      this.mailsService.sendEmail(emailToSend);
+    }
     return {
       data: plainToClass(
         ScheduleDoc,
         await this.scheduleRepository.save({
-          ...scheduleDto,
+          jsonData,
           eventType: EnumEventType[eventType],
           ownerSchedule,
           studentSchedule,
@@ -133,7 +155,7 @@ export class SchedulesService {
 
   async readNotification(schedulesIdDto: SchedulesIdDto): Promise<void> {
     const events = await this.scheduleRepository.findByIds(schedulesIdDto.eventsId);
-    const updatedEvents = events.map((event)=>({...event,notification: true }))
+    const updatedEvents = events.map(event => ({ ...event, notification: true }));
     await this.scheduleRepository.save(updatedEvents);
-    }
+  }
 }
