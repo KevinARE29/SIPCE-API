@@ -1,0 +1,51 @@
+doctype html
+head
+  // Required meta tags
+  meta(charset='utf-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
+  // Bootstrap CSS
+  link(rel='stylesheet' href=`${apiUrl}/css/bootstrap.min.css` integrity='sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2' crossorigin='anonymous')
+.card.col-md-8.col-xs-12(style='margin: 0 auto;')
+  .card-header.text-center
+    h4 Invitaci&oacute;n a sesi&oacute;n de consejer&iacute;a
+  .row.no-gutters
+    .col-md-2.col-4(style='margin: 0 auto;')
+      img.card-img(src=`${apiUrl}/img/calendar.png` alt='calendar' style='padding: 1em;')
+    .col-md-10.col-12
+      .card-body
+        h4.card-title T&iacute;tulo del evento
+        p.card-text
+          | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      ul.list-group.list-group-flush
+        li.list-group-item
+          b
+            svg.bi.bi-calendar-plus(width='1em' height='1em' viewbox='0 0 16 16' fill='currentColor' xmlns='http://www.w3.org/2000/svg')
+              path(fill-rule='evenodd' d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z')
+              path(fill-rule='evenodd' d='M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7z')
+            |                         Fecha Inicio:
+          |                      28 de octubre de 2020 09:29 PM
+        li.list-group-item
+          b
+            svg.bi.bi-calendar-minus(width='1em' height='1em' viewbox='0 0 16 16' fill='currentColor' xmlns='http://www.w3.org/2000/svg')
+              path(fill-rule='evenodd' d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z')
+              path(fill-rule='evenodd' d='M5.5 9.5A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z')
+            |                         Fecha Fin:
+          |                      28 de octubre de 2020 09:29 PM
+        li.list-group-item
+          b
+            svg.bi.bi-geo-alt-fill(width='1em' height='1em' viewbox='0 0 16 16' fill='currentColor' xmlns='http://www.w3.org/2000/svg')
+              path(fill-rule='evenodd' d='M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6z')
+            |                         Lugar:
+          |                      https://join.skype.com/A0NoxcRLxlyx
+        li.list-group-item
+          b
+            svg.bi.bi-people-fill(width='1em' height='1em' viewbox='0 0 16 16' fill='currentColor' xmlns='http://www.w3.org/2000/svg')
+              path(fill-rule='evenodd' d='M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z')
+            |                         Participantes:
+          ul
+            li Kevin Escoto
+            li Esmeralda L&oacute;pez
+            li Ver&oacute;nica Reyes
+  .card-footer.text-center
+    a.btn.btn-primary(href='#') Iniciar Sesi&oacute;n
+

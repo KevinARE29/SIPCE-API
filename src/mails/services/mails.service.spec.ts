@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailerService } from '@nestjs-modules/mailer';
+import { ConfigModule } from '@nestjs/config';
 import { MailsService } from './mails.service';
 
 jest.mock('@nestjs-modules/mailer');
@@ -16,6 +17,7 @@ describe('Mails Service', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule],
       providers: [MailsService, MailerService],
     }).compile();
 

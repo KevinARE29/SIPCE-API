@@ -7,6 +7,7 @@ export const mailerFactory = () => ({
   defaults: {
     from: '"Liceo Salvadoreño" <noreply@gmail.com>',
   },
+  preview: false,
   template: {
     dir: `./src/mails/templates`,
     adapter: new PugAdapter(),
