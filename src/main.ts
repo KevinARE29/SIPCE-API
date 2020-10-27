@@ -30,7 +30,7 @@ async function bootstrap() {
   const apiPrefix = configService.get('API_PREFIX') || 'api/v1';
 
   const logService = app.get(LogService);
-  app.useStaticAssets(join(__dirname, '..', 'img'));
+  app.useStaticAssets(join(__dirname, '..'));
   app.useGlobalFilters(new AllExceptionsFilter(logService));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, validationError: { target: false } }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)), new ActionLogInterceptor(logService));

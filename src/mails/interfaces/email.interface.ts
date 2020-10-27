@@ -1,5 +1,5 @@
 export interface IEmail {
-  to: string;
+  to: string | string[];
   template: string;
   subject: string;
   context: object;
