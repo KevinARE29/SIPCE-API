@@ -7,7 +7,7 @@ import {
   EBYMONTH,
   EBYSETPOS,
   TBYSETPOS,
-} from '@schedules/constants/event-series.constants';
+} from '@schedules/constants/event-series.constant';
 import * as moment from 'moment';
 
 moment.locale('es-us');
