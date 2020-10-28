@@ -18,6 +18,10 @@ import { ScheduleFilterDto } from '@schedules/dtos/schedule-filter.dto';
 import { SchedulesIdDto } from '@schedules/dtos/schedules-id.dto';
 import { Student } from '@students/entities/student.entity';
 import { MailsService } from '@mails/services/mails.service';
+import * as moment from 'moment';
+
+moment.locale('es-us');
+
 @Injectable()
 export class SchedulesService {
   constructor(
@@ -78,11 +82,15 @@ export class SchedulesService {
         subject,
         context: {
           apiUrl: this.mailsService.apiUrl,
-          jsonData,
+          subject,
+          jsonData: {
+            ...jsonData,
+            StartTime: moment(jsonData.StartTime).format('LLL'),
+            EndTime: moment(jsonData.EndTime).format('LLL'),
+          },
           participants,
         },
       };
-      console.log('mail', emailToSend);
       this.mailsService.sendEmail(emailToSend);
     }
     return {
