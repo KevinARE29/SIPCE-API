@@ -19,6 +19,7 @@ import { SchedulesIdDto } from '@schedules/dtos/schedules-id.dto';
 import { Student } from '@students/entities/student.entity';
 import { MailsService } from '@mails/services/mails.service';
 import * as moment from 'moment';
+import { EventMapper } from '@schedules/mappers/event.mapper';
 
 moment.locale('es-us');
 
@@ -29,6 +30,7 @@ export class SchedulesService {
     private readonly studentRepository: StudentRepository,
     private readonly userRepository: UserRepository,
     private readonly mailsService: MailsService,
+    private readonly eventMapper: EventMapper,
   ) {}
 
   async getEvents(userId: number, scheduleFilterDto: ScheduleFilterDto): Promise<any> {
@@ -76,6 +78,7 @@ export class SchedulesService {
     if (participants.length) {
       const subject = 'Invitación a sesión de consejería';
       const mailList = participants.map(participant => participant.email);
+      const seriesData = jsonData.RecurrenceRule ? this.eventMapper.toString(jsonData.RecurrenceRule) : undefined;
       const emailToSend = {
         to: mailList,
         template: 'event',
@@ -88,9 +91,11 @@ export class SchedulesService {
             StartTime: moment(jsonData.StartTime).format('LLL'),
             EndTime: moment(jsonData.EndTime).format('LLL'),
           },
+          seriesData,
           participants,
         },
       };
+
       this.mailsService.sendEmail(emailToSend);
     }
     return {
