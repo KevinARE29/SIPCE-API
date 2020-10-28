@@ -12,6 +12,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { mailerFactory } from '@mails/factories/mailer.factory';
 import { CounselingModule } from '@counseling/counseling.module';
 import { FoulsModule } from '@fouls/fouls.module';
+import { SanctionsModule } from '@sanctions/sanctions.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { FoulsModule } from '@fouls/fouls.module';
     SchedulesModule,
     CounselingModule,
     FoulsModule,
+    SanctionsModule,
   ],
 })
 export class AppModule {}
