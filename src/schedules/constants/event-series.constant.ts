@@ -1,8 +1,8 @@
 export const EFREQ = {
-  DAILY: 'días',
-  WEEKLY: 'semanas',
-  MONTHLY: 'meses',
-  YEARLY: 'años',
+  DAILY: ['día', 'días'],
+  WEEKLY: ['semana', 'semanas'],
+  MONTHLY: ['mes', 'meses'],
+  YEARLY: ['año', 'años'],
 };
 
 export type TFREQ = keyof typeof EFREQ;

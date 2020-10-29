@@ -14,8 +14,11 @@ moment.locale('es-us');
 
 @Injectable()
 export class EventMapper {
-  private toInterval(value: number, freq: string): string {
-    return `Repetir cada ${value} ${freq}`;
+  private toInterval(value: number, freq: string[]): string {
+    if (value > 1) {
+      return `Repetir cada ${value} ${freq[1]}`;
+    }
+    return `Repetir cada ${freq[0]}`;
   }
 
   private toUntil(until: string): string {
@@ -24,7 +27,7 @@ export class EventMapper {
   }
 
   private toCount(count: number): string {
-    return `Repetir ${count} veces`;
+    return count > 1 ? `Repetir ${count} veces` : `Repetir ${count} vez`;
   }
 
   private toByDay(byDay: string): string {
