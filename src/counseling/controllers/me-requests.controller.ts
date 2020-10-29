@@ -39,10 +39,10 @@ export class MeRequestsController {
   @HttpCode(204)
   @Patch('me/requests/:requestId')
   patchRequest(
-    @User() { id: userId }: IAuthenticatedUser,
+    @User() user: IAuthenticatedUser,
     @Param() { requestId }: RequestIdDto,
     @Body() patchRequestDto: PatchRequestDto,
   ): Promise<void> {
-    return this.requestService.patchRequest(userId, requestId, patchRequestDto);
+    return this.requestService.patchRequest(user, requestId, patchRequestDto);
   }
 }

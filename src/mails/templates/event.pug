@@ -61,4 +61,12 @@ border-radius: .25rem;')
             |                         Participantes:
           ul(style='padding-inline-start: 40px;')
             each participant in participants
-              li= participant.firstname + ' ' + participant.lastname
+              li= participant.firstname + ' ' + participant.lastname  
+        if seriesData
+          li.list-group-item
+            b
+              img(src=`${apiUrl}/img/recurrent-event.png` style='height: 1em;')
+              |                         Evento repetitivo:
+            ul(style='padding-inline-start: 40px;')
+              each serie in seriesData
+                li= serie
