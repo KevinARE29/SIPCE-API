@@ -24,6 +24,7 @@ import { RequestsResponse } from '@counseling/docs/requests-response.doc';
 import { PatchRequestDto } from '@counseling/dtos/patch-request.dto';
 import { RequestGateway } from '@counseling/gateways/request.gateway';
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
+import { IAuthenticatedUser } from '@users/interfaces/users.interface';
 import { IConfirmationTokenPayload } from '../interfaces/confirmation-token.interface';
 
 @Injectable()
@@ -129,7 +130,11 @@ export class RequestService {
     return { data: plainToClass(Requests, requests, { excludeExtraneousValues: true }), pagination };
   }
 
-  async patchRequest(counselorId: number, requestId: number, patchRequestDto: PatchRequestDto): Promise<void> {
+  async patchRequest(
+    { sub: username, id: counselorId }: IAuthenticatedUser,
+    requestId: number,
+    patchRequestDto: PatchRequestDto,
+  ): Promise<void> {
     const { status } = patchRequestDto;
     const counselorAssignation = await this.assignationService.getCounselorAssignation(counselorId);
     const request = await this.requestRepository.getRequest(counselorAssignation, requestId);
@@ -138,5 +143,6 @@ export class RequestService {
     }
 
     await this.requestRepository.save({ ...request, status: ERequestStatus[status] });
+    this.requestGateway.alertCounselor(username);
   }
 }
