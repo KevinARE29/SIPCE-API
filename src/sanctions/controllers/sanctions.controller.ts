@@ -32,7 +32,7 @@ export class SanctionsController {
   @Auth('view_sanctions')
   @ApiOperation({
     summary: 'Ver detalle de una Sanción',
-    description: 'Use este endpoint para ver el detalle de una sanción específica',
+    description: 'Use este endpoint para ver el detalle de una sanción específica.',
   })
   @Get(':sanctionsId')
   getSingleFoul(@Param() idDto: SanctionsIdDto): Promise<SanctionResponse> {
@@ -42,7 +42,7 @@ export class SanctionsController {
   @Auth('manage_sanctions')
   @ApiOperation({
     summary: 'Crear sanciones aplicables a los estudiantes',
-    description: 'Use este endpoint para crear nuevas sanciones en el sistema informático.',
+    description: 'Use este endpoint para crear una sanción en el sistema informático.',
   })
   @Post('')
   async createFouls(@Body() createSanctionsDto: CreateSanctionsDto): Promise<SanctionResponse> {

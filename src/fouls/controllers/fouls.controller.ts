@@ -29,7 +29,7 @@ export class FoulsController {
   @Auth('view_fouls')
   @ApiOperation({
     summary: 'Ver detalle de una Falta',
-    description: 'Use este endpoint para ver el detalle de una falta específica',
+    description: 'Use este endpoint para ver el detalle de una falta específica.',
   })
   @Get(':foulsId')
   getSingleFoul(@Param() idDto: FoulsIdDto): Promise<FoulResponse> {
