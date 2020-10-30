@@ -6,7 +6,7 @@ import { Schedule } from '../entities/schedules.entity';
 @EntityRepository(Schedule)
 export class ScheduleRepository extends Repository<Schedule> {
   async findByIdOrThrow(id: number): Promise<Schedule> {
-    const event = await this.findOne(id, { relations: ['ownerSchedule'] });
+    const event = await this.findOne(id, { relations: ['ownerSchedule', 'studentSchedule', 'employeesSchedule'] });
     if (!event) {
       throw new NotFoundException(`Evento con id ${id} no encontrado`);
     }
