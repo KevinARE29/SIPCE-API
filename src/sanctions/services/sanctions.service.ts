@@ -23,6 +23,11 @@ export class SanctionsService {
     return { data: plainToClass(SanctionsDoc, sanctions, { excludeExtraneousValues: true }), pagination };
   }
 
+  async getSingleSanction(sanctionsId: number): Promise<SanctionResponse> {
+    const sanction = await this.sanctionsRepository.findByIdOrThrow(sanctionsId);
+    return { data: plainToClass(SanctionsDoc, sanction, { excludeExtraneousValues: true }) };
+  }
+
   async createSanctions(createFoulsDto: CreateSanctionsDto): Promise<SanctionResponse> {
     const duplicatedSanction = await this.sanctionsRepository.getSanctionByName(createFoulsDto.name);
     if (duplicatedSanction) {
