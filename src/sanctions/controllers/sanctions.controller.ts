@@ -34,7 +34,7 @@ export class SanctionsController {
     summary: 'Ver detalle de una Sanción',
     description: 'Use este endpoint para ver el detalle de una sanción específica',
   })
-  @Get(':foulsId')
+  @Get(':sanctionsId')
   getSingleFoul(@Param() idDto: SanctionsIdDto): Promise<SanctionResponse> {
     return this.sanctionsService.getSingleSanction(idDto.sanctionsId);
   }

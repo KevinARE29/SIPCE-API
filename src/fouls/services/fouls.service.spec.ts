@@ -92,6 +92,13 @@ describe('Fouls Service', () => {
       (foulsRepository.findByIdOrThrow as jest.Mock).mockRejectedValue(new NotFoundException());
       expect(foulsService.getSingleFoul(0)).rejects.toThrowError(NotFoundException);
     });
+    it('Should Update a specific foul', async () => {
+      (foulsRepository.findByIdOrThrow as jest.Mock).mockResolvedValue(mockFoulDto);
+      (foulsRepository.save as jest.Mock).mockResolvedValue(mockCreateFoulDto);
+      const result = await foulsService.updateFouls(1, mockCreateFoulDto);
+      expect(foulsRepository.save).toHaveBeenCalled();
+      expect(result).toEqual({ data: mockFoulDto });
+    });
 
     it('Should Delete a specific foul', async () => {
       (foulsRepository.findByIdOrThrow as jest.Mock).mockResolvedValue(mockCreateFoulDto);
