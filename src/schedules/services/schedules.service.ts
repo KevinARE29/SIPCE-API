@@ -20,6 +20,7 @@ import { Student } from '@students/entities/student.entity';
 import { MailsService } from '@mails/services/mails.service';
 import * as moment from 'moment';
 import { EventMapper } from '@schedules/mappers/event.mapper';
+import { eventActionSubject } from '@schedules/constants/mail-templates.constant';
 
 moment.locale('es-us');
 
@@ -32,6 +33,31 @@ export class SchedulesService {
     private readonly mailsService: MailsService,
     private readonly eventMapper: EventMapper,
   ) {}
+
+  private sendEventNotification(subjectAction: string[], jsonData: any, participants: Array<User | Student>) {
+    const mailList = participants.map(participant => participant.email);
+    const seriesData = jsonData.RecurrenceRule ? this.eventMapper.toString(jsonData.RecurrenceRule) : undefined;
+    const [subject, calendarImgPath] = subjectAction;
+    const emailToSend = {
+      to: mailList,
+      template: 'event',
+      subject,
+      context: {
+        apiUrl: this.mailsService.apiUrl,
+        subject,
+        calendarImgPath,
+        jsonData: {
+          ...jsonData,
+          StartTime: moment(jsonData.StartTime).format('LLL'),
+          EndTime: moment(jsonData.EndTime).format('LLL'),
+        },
+        seriesData,
+        participants,
+      },
+    };
+
+    this.mailsService.sendEmail(emailToSend);
+  }
 
   async getEvents(userId: number, scheduleFilterDto: ScheduleFilterDto): Promise<any> {
     const events = await this.scheduleRepository.getEvents(userId, scheduleFilterDto);
@@ -76,28 +102,9 @@ export class SchedulesService {
     }
 
     if (participants.length) {
-      const subject = 'Invitación a sesión de consejería';
-      const mailList = participants.map(participant => participant.email);
-      const seriesData = jsonData.RecurrenceRule ? this.eventMapper.toString(jsonData.RecurrenceRule) : undefined;
-      const emailToSend = {
-        to: mailList,
-        template: 'event',
-        subject,
-        context: {
-          apiUrl: this.mailsService.apiUrl,
-          subject,
-          jsonData: {
-            ...jsonData,
-            StartTime: moment(jsonData.StartTime).format('LLL'),
-            EndTime: moment(jsonData.EndTime).format('LLL'),
-          },
-          seriesData,
-          participants,
-        },
-      };
-
-      this.mailsService.sendEmail(emailToSend);
+      this.sendEventNotification(eventActionSubject.create, jsonData, participants);
     }
+
     return {
       data: plainToClass(
         ScheduleDoc,
@@ -126,7 +133,7 @@ export class SchedulesService {
       throw new BadRequestException('Solo el propietario del evento puede realizar acciones en el evento');
     }
 
-    const { studentId, participantIds, eventType, ...scheduleDto } = updateScheduleDto;
+    const { studentId, participantIds, eventType, jsonData } = updateScheduleDto;
 
     let studentSchedule;
     let employeesSchedule;
@@ -134,7 +141,9 @@ export class SchedulesService {
     if (eventType) {
       type = EnumEventType[eventType];
       event.eventType = type;
-    } else type = event.eventType;
+    } else {
+      type = event.eventType;
+    }
 
     if (studentId) {
       studentSchedule = await this.studentRepository.findOneOrFail(studentId);
@@ -148,11 +157,23 @@ export class SchedulesService {
 
     const updatedEvent = await this.scheduleRepository.save({
       ...event,
-      ...scheduleDto,
+      ...jsonData,
     });
 
+    const participants: Array<User | Student> = [];
+    if (updatedEvent.studentSchedule) {
+      participants.push(updatedEvent.studentSchedule);
+    }
+
+    if (updatedEvent.employeesSchedule?.length) {
+      participants.push(...updatedEvent.employeesSchedule);
+    }
+    if (participants.length) {
+      this.sendEventNotification(eventActionSubject.update, updatedEvent.jsonData, participants);
+    }
+
     return {
-      data: plainToClass(ScheduleDoc, await this.scheduleRepository.save({ ...updatedEvent }), {
+      data: plainToClass(ScheduleDoc, updatedEvent, {
         excludeExtraneousValues: true,
       }),
     };
@@ -163,6 +184,19 @@ export class SchedulesService {
     if (event.ownerSchedule.id !== ownerSchedule.id) {
       throw new BadRequestException('Solo el propietario del evento puede realizar acciones en el evento');
     }
+
+    const participants: Array<User | Student> = [];
+    if (event.studentSchedule) {
+      participants.push(event.studentSchedule);
+    }
+
+    if (event.employeesSchedule?.length) {
+      participants.push(...event.employeesSchedule);
+    }
+    if (participants.length) {
+      this.sendEventNotification(eventActionSubject.delete, event.jsonData, participants);
+    }
+
     await this.scheduleRepository.query(`DELETE FROM schedule WHERE id IN (${event.id})`);
   }
 
