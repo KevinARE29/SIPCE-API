@@ -21,8 +21,13 @@ export class FoulsService {
     }
     const [fouls, count] = await this.foulsRepository.getAllFouls(pageDto, foulsFilterDto);
     const pagination = getPagination(pageDto, count);
-    const mappedFouls = fouls.map(foul => ({ ...foul, status: EnumFoulsType[foul.foulsType] }));
+    const mappedFouls = fouls.map(foul => ({ ...foul, foulsType: EnumFoulsType[foul.foulsType] }));
     return { data: plainToClass(FoulsDoc, mappedFouls, { excludeExtraneousValues: true }), pagination };
+  }
+
+  async getSingleFoul(foulsId: number): Promise<FoulResponse> {
+    const foul = await this.foulsRepository.findByIdOrThrow(foulsId);
+    return { data: plainToClass(FoulsDoc, foul, { excludeExtraneousValues: true }) };
   }
 
   async createFouls(createFoulsDto: CreateFoulsDto): Promise<FoulResponse> {
@@ -48,7 +53,7 @@ export class FoulsService {
     if (foulsType) {
       type = EnumFoulsType[foulsType];
       fouls.foulsType = type;
-    } else type = fouls.foulsType;
+    }
 
     const updatedEvent = await this.foulsRepository.save({
       ...fouls,

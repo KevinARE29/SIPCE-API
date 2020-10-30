@@ -16,7 +16,7 @@ import { FoulsFilterDto } from '@fouls/dtos/fouls-filter.dto';
 export class FoulsController {
   constructor(private readonly foulsService: FoulsService) {}
 
-  @Auth('manage_fouls')
+  @Auth('view_fouls')
   @ApiOperation({
     summary: 'Buscar Faltas',
     description: 'Use este endpoint para buscar faltas.',
@@ -24,6 +24,16 @@ export class FoulsController {
   @Get('')
   async getAllFouls(@Query() pageDto: PageDto, @Query() foulsFilterDto: FoulsFilterDto): Promise<FoulsResponse> {
     return this.foulsService.getAllFouls(pageDto, foulsFilterDto);
+  }
+
+  @Auth('view_fouls')
+  @ApiOperation({
+    summary: 'Ver detalle de una Falta',
+    description: 'Use este endpoint para ver el detalle de una falta específica.',
+  })
+  @Get(':foulsId')
+  getSingleFoul(@Param() idDto: FoulsIdDto): Promise<FoulResponse> {
+    return this.foulsService.getSingleFoul(idDto.foulsId);
   }
 
   @Auth('manage_fouls')
