@@ -70,3 +70,11 @@ border-radius: .25rem;')
             ul(style='padding-inline-start: 40px;')
               each serie in seriesData
                 li= serie
+        if recurrenceExceptions
+          li.list-group-item
+            b
+              img(src=`${apiUrl}/img/recurrence-exception.png` style='height: 1em;')
+              |                Fechas canceladas en la serie de eventos:
+            ul(style='padding-inline-start: 40px;')
+              each exception in recurrenceExceptions
+                li= exception

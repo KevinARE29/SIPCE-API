@@ -37,6 +37,9 @@ export class SchedulesService {
   private sendEventNotification(subjectAction: string[], jsonData: any, participants: Array<User | Student>) {
     const mailList = participants.map(participant => participant.email);
     const seriesData = jsonData.RecurrenceRule ? this.eventMapper.toString(jsonData.RecurrenceRule) : undefined;
+    const recurrenceExceptions = jsonData.RecurrenceException
+      ? this.eventMapper.toExceptionString(jsonData.RecurrenceException)
+      : undefined;
     const [subject, calendarImgPath] = subjectAction;
     const emailToSend = {
       to: mailList,
@@ -52,6 +55,7 @@ export class SchedulesService {
           EndTime: moment(jsonData.EndTime).format('LLL'),
         },
         seriesData,
+        recurrenceExceptions,
         participants,
       },
     };
@@ -157,7 +161,10 @@ export class SchedulesService {
 
     const updatedEvent = await this.scheduleRepository.save({
       ...event,
-      ...jsonData,
+      jsonData: {
+        ...event.jsonData,
+        ...jsonData,
+      },
     });
 
     const participants: Array<User | Student> = [];
@@ -165,9 +172,10 @@ export class SchedulesService {
       participants.push(updatedEvent.studentSchedule);
     }
 
-    if (updatedEvent.employeesSchedule?.length) {
+    if (updatedEvent.employeesSchedule.length) {
       participants.push(...updatedEvent.employeesSchedule);
     }
+
     if (participants.length) {
       this.sendEventNotification(eventActionSubject.update, updatedEvent.jsonData, participants);
     }
@@ -190,7 +198,7 @@ export class SchedulesService {
       participants.push(event.studentSchedule);
     }
 
-    if (event.employeesSchedule?.length) {
+    if (event.employeesSchedule.length) {
       participants.push(...event.employeesSchedule);
     }
     if (participants.length) {

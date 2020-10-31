@@ -59,5 +59,5 @@ export class Schedule {
     joinColumns: [{ name: 'schedule_id' }],
     inverseJoinColumns: [{ name: 'employee_id' }],
   })
-  employeesSchedule?: User[];
+  employeesSchedule!: User[];
 }
