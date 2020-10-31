@@ -56,6 +56,11 @@ export class EventMapper {
     return `Repetir el ${pos} ${day} del mes`;
   }
 
+  public toExceptionString(recurrenceException: string): string[] {
+    const exceptions = recurrenceException.split(',').map(exception => moment(exception).format('LLL'));
+    return exceptions;
+  }
+
   public toString(recurrenceRule: string): string[] {
     const rules = recurrenceRule.slice(0, -1).split(';');
     const recurrence: Record<string, string> = {};
