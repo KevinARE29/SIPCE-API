@@ -139,24 +139,19 @@ export class SchedulesService {
 
     const { studentId, participantIds, eventType, jsonData } = updateScheduleDto;
 
-    let studentSchedule;
-    let employeesSchedule;
-    let type;
     if (eventType) {
-      type = EnumEventType[eventType];
-      event.eventType = type;
-    } else {
-      type = event.eventType;
+      event.eventType = EnumEventType[eventType];
     }
 
+    const participants: Array<User | Student> = [];
     if (studentId) {
-      studentSchedule = await this.studentRepository.findOneOrFail(studentId);
-      event.studentSchedule = studentSchedule;
+      event.studentSchedule = await this.studentRepository.findOneOrFail(studentId);
+      participants.push(event.studentSchedule);
     }
 
     if (participantIds) {
-      employeesSchedule = await this.userRepository.findByIds(participantIds);
-      event.employeesSchedule = employeesSchedule;
+      event.employeesSchedule = await this.userRepository.findByIds(participantIds);
+      participants.push(...event.employeesSchedule);
     }
 
     const updatedEvent = await this.scheduleRepository.save({
@@ -166,15 +161,6 @@ export class SchedulesService {
         ...jsonData,
       },
     });
-
-    const participants: Array<User | Student> = [];
-    if (updatedEvent.studentSchedule) {
-      participants.push(updatedEvent.studentSchedule);
-    }
-
-    if (updatedEvent.employeesSchedule.length) {
-      participants.push(...updatedEvent.employeesSchedule);
-    }
 
     if (participants.length) {
       this.sendEventNotification(eventActionSubject.update, updatedEvent.jsonData, participants);
@@ -201,6 +187,7 @@ export class SchedulesService {
     if (event.employeesSchedule.length) {
       participants.push(...event.employeesSchedule);
     }
+
     if (participants.length) {
       this.sendEventNotification(eventActionSubject.delete, event.jsonData, participants);
     }
