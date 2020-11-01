@@ -84,11 +84,12 @@ export class SchedulesService {
     const mappedEvents = [];
     const colorsLength = shuffledColors.length;
     for (const [index, event] of filteredEvents.entries()) {
-      const { id, studentSchedule, employeesSchedule, jsonData } = event;
+      const { id, studentSchedule, employeesSchedule, jsonData, notification } = event;
       const mappedEvent = {
         jsonData: {
           ...jsonData,
           Id: id,
+          notification,
           Student: plainToClass(ScheduleStudent, studentSchedule, {
             excludeExtraneousValues: true,
           }),
