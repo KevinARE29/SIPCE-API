@@ -20,18 +20,10 @@ export class ScheduleRepository extends Repository<Schedule> {
       .leftJoin('schedule.ownerSchedule', 'ownerSchedule')
       .leftJoinAndSelect('schedule.studentSchedule', 'studentSchedule')
       .leftJoinAndSelect('schedule.employeesSchedule', 'employeesSchedule')
-      .andWhere(`ownerSchedule.id = ${userId}`);
-    if (fromDate) {
-      query.andWhere(`((schedule.jsonData ->> 'StartTime')::timestamp >= '${fromDate}' ${orCondition})`);
-    } else {
-      query.andWhere(`((schedule.jsonData ->> 'StartTime')::timestamp >= NOW() - INTERVAL '1' MONTH ${orCondition})`);
-    }
+      .andWhere(`ownerSchedule.id = ${userId}`)
+      .andWhere(`((schedule.jsonData ->> 'StartTime')::timestamp >= '${fromDate}' ${orCondition})`)
+      .andWhere(`((schedule.jsonData ->> 'EndTime')::timestamp <= '${toDate}' ${orCondition})`);
 
-    if (toDate) {
-      query.andWhere(`((schedule.jsonData ->> 'EndTime')::timestamp <= '${toDate}' ${orCondition})`);
-    } else {
-      query.andWhere(`((schedule.jsonData ->> 'EndTime')::timestamp <= NOW() + INTERVAL '1' MONTH ${orCondition})`);
-    }
     if (notification) {
       query.andWhere(`schedule.notification is ${notification}`);
     }

@@ -21,6 +21,7 @@ import { MailsService } from '@mails/services/mails.service';
 import * as moment from 'moment';
 import { EventMapper } from '@schedules/mappers/event.mapper';
 import { eventActionSubject } from '@schedules/constants/mail-templates.constant';
+import { RRule } from 'rrule';
 
 moment.locale('es-us');
 
@@ -65,10 +66,24 @@ export class SchedulesService {
 
   async getEvents(userId: number, scheduleFilterDto: ScheduleFilterDto): Promise<any> {
     const events = await this.scheduleRepository.getEvents(userId, scheduleFilterDto);
+    const { fromDate, toDate } = scheduleFilterDto;
+    const filteredEvents = events.filter(event => {
+      const { StartTime, RecurrenceRule } = event.jsonData;
+      if (!RecurrenceRule) {
+        return true;
+      }
+      const rule = RRule.fromString(
+        `DTSTART:${moment(StartTime)
+          .utc()
+          .format('YYYYMMDDTHHmmss')}\nRRULE:${RecurrenceRule.slice(0, -1)}`,
+      );
+      const filteredSeries = rule.between(new Date(fromDate), new Date(toDate));
+      return filteredSeries.length;
+    });
     const shuffledColors = shuffle(eventsColors);
     const mappedEvents = [];
     const colorsLength = shuffledColors.length;
-    for (const [index, event] of events.entries()) {
+    for (const [index, event] of filteredEvents.entries()) {
       const { id, studentSchedule, employeesSchedule, jsonData } = event;
       const mappedEvent = {
         jsonData: {
