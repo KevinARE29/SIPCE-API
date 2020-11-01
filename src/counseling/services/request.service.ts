@@ -25,6 +25,7 @@ import { PatchRequestDto } from '@counseling/dtos/patch-request.dto';
 import { RequestGateway } from '@counseling/gateways/request.gateway';
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
 import { IAuthenticatedUser } from '@users/interfaces/users.interface';
+import * as moment from 'moment';
 import { IConfirmationTokenPayload } from '../interfaces/confirmation-token.interface';
 
 @Injectable()
@@ -144,5 +145,29 @@ export class RequestService {
 
     await this.requestRepository.save({ ...request, status: ERequestStatus[status] });
     this.requestGateway.alertCounselor(username);
+
+    if (status !== 'Cancelada') {
+      return;
+    }
+    const { firstname, lastname, email } = request.student;
+    const subject = 'Solicitud de consejería rechazada';
+    const emailToSend = {
+      to: email,
+      template: 'rejected-request',
+      subject,
+      context: {
+        subject,
+        name: `${firstname} ${lastname}`,
+        createdAt: moment(request.createdAt).format('LLL'),
+        requestSubject: request.subject,
+      },
+    };
+
+    try {
+      this.mailsService.sendEmail(emailToSend);
+    } catch (err) {
+      Logger.error(err);
+      throw new InternalServerErrorException('Error enviando el email');
+    }
   }
 }
