@@ -69,6 +69,7 @@
     "pug": "^3.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
+    "rrule": "^2.6.6",
     "rxjs": "^6.5.4",
     "socket.io-redis": "^5.4.0",
     "streamifier": "^0.1.1",
