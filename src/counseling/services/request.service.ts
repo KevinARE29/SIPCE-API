@@ -160,6 +160,7 @@ export class RequestService {
         name: `${firstname} ${lastname}`,
         createdAt: moment(request.createdAt).format('LLL'),
         requestSubject: request.subject,
+        apiUrl: this.mailsService.apiUrl,
       },
     };
 
