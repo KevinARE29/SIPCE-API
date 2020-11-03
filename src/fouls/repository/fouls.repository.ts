@@ -1,12 +1,12 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Fouls } from '@fouls/entities/fouls.entity';
+import { Foul } from '@fouls/entities/fouls.entity';
 import { NotFoundException } from '@nestjs/common';
 import { FoulsFilterDto, sortOptionsMap } from '@fouls/dtos/fouls-filter.dto';
 import { PageDto } from '@core/dtos/page.dto';
 import { EnumFoulsType } from '@fouls/constants/fouls.constants';
-@EntityRepository(Fouls)
-export class FoulsRepository extends Repository<Fouls> {
-  async findByIdOrThrow(id: number): Promise<Fouls> {
+@EntityRepository(Foul)
+export class FoulsRepository extends Repository<Foul> {
+  async findByIdOrThrow(id: number): Promise<Foul> {
     const foul = await this.findOne(id);
     if (!foul) {
       throw new NotFoundException(`Falta con id ${id} no encontrada`);
@@ -14,7 +14,7 @@ export class FoulsRepository extends Repository<Fouls> {
     return foul;
   }
 
-  getAllFouls(pageDto: PageDto, foulsFilterDto: FoulsFilterDto): Promise<[Fouls[], number]> {
+  getAllFouls(pageDto: PageDto, foulsFilterDto: FoulsFilterDto): Promise<[Foul[], number]> {
     const { page, perPage } = pageDto;
     const { sort, paginate, foulsType } = foulsFilterDto;
     const query = this.createQueryBuilder('fouls').andWhere('fouls.deletedAt is null');

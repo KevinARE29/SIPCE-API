@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { EnumFoulsType } from '@fouls/constants/fouls.constants';
 
 @Entity()
-export class Fouls {
+export class Foul {
   @PrimaryGeneratedColumn()
   id!: number;
 
