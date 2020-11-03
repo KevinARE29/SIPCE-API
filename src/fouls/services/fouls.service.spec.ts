@@ -4,7 +4,6 @@ import { FoulsRepository } from '@fouls/repository/fouls.repository';
 import { mockPageDto } from '@core/constants/mock.constants';
 import { NotFoundException } from '@nestjs/common';
 import { CreateFoulsDto } from '@fouls/dtos/create-foul.dto';
-import { UpdateFoulsDto } from '@fouls/dtos/update-fouls.dto';
 import { EnumFoulsType } from '@fouls/constants/fouls.constants';
 
 const mockFouls = [

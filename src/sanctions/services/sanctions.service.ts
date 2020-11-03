@@ -30,8 +30,13 @@ export class SanctionsService {
 
   async createSanctions(createFoulsDto: CreateSanctionsDto): Promise<SanctionResponse> {
     const duplicatedSanction = await this.sanctionsRepository.getSanctionByName(createFoulsDto.name);
+    const duplicatedSanctionNumeral = await this.sanctionsRepository.getSanctionByNumeral(createFoulsDto.numeral);
+
     if (duplicatedSanction) {
       throw new ConflictException('name: Ya existe una sanción con ese nombre');
+    }
+    if (duplicatedSanctionNumeral) {
+      throw new ConflictException('name: Ya existe una sanción con ese numeral');
     }
     return {
       data: plainToClass(
@@ -48,12 +53,21 @@ export class SanctionsService {
 
   async updateSanctions(sanctionsId: number, updateSanctionsDto: UpdateSanctionsDto): Promise<SanctionResponse> {
     const sanctions = await this.sanctionsRepository.findByIdOrThrow(sanctionsId);
-    sanctions.name = updateSanctionsDto.name || sanctions.name;
-    sanctions.description = updateSanctionsDto.description || sanctions.name;
-    const duplicatedSanction = await this.sanctionsRepository.getSanctionByName(sanctions.name);
-    if (duplicatedSanction && sanctions.id !== duplicatedSanction.id) {
+    let duplicatedName;
+    let duplicatedNumeral;
+    if (updateSanctionsDto.name)
+      duplicatedName = await this.sanctionsRepository.getSanctionByName(updateSanctionsDto.name);
+    if (updateSanctionsDto.numeral)
+      duplicatedNumeral = await this.sanctionsRepository.getSanctionByNumeral(updateSanctionsDto.numeral);
+    if (duplicatedName && sanctions.id !== duplicatedName.id) {
       throw new ConflictException('name: Ya existe una sanción con ese nombre');
     }
+    if (duplicatedNumeral && sanctions.id !== duplicatedNumeral.id) {
+      throw new ConflictException('name: Ya existe una sanción con ese numeral');
+    }
+    sanctions.description = updateSanctionsDto.description || sanctions.description;
+    sanctions.name = updateSanctionsDto.name || sanctions.name;
+    sanctions.numeral = updateSanctionsDto.numeral || sanctions.numeral;
     return {
       data: plainToClass(SanctionsDoc, await this.sanctionsRepository.save({ ...sanctions }), {
         excludeExtraneousValues: true,

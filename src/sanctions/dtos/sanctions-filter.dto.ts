@@ -18,6 +18,10 @@ export class SanctionsFilterDto {
   readonly name?: string;
 
   @IsOptional()
+  @IsString({ message: validator.isString })
+  readonly numeral?: string;
+
+  @IsOptional()
   @IsIn(['false'], { message: validator.isIn })
   readonly paginate?: string;
 }
