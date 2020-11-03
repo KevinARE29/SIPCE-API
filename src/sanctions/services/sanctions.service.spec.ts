@@ -7,7 +7,7 @@ import { NotFoundException } from '@nestjs/common';
 const mockSanctions = [
   [
     { description: 'Sanción por falta leve', name: 'Anotación en diario de clases', numeral: '8.1.2' },
-    { description: 'Sanción por falta grave', name: 'Suspención temporal', numeral: '8.1.4' },
+    { description: 'Sanción por falta grave', name: 'Suspensión temporal', numeral: '8.1.4' },
   ],
   2,
 ];
