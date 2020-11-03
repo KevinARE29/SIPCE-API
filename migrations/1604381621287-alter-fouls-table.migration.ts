@@ -4,9 +4,6 @@ export class AlterFoulsTable1604381621287 implements MigrationInterface {
   name = 'alterFoulsTable1604381621287';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `ALTER TABLE "public"."schedule_employee" DROP CONSTRAINT "FK_e0d1d8ad8f65a30090d52790a5c"`,
-    );
     await queryRunner.query(`DROP INDEX "public"."IDX_e0d1d8ad8f65a30090d52790a5"`);
     await queryRunner.query(`ALTER TABLE fouls RENAME TO foul;`);
     await queryRunner.query(
@@ -29,9 +26,6 @@ export class AlterFoulsTable1604381621287 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE foul RENAME TO fouls;`);
     await queryRunner.query(
       `CREATE INDEX "IDX_e0d1d8ad8f65a30090d52790a5" ON "public"."schedule_employee" ("employee_id") `,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "public"."schedule_employee" ADD CONSTRAINT "FK_e0d1d8ad8f65a30090d52790a5c" FOREIGN KEY ("employee_id") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
   }
 }
