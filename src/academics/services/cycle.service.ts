@@ -32,8 +32,8 @@ export class CycleService {
     };
   }
 
-  async updateCycle(sectionId: number, catalogueDto: CatalogueDto): Promise<CycleResponse> {
-    const cycle = await this.cycleRepository.getCycleByIdOrThrow(sectionId);
+  async updateCycle(cycleId: number, catalogueDto: CatalogueDto): Promise<CycleResponse> {
+    const cycle = await this.cycleRepository.getCycleByIdOrThrow(cycleId);
 
     cycle.name = catalogueDto.name || cycle.name;
     const duplicatedCycle = await this.cycleRepository.getCycleByName(cycle.name);
