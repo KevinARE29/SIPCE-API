@@ -12,5 +12,9 @@ export class CreateFoulsDto {
 
   @IsNotEmpty()
   @IsString({ message: validator.isString })
+  readonly numeral!: string;
+
+  @IsNotEmpty()
+  @IsString({ message: validator.isString })
   readonly description!: string;
 }

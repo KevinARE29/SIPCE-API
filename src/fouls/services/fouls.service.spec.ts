@@ -8,8 +8,8 @@ import { EnumFoulsType } from '@fouls/constants/fouls.constants';
 
 const mockFouls = [
   [
-    { description: 'Falta Leves', foulsType: 'Leves' },
-    { description: 'Falta Grave', foulsType: 'Graves' },
+    { description: 'Falta Leves', foulsType: 'Leves', numeral: '8.1.2' },
+    { description: 'Falta Grave', foulsType: 'Graves', numeral: '8.1.3' },
   ],
   2,
 ];
@@ -29,18 +29,21 @@ const mockFoulsResponse = {
 const mockFoulDto = {
   description: 'Mock Fouls',
   foulsType: EnumFoulsType.Leves,
+  numeral: '8.1.4',
   id: undefined,
 };
 
 const mockSingleResponseFoulDto = {
   description: 'Mock Fouls',
   foulsType: 'Leves',
+  numeral: '8.1.4',
   id: undefined,
 };
 
 const mockCreateFoulDto = {
   description: 'Mock Fouls',
   foulsType: 'Leves',
+  numeral: '8.1.4',
 } as CreateFoulsDto;
 
 const mockFoulsRepository = () => ({
@@ -48,6 +51,7 @@ const mockFoulsRepository = () => ({
   save: jest.fn(),
   delete: jest.fn(),
   findByIdOrThrow: jest.fn(),
+  getFoulsByNumeral: jest.fn(),
   getAllFouls: jest.fn().mockResolvedValue(mockFoulsResponse),
 });
 
@@ -77,6 +81,7 @@ describe('Fouls Service', () => {
     });
 
     it('Should Create a new fouls', async () => {
+      (foulsRepository.getFoulsByNumeral as jest.Mock).mockResolvedValue(null);
       (foulsRepository.save as jest.Mock).mockResolvedValue(mockCreateFoulDto);
       const result = await foulsService.createFouls(mockCreateFoulDto);
       expect(result).toEqual({ data: mockFoulDto });
@@ -93,6 +98,7 @@ describe('Fouls Service', () => {
     });
     it('Should Update a specific foul', async () => {
       (foulsRepository.findByIdOrThrow as jest.Mock).mockResolvedValue(mockFoulDto);
+      (foulsRepository.getFoulsByNumeral as jest.Mock).mockResolvedValue(null);
       (foulsRepository.save as jest.Mock).mockResolvedValue(mockCreateFoulDto);
       const result = await foulsService.updateFouls(1, mockCreateFoulDto);
       expect(foulsRepository.save).toHaveBeenCalled();

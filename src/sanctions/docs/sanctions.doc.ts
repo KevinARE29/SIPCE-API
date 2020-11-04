@@ -8,8 +8,5 @@ export class Sanctions {
   name!: string;
 
   @Expose()
-  numeral!: string;
-
-  @Expose()
   description!: string;
 }

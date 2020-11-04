@@ -12,6 +12,9 @@ export class Foul {
   @Column('varchar', { length: 256 })
   description!: string;
 
+  @Column('varchar', { length: 16, unique: true })
+  numeral!: string;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
