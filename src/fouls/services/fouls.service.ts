@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { Fouls as FoulsDoc } from '@fouls/docs/fouls.doc';
 import { FoulsRepository } from '@fouls/repository/fouls.repository';
@@ -32,6 +32,11 @@ export class FoulsService {
 
   async createFouls(createFoulsDto: CreateFoulsDto): Promise<FoulResponse> {
     const { foulsType, ...foulsDto } = createFoulsDto;
+    const duplicatedFoulNumeral = await this.foulsRepository.getFoulsByNumeral(createFoulsDto.numeral);
+    if (duplicatedFoulNumeral) {
+      throw new ConflictException('name: Ya existe una falta con ese numeral');
+    }
+
     return {
       data: plainToClass(
         FoulsDoc,
@@ -50,11 +55,17 @@ export class FoulsService {
     const fouls = await this.foulsRepository.findByIdOrThrow(foulsId);
     const { foulsType, ...foulsDto } = updateFoulsDto;
     let type;
+    let duplicatedNumeral;
     if (foulsType) {
       type = EnumFoulsType[foulsType];
       fouls.foulsType = type;
     }
-
+    if (foulsDto.numeral) {
+      duplicatedNumeral = await this.foulsRepository.getFoulsByNumeral(foulsDto.numeral);
+    }
+    if (duplicatedNumeral && fouls.id !== duplicatedNumeral.id) {
+      throw new ConflictException('name: Ya existe una falta con ese numeral');
+    }
     const updatedEvent = await this.foulsRepository.save({
       ...fouls,
       ...foulsDto,

@@ -10,5 +10,8 @@ export class Fouls {
   foulsType!: string;
 
   @Expose()
+  numeral!: string;
+
+  @Expose()
   description!: string;
 }

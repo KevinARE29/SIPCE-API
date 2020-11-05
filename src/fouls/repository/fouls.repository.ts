@@ -16,10 +16,14 @@ export class FoulsRepository extends Repository<Foul> {
 
   getAllFouls(pageDto: PageDto, foulsFilterDto: FoulsFilterDto): Promise<[Foul[], number]> {
     const { page, perPage } = pageDto;
-    const { sort, paginate, foulsType } = foulsFilterDto;
+    const { sort, paginate, foulsType, numeral } = foulsFilterDto;
     const query = this.createQueryBuilder('fouls').andWhere('fouls.deletedAt is null');
     if (foulsType) {
       query.andWhere(`fouls.foulsType = '${EnumFoulsType[foulsType]}'`);
+    }
+
+    if (numeral) {
+      query.andWhere(`fouls."numeral" ILIKE '%${numeral}%'`);
     }
     if (paginate === 'false') {
       query.orderBy({ 'fouls.id': 'ASC' });
@@ -37,5 +41,11 @@ export class FoulsRepository extends Repository<Foul> {
       query.orderBy({ 'fouls.id': 'DESC' });
     }
     return query.getManyAndCount();
+  }
+
+  getFoulsByNumeral(numeral: string): Promise<Foul | undefined> {
+    return this.createQueryBuilder('fouls')
+      .where('LOWER(fouls.numeral) = LOWER(:numeral)', { numeral })
+      .getOne();
   }
 }

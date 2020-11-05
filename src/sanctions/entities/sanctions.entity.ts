@@ -11,9 +11,6 @@ export class Sanction {
   @Column('varchar', { length: 256 })
   description!: string;
 
-  @Column('varchar', { length: 8, unique: true })
-  numeral!: string;
-
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 

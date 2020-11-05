@@ -6,8 +6,8 @@ import { NotFoundException } from '@nestjs/common';
 
 const mockSanctions = [
   [
-    { description: 'Sanción por falta leve', name: 'Anotación en diario de clases', numeral: '8.1.2' },
-    { description: 'Sanción por falta grave', name: 'Suspensión temporal', numeral: '8.1.4' },
+    { description: 'Sanción por falta leve', name: 'Anotación en diario de clases' },
+    { description: 'Sanción por falta grave', name: 'Suspensión temporal' },
   ],
   2,
 ];
@@ -27,7 +27,6 @@ const mockSanctionsResponse = {
 const mockCreateSanctionDto = {
   name: 'Mock Sanction',
   description: 'Saction description',
-  numeral: '8.1.3',
 };
 
 const mockSanctionRepository = () => ({
@@ -36,7 +35,6 @@ const mockSanctionRepository = () => ({
   delete: jest.fn(),
   findByIdOrThrow: jest.fn(),
   getSanctionByName: jest.fn(),
-  getSanctionByNumeral: jest.fn(),
   getAllSanctions: jest.fn().mockResolvedValue(mockSanctionsResponse),
 });
 
@@ -67,7 +65,6 @@ describe('Sanction Service', () => {
 
     it('Should Create a new saction', async () => {
       (sanctionsRepository.getSanctionByName as jest.Mock).mockResolvedValue(null);
-      (sanctionsRepository.getSanctionByNumeral as jest.Mock).mockResolvedValue(null);
       (sanctionsRepository.save as jest.Mock).mockResolvedValue(mockCreateSanctionDto);
       const result = await sanctionsService.createSanctions(mockCreateSanctionDto);
       expect(result).toEqual({ data: mockCreateSanctionDto });

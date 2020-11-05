@@ -7,16 +7,13 @@ import { SanctionsFilterDto, sortOptionsMap } from '@sanctions/dtos/sanctions-fi
 export class SanctionsRepository extends Repository<Sanction> {
   getAllSanctions(pageDto: PageDto, sanctionsFilterDto: SanctionsFilterDto): Promise<[Sanction[], number]> {
     const { page, perPage } = pageDto;
-    const { sort, paginate, name, numeral } = sanctionsFilterDto;
+    const { sort, paginate, name } = sanctionsFilterDto;
     const query = this.createQueryBuilder('sanction').andWhere('sanction.deletedAt is null');
 
     if (name) {
       query.andWhere(`sanction."name" ILIKE '%${name}%'`);
     }
 
-    if (numeral) {
-      query.andWhere(`sanction."numeral" ILIKE '%${numeral}%'`);
-    }
     if (paginate === 'false') {
       query.orderBy({ 'sanction.name': 'ASC' });
       return query.getManyAndCount();
@@ -46,12 +43,6 @@ export class SanctionsRepository extends Repository<Sanction> {
   getSanctionByName(name: string): Promise<Sanction | undefined> {
     return this.createQueryBuilder('sanction')
       .where('LOWER(sanction.name) = LOWER(:name)', { name })
-      .getOne();
-  }
-
-  getSanctionByNumeral(numeral: string): Promise<Sanction | undefined> {
-    return this.createQueryBuilder('sanction')
-      .where('LOWER(sanction.numeral) = LOWER(:numeral)', { numeral })
       .getOne();
   }
 }
