@@ -89,7 +89,7 @@ export class SchedulesService {
         jsonData: {
           ...jsonData,
           Id: id,
-          notification,
+          Notification: notification,
           Student: plainToClass(ScheduleStudent, studentSchedule, {
             excludeExtraneousValues: true,
           }),
