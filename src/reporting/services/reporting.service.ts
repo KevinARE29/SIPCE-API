@@ -4,7 +4,7 @@ import * as puppeteer from 'puppeteer';
 
 @Injectable()
 export class ReportingService {
-  private logger;
+  private logger: Logger;
 
   constructor(private readonly configService: ConfigService) {
     this.logger = new Logger(ReportingService.name);
