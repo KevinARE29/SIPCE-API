@@ -14,7 +14,7 @@ export class ReportingService {
     const domain = this.configService.get<string>('FRONT_URL');
 
     this.logger.debug(`Generate Report Name PDF`);
-    const frontendUrl = `https://${domain}`;
+    const frontendUrl = `https://${domain}/documents/two-pages`;
 
     try {
       const startMeasurement = new Date().getTime();
@@ -51,9 +51,13 @@ export class ReportingService {
       visible: true,
     });
     const pdfBuffer = await page.pdf({
+      displayHeaderFooter: true,
       printBackground: true,
-      width: `${8.5}in`,
-      height: `${11}in`,
+      format: 'Letter',
+      headerTemplate: '<div style="font-size:26px;width:100%;text-align:center;">HEADER</div>',
+      footerTemplate:
+        '<div style="text-align: right;width: 297mm;font-size: 8px;"><span style="margin-right: 1cm">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span></div>',
+      margin: { top: '70px', right: '10px', bottom: '70px', left: '10px' },
     });
     await browser.close();
     return pdfBuffer;
