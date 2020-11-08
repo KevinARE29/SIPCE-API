@@ -13,6 +13,7 @@ import { mailerFactory } from '@mails/factories/mailer.factory';
 import { CounselingModule } from '@counseling/counseling.module';
 import { FoulsModule } from '@fouls/fouls.module';
 import { SanctionsModule } from '@sanctions/sanctions.module';
+import { ReportingModule } from './reporting/reporting.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { SanctionsModule } from '@sanctions/sanctions.module';
     CounselingModule,
     FoulsModule,
     SanctionsModule,
+    ReportingModule,
   ],
 })
 export class AppModule {}
