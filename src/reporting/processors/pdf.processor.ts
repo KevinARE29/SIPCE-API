@@ -98,7 +98,7 @@ export class PdfProcessor {
   </div>`,
       footerTemplate:
         '<div style="text-align: right;width: 297mm;font-size: 8px;"><span style="margin-right: 1cm">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span></div>',
-      margin: { top: '200px', right: '10px', bottom: '70px', left: '10px' },
+      margin: { top: '200px', right: '20px', bottom: '70px', left: '20px' },
     });
     await browser.close();
     return pdfBuffer;
