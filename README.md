@@ -51,6 +51,7 @@ API para el Sistema Informático para el control y seguimiento del historial con
 | TYPEORM_LOGGING               | error                                                                        |
 | REDIS_HOST                    | [Redis host]                                                                 |
 | REDIS_PORT                    | [Redis port]                                                                 |
+| REDIS_PASSWORD                | [Redis password]                                                             |
 | EMAIL_USER                    | [Your Gmail User]                                                            |
 | EMAIL_PSW                     | [Your Gmail Password]                                                        |
 | CLOUDINARY_CLOUD_NAME         | [The Cloudinary Cloud Name]                                                  |
