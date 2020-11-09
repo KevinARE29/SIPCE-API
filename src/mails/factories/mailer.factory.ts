@@ -1,18 +1,22 @@
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { ConfigService } from '@nestjs/config';
 
-require('dotenv').config();
+export const mailerFactory = (configService: ConfigService) => {
+  const email = configService.get('EMAIL_USER');
+  const emailPsw = configService.get('EMAIL_PSW');
 
-export const mailerFactory = () => ({
-  transport: `smtps://${process.env.EMAIL_USER}:${process.env.EMAIL_PSW}@smtp.gmail.com`,
-  defaults: {
-    from: '"Liceo Salvadoreño" <noreply@gmail.com>',
-  },
-  preview: false,
-  template: {
-    dir: `./src/mails/templates`,
-    adapter: new PugAdapter(),
-    options: {
-      strict: true,
+  return {
+    transport: `smtps://${email}:${emailPsw}@smtp.gmail.com`,
+    defaults: {
+      from: '"Liceo Salvadoreño" <noreply@gmail.com>',
     },
-  },
-});
+    preview: false,
+    template: {
+      dir: `./src/mails/templates`,
+      adapter: new PugAdapter(),
+      options: {
+        strict: true,
+      },
+    },
+  };
+};

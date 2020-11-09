@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LogModule } from '@logs/log.module';
 import { UsersModule } from '@users/users.module';
 import { AuthModule } from '@auth/auth.module';
@@ -13,13 +13,22 @@ import { mailerFactory } from '@mails/factories/mailer.factory';
 import { CounselingModule } from '@counseling/counseling.module';
 import { FoulsModule } from '@fouls/fouls.module';
 import { SanctionsModule } from '@sanctions/sanctions.module';
-import { ReportingModule } from './reporting/reporting.module';
+import { ReportingModule } from '@reporting/reporting.module';
+import { BullModule } from '@nestjs/bull/dist/bull.module';
+import { bullFactory } from '@reporting/factories/bull.factory';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
     MailerModule.forRootAsync({
+      imports: [ConfigModule],
       useFactory: mailerFactory,
+      inject: [ConfigService],
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: bullFactory,
+      inject: [ConfigService],
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -51,6 +60,8 @@ import { ReportingModule } from './reporting/reporting.module';
         TYPEORM_MIGRATIONS_DIR: Joi.string().default('migrations'),
         TYPEORM_MIGRATIONS_RUN: Joi.boolean().default(true),
         TYPEORM_LOGGING: Joi.string().default('error'),
+        REDIS_HOST: Joi.string().default('localhost'),
+        REDIS_PORT: Joi.number().default(6379),
         EMAIL_USER: Joi.string().required(),
         EMAIL_PSW: Joi.string().required(),
         CLOUDINARY_CLOUD_NAME: Joi.string().required(),
