@@ -25,7 +25,8 @@
       "@schedules/*": ["src/schedules/*"],
       "@counseling/*": ["src/counseling/*"],
       "@fouls/*": ["src/fouls/*"],
-      "@sanctions/*": ["src/sanctions/*"]
+      "@sanctions/*": ["src/sanctions/*"],
+      "@reporting/*": ["src/reporting/*"]
     }
   },
   "exclude": ["node_modules", "dist"]
