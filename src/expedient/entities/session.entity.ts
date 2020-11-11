@@ -44,7 +44,7 @@ export class Session {
   @Column('varchar')
   agreements!: string;
 
-  @Column('boolean')
+  @Column('boolean', { default: true })
   draft!: boolean;
 
   @OneToMany(
