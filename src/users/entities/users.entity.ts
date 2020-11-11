@@ -17,6 +17,8 @@ import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { Schedule } from '@schedules/entities/schedules.entity';
+import { InterventionProgram } from '@expedient/entities/intervention-program.entity';
+import { Session } from '@expedient/entities/session.entity';
 
 @Entity()
 export class User {
@@ -119,4 +121,16 @@ export class User {
     schedule => schedule.employeesSchedule,
   )
   scheduleEmployees!: Schedule[];
+
+  @OneToMany(
+    () => InterventionProgram,
+    interventionProgram => interventionProgram.counselor,
+  )
+  interventionPrograms!: InterventionProgram[];
+
+  @ManyToMany(
+    () => Session,
+    session => session.counselor,
+  )
+  sessions!: Session[];
 }

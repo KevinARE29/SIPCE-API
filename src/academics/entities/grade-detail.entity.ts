@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@users/entities/users.entity';
+import { Expedient } from '@expedient/entities/expedient.entity';
 import { CycleDetail } from './cycle-detail.entity';
 import { Grade } from './grade.entity';
 import { SectionDetail } from './section-detail.entity';
@@ -56,4 +57,11 @@ export class GradeDetail {
     { eager: true },
   )
   sectionDetails!: SectionDetail[];
+
+  @OneToMany(
+    () => Expedient,
+    expedient => expedient.gradeDetail,
+    { nullable: false },
+  )
+  expedients!: Expedient[];
 }
