@@ -19,6 +19,7 @@ import { Grade } from '@academics/entities/grade.entity';
 import { Shift } from '@academics/entities/shift.entity';
 import { Schedule } from '@schedules/entities/schedules.entity';
 import { Request } from '@counseling/entities/request.entity';
+import { Expedient } from '@expedient/entities/expedient.entity';
 import { ResponsibleStudent } from './responsible-student.entity';
 import { Image } from './image.entity';
 
@@ -128,6 +129,12 @@ export class Student {
   requests!: Request[];
 
   currentPhoto!: Image;
+
+  @OneToMany(
+    () => Expedient,
+    expedient => expedient.student,
+  )
+  expedients!: Expedient[];
 
   @AfterLoad()
   getLastImage() {
