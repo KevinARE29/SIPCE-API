@@ -27,7 +27,8 @@
       "@fouls/*": ["src/fouls/*"],
       "@sanctions/*": ["src/sanctions/*"],
       "@reporting/*": ["src/reporting/*"],
-      "@expedient/*": ["src/expedient/*"]
+      "@expedient/*": ["src/expedient/*"],
+      "@sociometrics/*": ["src/sociometrics/*"]
     }
   },
   "exclude": ["node_modules", "dist"]
