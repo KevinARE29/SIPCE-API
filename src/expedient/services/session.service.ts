@@ -22,11 +22,13 @@ export class SessionService {
       pageDto,
     );
     const pagination = getPagination(pageDto, count);
-    const mappedStudents = students.map(student => ({
-      ...student,
-      expedient: student.expedients[0],
-      sessionsCounter: student.expedients[0].sessions.length,
-    }));
+    const mappedStudents = students
+      .filter(student => student.expedients[0])
+      .map(student => ({
+        ...student,
+        expedient: student.expedients[0],
+        sessionsCounter: student.expedients[0].sessions.length,
+      }));
     return { data: plainToClass(StudentSessions, mappedStudents, { excludeExtraneousValues: true }), pagination };
   }
 }
