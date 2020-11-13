@@ -41,7 +41,7 @@ export class Expedient {
   @Column('varchar', { name: 'action_plan' })
   actionPlan!: string;
 
-  @Column('varchar', { name: 'final_conclusion' })
+  @Column('varchar', { name: 'final_conclusion', nullable: true })
   finalConclusion!: string;
 
   @OneToMany(

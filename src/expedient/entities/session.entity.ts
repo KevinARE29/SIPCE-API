@@ -38,10 +38,10 @@ export class Session {
   @Column('varchar')
   comments!: string;
 
-  @Column('varchar', { name: 'treated_topics' })
+  @Column('varchar', { name: 'treated_topics', nullable: true })
   treatedTopics!: string;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: true })
   agreements!: string;
 
   @Column('boolean', { default: true })

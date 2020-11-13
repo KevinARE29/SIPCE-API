@@ -13,10 +13,10 @@ export class SessionResponsibleAssistence {
   @Column('boolean', { name: 'responsible2_assistence' })
   responsible2Assistence!: boolean;
 
-  @Column('varchar', { name: 'other_responsible_name' })
+  @Column('varchar', { name: 'other_responsible_name', nullable: true })
   otherResponsibleName!: string;
 
-  @Column('varchar', { name: 'other_responsible_relationship' })
+  @Column('varchar', { name: 'other_responsible_relationship', nullable: true })
   otherResponsibleRelationship!: string;
 
   @OneToOne(
