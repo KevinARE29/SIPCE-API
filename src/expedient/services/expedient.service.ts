@@ -20,7 +20,7 @@ export class ExpedientService {
   ): Promise<ExpedientSessionsResponse> {
     const expedient = await this.expedientRepository.findExpedientByStudentId(studentExpedientIdsDto);
     if (!expedient) {
-      throw new NotFoundException('Expedient does not belongs to the student');
+      throw new NotFoundException('El expediente no pertenece al estudiante especificado');
     }
     const sessions = await this.sessionRepository.findSessionsByExpedientId(expedient.id, sessionFilterDto);
     const data = plainToClass(ExpedientSessions, { ...expedient, sessions }, { excludeExtraneousValues: true });
