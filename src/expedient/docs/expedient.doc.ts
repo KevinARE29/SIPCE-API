@@ -1,5 +1,4 @@
-import { Expose, Type } from 'class-transformer';
-import { Session } from '@expedient/docs/session.doc';
+import { Expose } from 'class-transformer';
 
 export class Expedient {
   @Expose()
@@ -28,8 +27,4 @@ export class Expedient {
 
   @Expose()
   finalConclusion!: string;
-
-  @Expose()
-  @Type(() => Session)
-  sessions!: Session[];
 }
