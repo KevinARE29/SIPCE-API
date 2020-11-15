@@ -16,3 +16,30 @@ export enum EnumServiceType {
 }
 
 export type TService = keyof typeof EnumServiceType;
+export const serviceTypeKeys = Object.values(EnumServiceType).filter(key => typeof key === 'string');
+
+export const sessionTypeValue = (value: string): EnumSessionType => {
+  switch (value) {
+    case EnumSessionType.ENTREVISTA_DOCENTE:
+      return EnumSessionType.ENTREVISTA_DOCENTE;
+    case EnumSessionType.ENTREVISTA_PADRES_DE_FAMILIA:
+      return EnumSessionType.ENTREVISTA_PADRES_DE_FAMILIA;
+    default:
+      return EnumSessionType.SESSION_INDIVIDUAL;
+  }
+};
+
+export const serviceTypeValue = (value: string): EnumServiceType => {
+  switch (value) {
+    case EnumServiceType.ACADEMICO:
+      return EnumServiceType.ACADEMICO;
+    case EnumServiceType.CONDUCTUAL:
+      return EnumServiceType.CONDUCTUAL;
+    case EnumServiceType.EMOCIONAL:
+      return EnumServiceType.EMOCIONAL;
+    case EnumServiceType.VOCACIONAL:
+      return EnumServiceType.VOCACIONAL;
+    default:
+      return EnumServiceType.OTRO;
+  }
+};
