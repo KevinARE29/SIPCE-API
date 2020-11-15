@@ -14,8 +14,8 @@ import {
   serviceTypeKeys,
   EnumSessionType,
   sessionTypeKeys,
-  TService,
-  TSession,
+  TSessionValues,
+  TServiceValues,
 } from '@expedient/constants/session.constants';
 import { IsId } from '@core/decorators/id.decorator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -24,29 +24,29 @@ import { CreateEvaluationDto } from './create-evaluation.dto';
 
 export class CreateSessionDto {
   @IsDateString({ message: validator.isDateString })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: validator.isNotEmpty })
   readonly startedAt!: Date;
 
-  @IsPositive()
-  @IsNotEmpty()
+  @IsPositive({ message: validator.isPositive })
+  @IsNotEmpty({ message: validator.isNotEmpty })
   readonly duration!: number;
 
   @ApiProperty({ type: String })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: validator.isNotEmpty })
   @IsEnum(EnumServiceType, {
     message: `status: Debe ser uno de los siguientes valores: ${serviceTypeKeys}`,
   })
-  readonly serviceType!: TService;
+  readonly serviceType!: TServiceValues;
 
   @ApiProperty({ type: String })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: validator.isNotEmpty })
   @IsEnum(EnumSessionType, {
     message: `sessionType: Debe ser uno de los siguientes valores: ${sessionTypeKeys}`,
   })
-  readonly sessionType!: TSession;
+  readonly sessionType!: TSessionValues;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: validator.isString })
+  @IsNotEmpty({ message: validator.isNotEmpty })
   readonly comments!: string;
 
   @IsId({ each: true })
