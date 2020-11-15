@@ -11,7 +11,7 @@ export class EvaluationService {
   async createEvaluation(session: Session, evaluations: CreateEvaluationDto[]): Promise<Evaluation[]> {
     const evaluationsToSave = evaluations.map(evaluation => ({
       ...evaluation,
-      session: { ...session },
+      session,
     }));
     return this.evaluationRepository.save(evaluationsToSave);
   }

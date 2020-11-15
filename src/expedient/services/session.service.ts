@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { StudentRepository } from '@students/repositories';
 import { plainToClass } from 'class-transformer';
 import { StudentSessions } from '@expedient/docs/student-sessions.doc';
@@ -10,7 +10,7 @@ import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dt
 import { ExpedientRepository } from '@expedient/repositories/expedient.repository';
 import { CreateSessionDto } from '@expedient/dtos/create-session.dto';
 import { Session } from '@expedient/entities/session.entity';
-import { sessionTypeValue, serviceTypeValue } from '@expedient/constants/session.constants';
+import { EnumSessionType } from '@expedient/constants/session.constants';
 import { SessionRepository } from '@expedient/repositories/session.repository';
 import { UserRepository } from '@users/repositories/users.repository';
 import { CompleteSessionResponse } from '@expedient/docs/complete-session-response.doc';
@@ -52,15 +52,17 @@ export class SessionService {
     studentExpedientIdsDto: StudentExpedientIdsDto,
     createSessionDto: CreateSessionDto,
   ): Promise<CompleteSessionResponse> {
+    const { participants, evaluations, sessionType, ...sessionData } = createSessionDto;
+    if (!participants?.length && sessionType === EnumSessionType.ENTREVISTA_DOCENTE) {
+      throw new UnprocessableEntityException('Este tipo de sesión necesita que se anexe por lo menos un participante');
+    }
     const studentExpedient = await this.expedientRepository.findExpedientByStudentId(studentExpedientIdsDto);
     if (!studentExpedient) {
       throw new NotFoundException('El expediente no pertenece al estudiante especificado');
     }
-    const { participants, evaluations, serviceType, sessionType, ...sessionData } = createSessionDto;
     const sessionToSave: Partial<Session> = {
       ...sessionData,
-      serviceType: serviceTypeValue(serviceType),
-      sessionType: sessionTypeValue(sessionType),
+      sessionType,
       expedient: studentExpedient,
     };
     if (participants?.length) {
