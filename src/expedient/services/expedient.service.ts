@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ExpedientRepository } from '@expedient/repositories/expedient.repository';
-import { StudentExpedientIdsDto } from '@expedient/dtos/student-sessions-ids.dto';
+import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
 import { SessionRepository } from '@expedient/repositories/session.repository';
 import { SessionsFilterDto } from '@expedient/dtos/sessions-filter.dto';
 import { ExpedientSessionsResponse } from '@expedient/docs/expedient-sessions-response.doc';

@@ -119,4 +119,10 @@ export class UserRepository extends Repository<User> {
 
     return query.getManyAndCount();
   }
+
+  findSessionParticipants(couselorIds: number[]): Promise<User[]> {
+    return this.createQueryBuilder('user')
+      .where('user.id IN (:...counselorIds)', { counselorIds: [null, ...couselorIds] })
+      .getMany();
+  }
 }
