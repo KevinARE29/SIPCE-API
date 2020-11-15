@@ -144,7 +144,7 @@ export class StudentRepository extends Repository<Student> {
   }
 
   getStudentsSessionsByCounselorId(
-    councelorId: number,
+    counselorId: number,
     studentSessionsFilterDto: StudentSessionsFilterDto,
     pageDto: PageDto,
   ): Promise<[Student[], number]> {
@@ -158,9 +158,9 @@ export class StudentRepository extends Repository<Student> {
       .leftJoin('student.sectionDetails', 'sectionDetails')
       .leftJoin('sectionDetails.gradeDetail', 'gradeDetail')
       .leftJoin('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoin('gradeDetail.counselor', 'counselor')
       .leftJoin('cycleDetail.schoolYear', 'schoolYear')
-      .leftJoin('cycleDetail.cycleCoordinator', 'cycleCoordinator')
-      .andWhere(`"cycleCoordinator"."id" = ${councelorId}`)
+      .andWhere(`"counselor"."id" = ${counselorId}`)
       .andWhere(`"schoolYear"."status" = '${ESchoolYearStatus['En curso']}'`)
       .andWhere('expedients.finalConclusion is null')
       .take(perPage)
