@@ -21,6 +21,8 @@ import { IsId } from '@core/decorators/id.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { CreateEvaluationDto } from './create-evaluation.dto';
+import { ResponsiblesAssistenceDto } from './responsibles-assistence.dto';
+import { OtherResponsiblesAssistenceDto } from './other-responsible-assistence.dto';
 
 export class CreateSessionDto {
   @IsDateString({ message: validator.isDateString })
@@ -59,4 +61,29 @@ export class CreateSessionDto {
   @Type(() => CreateEvaluationDto)
   @IsOptional()
   readonly evaluations?: CreateEvaluationDto[];
+
+  @IsString({ message: validator.isString })
+  @IsOptional()
+  readonly treatedTopics?: string;
+
+  @IsString({ message: validator.isString })
+  @IsOptional()
+  readonly agreements?: string;
+
+  @IsString({ message: validator.isString })
+  @IsOptional()
+  readonly startHour?: string;
+
+  @ApiProperty({ type: [ResponsiblesAssistenceDto] })
+  @IsArray({ message: validator.isArray })
+  @ValidateNested({ each: true })
+  @Type(() => ResponsiblesAssistenceDto)
+  @IsOptional()
+  readonly responsibles?: ResponsiblesAssistenceDto[];
+
+  @ApiProperty({ type: OtherResponsiblesAssistenceDto })
+  @ValidateNested()
+  @Type(() => OtherResponsiblesAssistenceDto)
+  @IsOptional()
+  readonly otherResponsible?: OtherResponsiblesAssistenceDto;
 }

@@ -26,5 +26,8 @@ export class Session {
   agreements!: string;
 
   @Expose()
+  startHour!: string;
+
+  @Expose()
   draft!: boolean;
 }
