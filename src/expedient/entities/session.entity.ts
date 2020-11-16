@@ -44,6 +44,9 @@ export class Session {
   @Column('varchar', { nullable: true })
   agreements!: string;
 
+  @Column('varchar', { name: 'start_hour', nullable: true })
+  startHour!: string;
+
   @Column('boolean', { default: true })
   draft!: boolean;
 
