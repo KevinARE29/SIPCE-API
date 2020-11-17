@@ -23,6 +23,9 @@ export class Session {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Column('int', { default: 0 })
+  identifier!: number;
+
   @Column('enum', { name: 'session_type', enum: EnumSessionType, enumName: 'session_enum' })
   sessionType!: EnumSessionType;
 
