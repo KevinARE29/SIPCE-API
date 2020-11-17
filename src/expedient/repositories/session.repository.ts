@@ -55,6 +55,14 @@ export class SessionRepository extends Repository<Session> {
     const { expedientId, sessionId, studentId } = expedientSessionIdsDto;
     return this.findOne(sessionId, {
       where: { expedient: { id: expedientId, student: { id: studentId } }, deletedAt: null },
+      relations: [
+        'evaluations',
+        'interventionProgram',
+        'sessionResponsibleAssistence',
+        'counselor',
+        'sessionResponsibleAssistence.responsible1',
+        'sessionResponsibleAssistence.responsible2',
+      ],
     });
   }
 }
