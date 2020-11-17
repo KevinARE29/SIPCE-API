@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsDateString, IsPositive, IsEnum, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsDateString, IsPositive, IsEnum, IsOptional, IsBoolean } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import {
   EnumServiceType,
@@ -42,6 +42,10 @@ export class CreateSessionDto {
   @IsString({ message: validator.isString })
   @IsNotEmpty({ message: validator.isNotEmpty })
   readonly comments!: string;
+
+  @IsBoolean({ message: validator.isBoolean })
+  @IsNotEmpty({ message: validator.isNotEmpty })
+  readonly draft!: boolean;
 
   @IsId({ each: true })
   @IsOptional()

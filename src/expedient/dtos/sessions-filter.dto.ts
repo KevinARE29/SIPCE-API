@@ -5,7 +5,7 @@ import { validator } from '@core/messages/validator.message';
 import { getSortOptionsv2 } from '@core/utils/sort.util';
 import { EnumSessionType, sessionTypeKeys } from '@expedient/constants/session.constants';
 
-export const [sortOptions, sortOptionsMap] = getSortOptionsv2(['startedAt', 'sessionType'], 'session');
+export const [sortOptions, sortOptionsMap] = getSortOptionsv2(['startedAt', 'sessionType', 'identifier'], 'session');
 
 export class SessionsFilterDto {
   @ApiPropertyOptional({ enum: sortOptions })
