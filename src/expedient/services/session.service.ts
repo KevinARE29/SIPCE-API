@@ -15,6 +15,8 @@ import { SessionRepository } from '@expedient/repositories/session.repository';
 import { UserRepository } from '@users/repositories/users.repository';
 import { CompleteSessionResponse } from '@expedient/docs/complete-session-response.doc';
 import { CompleteSession } from '@expedient/docs/complete-session.doc';
+import { ExpedientSessionIdsDto } from '@expedient/dtos/expedient-session-ids.dto';
+import { getSessionsCounter } from '@expedient/utils/session.util';
 import { EvaluationService } from './evaluation.service';
 import { SessionResponsibleAssistenceService } from './session-responsible-assistence.service';
 
@@ -44,7 +46,7 @@ export class SessionService {
       .map(student => ({
         ...student,
         expedient: student.expedients[0],
-        sessionsCounter: student.expedients[0].sessions.length,
+        sessionsCounter: getSessionsCounter(student.expedients[0].sessions),
       }));
     const pagination = getPagination(pageDto, mappedStudents.length);
     return { data: plainToClass(StudentSessions, mappedStudents, { excludeExtraneousValues: true }), pagination };
@@ -102,5 +104,17 @@ export class SessionService {
       default:
         return true;
     }
+  }
+
+  async deleteSession(expedientSessionIdsDto: ExpedientSessionIdsDto): Promise<void> {
+    const session = await this.sessionRepository.findSession(expedientSessionIdsDto);
+    if (!session) {
+      throw new NotFoundException('La sesión especificada no existe');
+    }
+    if (!session.draft) {
+      throw new UnprocessableEntityException('Esta sesión no puede ser borrada, ya que no es un borrador');
+    }
+    session.deletedAt = new Date();
+    this.sessionRepository.save(session);
   }
 }
