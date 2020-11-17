@@ -37,3 +37,5 @@ export enum EResponsibleRelationship {
 export const relationshipValues = Object.values(EResponsibleRelationship).filter(key => typeof key === 'number');
 export const relationshipKeys = Object.values(EResponsibleRelationship).filter(key => typeof key === 'string');
 export type TRelationship = keyof typeof EResponsibleRelationship;
+
+export type TStudentByStatus = { status: EStudentStatus; count: number };
