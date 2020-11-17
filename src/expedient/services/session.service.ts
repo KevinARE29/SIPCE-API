@@ -58,7 +58,7 @@ export class SessionService {
     if (!saveSessionValidation) {
       throw new UnprocessableEntityException('No se han agregado los campos minimos para guardar esta sesión');
     }
-    const { participants, evaluations, responsibles, otherResponsible, ...sessionData } = createSessionDto;
+    const { participants, evaluations, responsibles, otherResponsible, draft, ...sessionData } = createSessionDto;
     const studentExpedient = await this.expedientRepository.findExpedientByStudentId(studentExpedientIdsDto);
     if (!studentExpedient) {
       throw new NotFoundException('El expediente no pertenece al estudiante especificado');
@@ -67,6 +67,10 @@ export class SessionService {
       ...sessionData,
       expedient: studentExpedient,
     };
+    if (!draft) {
+      const identifier = await this.sessionRepository.assignSessionIdentifier(sessionData.sessionType);
+      sessionToSave.identifier = identifier;
+    }
     if (participants?.length) {
       sessionToSave.counselor = await this.userRepository.findSessionParticipants(participants);
     }

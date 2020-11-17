@@ -9,6 +9,7 @@ import { Auth } from '@auth/decorators/auth.decorator';
 import { CreateSessionDto } from '@expedient/dtos/create-session.dto';
 import { SessionService } from '@expedient/services/session.service';
 import { CompleteSessionResponse } from '@expedient/docs/complete-session-response.doc';
+import { PageDto } from '@core/dtos/page.dto';
 
 @ApiTags('Expedients Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -25,8 +26,9 @@ export class ExpedientController {
   getStudentExpedientSessions(
     @Param() studentExpedientIdsDto: StudentExpedientIdsDto,
     @Query() sessionFilterDto: SessionsFilterDto,
+    @Query() pageDto: PageDto,
   ): Promise<ExpedientSessionsResponse> {
-    return this.expedientService.findExpedientByStudentId(studentExpedientIdsDto, sessionFilterDto);
+    return this.expedientService.findExpedientSessions(studentExpedientIdsDto, pageDto, sessionFilterDto);
   }
 
   @ApiOperation({

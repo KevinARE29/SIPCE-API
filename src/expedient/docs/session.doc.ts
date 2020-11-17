@@ -5,6 +5,9 @@ export class Session {
   id!: number;
 
   @Expose()
+  identifier!: number;
+
+  @Expose()
   sessionType!: string;
 
   @Expose()

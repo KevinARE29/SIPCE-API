@@ -1,8 +1,11 @@
 import { IApiResponse } from '@core/interfaces/api-response.interface';
 import { ApiProperty } from '@nestjs/swagger';
-import { ExpedientSessions } from './expedient-sessions.doc';
+import { Pagination } from '@core/docs/pagination.doc';
+import { Session } from './session.doc';
 
-export class ExpedientSessionsResponse implements IApiResponse<ExpedientSessions> {
-  @ApiProperty({ type: ExpedientSessions })
-  data!: ExpedientSessions;
+export class ExpedientSessionsResponse implements IApiResponse<Session[]> {
+  @ApiProperty({ type: [Session] })
+  data!: Session[];
+
+  pagination!: Pagination;
 }
