@@ -5,7 +5,9 @@ import { SessionRepository } from '@expedient/repositories/session.repository';
 import { SessionsFilterDto } from '@expedient/dtos/sessions-filter.dto';
 import { ExpedientSessionsResponse } from '@expedient/docs/expedient-sessions-response.doc';
 import { plainToClass } from 'class-transformer';
-import { ExpedientSessions } from '@expedient/docs/expedient-sessions.doc';
+import { PageDto } from '@core/dtos/page.dto';
+import { getPagination } from '@core/utils/pagination.util';
+import { Session } from '@expedient/docs/session.doc';
 
 @Injectable()
 export class ExpedientService {
@@ -14,16 +16,22 @@ export class ExpedientService {
     private readonly expedientRepository: ExpedientRepository,
   ) {}
 
-  async findExpedientByStudentId(
+  async findExpedientSessions(
     studentExpedientIdsDto: StudentExpedientIdsDto,
+    pageDto: PageDto,
     sessionFilterDto: SessionsFilterDto,
   ): Promise<ExpedientSessionsResponse> {
     const expedient = await this.expedientRepository.findExpedientByStudentId(studentExpedientIdsDto);
     if (!expedient) {
       throw new NotFoundException('El expediente no pertenece al estudiante especificado');
     }
-    const sessions = await this.sessionRepository.findSessionsByExpedientId(expedient.id, sessionFilterDto);
-    const data = plainToClass(ExpedientSessions, { ...expedient, sessions }, { excludeExtraneousValues: true });
-    return { data };
+    const [sessions, count] = await this.sessionRepository.findSessionsByExpedientId(
+      expedient.id,
+      sessionFilterDto,
+      pageDto,
+    );
+    const pagination = getPagination(pageDto, count);
+    const data = plainToClass(Session, sessions, { excludeExtraneousValues: true });
+    return { data, pagination };
   }
 }
