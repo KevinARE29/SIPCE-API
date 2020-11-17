@@ -163,6 +163,7 @@ export class StudentRepository extends Repository<Student> {
       .andWhere(`"counselor"."id" = ${counselorId}`)
       .andWhere(`"schoolYear"."status" = '${ESchoolYearStatus['En curso']}'`)
       .andWhere('expedients.finalConclusion is null')
+      .andWhere('student.deletedAt is null')
       .take(perPage)
       .skip((page - 1) * perPage);
 

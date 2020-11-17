@@ -3,6 +3,7 @@ import { Session } from '@expedient/entities/session.entity';
 import { SessionsFilterDto, sortOptionsMap } from '@expedient/dtos/sessions-filter.dto';
 import { getOrderBy } from '@core/utils/sort.util';
 import { PageDto } from '@core/dtos/page.dto';
+import { ExpedientSessionIdsDto } from '@expedient/dtos/expedient-session-ids.dto';
 
 @EntityRepository(Session)
 export class SessionRepository extends Repository<Session> {
@@ -16,6 +17,7 @@ export class SessionRepository extends Repository<Session> {
     const query = this.createQueryBuilder('session')
       .leftJoin('session.expedient', 'expedient')
       .andWhere(`"expedient"."id" = ${expedientId}`)
+      .andWhere('session.deletedAt is null')
       .take(perPage)
       .skip((page - 1) * perPage);
 
@@ -47,5 +49,12 @@ export class SessionRepository extends Repository<Session> {
       return 1;
     }
     return sessions[0].identifier + 1;
+  }
+
+  findSession(expedientSessionIdsDto: ExpedientSessionIdsDto): Promise<Session | undefined> {
+    const { expedientId, sessionId, studentId } = expedientSessionIdsDto;
+    return this.findOne(sessionId, {
+      where: { expedient: { id: expedientId, student: { id: studentId } }, deletedAt: null },
+    });
   }
 }

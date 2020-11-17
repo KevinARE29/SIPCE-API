@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards, Post, Body, Delete, HttpCode } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
 import { ExpedientService } from '@expedient/services/expedient.service';
@@ -10,6 +10,7 @@ import { CreateSessionDto } from '@expedient/dtos/create-session.dto';
 import { SessionService } from '@expedient/services/session.service';
 import { CompleteSessionResponse } from '@expedient/docs/complete-session-response.doc';
 import { PageDto } from '@core/dtos/page.dto';
+import { ExpedientSessionIdsDto } from '@expedient/dtos/expedient-session-ids.dto';
 
 @ApiTags('Expedients Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -42,5 +43,16 @@ export class ExpedientController {
     @Body() createSessionDto: CreateSessionDto,
   ): Promise<CompleteSessionResponse> {
     return this.sessionService.createStudentExpedientSession(studentExpedientIdsDto, createSessionDto);
+  }
+
+  @ApiOperation({
+    summary: 'Eliminar sesión en un determinado expediente',
+    description: 'Use este endpoint para eliminar una sesión en un determinado expediente',
+  })
+  @Auth('manage_expedient')
+  @Delete(':studentId/expedients/:expedientId/sessions/:sessionId')
+  @HttpCode(204)
+  deleteStudentExpedientSession(@Param() expedientSessionIdsDto: ExpedientSessionIdsDto): Promise<void> {
+    return this.sessionService.deleteSession(expedientSessionIdsDto);
   }
 }
