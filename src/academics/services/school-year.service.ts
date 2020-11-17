@@ -23,6 +23,7 @@ import { AssignCycleCoordinatorsDto } from '@academics/dtos/school-year/assign-c
 import { UserRepository } from '@users/repositories/users.repository';
 import { AssignCounselorsDto } from '@academics/dtos/school-year/assign-counselors.dto';
 import { AssignTeachersDto } from '@academics/dtos/school-year/assign-teachers.dto';
+import { AssignAuxTeachersDto } from '@academics/dtos/school-year/assign-aux-teachers.dto';
 
 @Injectable()
 export class SchoolYearService {
@@ -306,6 +307,44 @@ export class SchoolYearService {
             );
           }
           await this.sectionDetailRepository.save({ ...sectionDetail, teacher });
+        }
+      }
+    }
+  }
+
+  async assignAuxTeachers(assignAuxTeachersDto: AssignAuxTeachersDto): Promise<void> {
+    const currentAssignation = await this.schoolYearRepository.getCurrentAssignation({});
+    if (!currentAssignation) {
+      throw new NotFoundException('No se encontró año escolar en proceso de apertura');
+    }
+
+    for (const [shiftIndex, shiftAssignation] of assignAuxTeachersDto.shifts.entries()) {
+      const shift = await this.shiftRepository.findById(shiftAssignation.shiftId);
+      if (!shift) {
+        throw new BadRequestException(`${shiftIndex}.shiftId: El turno seleccionado no existe o no está activo`);
+      }
+
+      for (const [gradeIndex, gradeAssignation] of shiftAssignation.grades.entries()) {
+        const { sections, gradeId } = gradeAssignation;
+        const grade = await this.gradeRepository.findOne(gradeId);
+        if (!grade || !grade.active) {
+          throw new BadRequestException(
+            `${shiftIndex}.grades.${gradeIndex}.gradeId: El grado seleccionado no existe o no está activo`,
+          );
+        }
+
+        for (const [sectionIndex, sectionAssignation] of sections.entries()) {
+          const { auxTeacherIds, sectionId } = sectionAssignation;
+          const auxTeachers = await this.userRepository.findUsersByIdsAndRole(auxTeacherIds, 'docente auxiliar');
+
+          const sectionDetail = await this.sectionDetailRepository.findSectionDetail(shift.id, gradeId, sectionId);
+          if (!sectionDetail) {
+            throw new BadRequestException(
+              `${shiftIndex}.grades.${gradeIndex}.sections.${sectionIndex}.sectionId: Error al asignar sección`,
+            );
+          }
+
+          await this.sectionDetailRepository.save({ ...sectionDetail, auxTeachers });
         }
       }
     }
