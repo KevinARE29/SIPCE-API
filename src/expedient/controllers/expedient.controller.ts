@@ -55,4 +55,16 @@ export class ExpedientController {
   deleteStudentExpedientSession(@Param() expedientSessionIdsDto: ExpedientSessionIdsDto): Promise<void> {
     return this.sessionService.deleteSession(expedientSessionIdsDto);
   }
+
+  @ApiOperation({
+    summary: 'Obtener sesión en un determinado expediente',
+    description: 'Use este endpoint para obtener una sesión en un determinado expediente',
+  })
+  @Auth('manage_expedient')
+  @Get(':studentId/expedients/:expedientId/sessions/:sessionId')
+  getStudentExpedientSession(
+    @Param() expedientSessionIdsDto: ExpedientSessionIdsDto,
+  ): Promise<CompleteSessionResponse> {
+    return this.sessionService.getSession(expedientSessionIdsDto);
+  }
 }

@@ -7,7 +7,7 @@ import { SessionResponsibleAssistence } from './session-responsible-assistence.d
 export class CompleteSession extends Session {
   @Expose()
   @Type(() => Evaluation)
-  evaluations?: number;
+  evaluations?: Evaluation[];
 
   @Type(() => SimpleUser)
   @Expose()

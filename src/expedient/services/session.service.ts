@@ -117,4 +117,12 @@ export class SessionService {
     session.deletedAt = new Date();
     this.sessionRepository.save(session);
   }
+
+  async getSession(expedientSessionIdsDto: ExpedientSessionIdsDto): Promise<CompleteSessionResponse> {
+    const session = await this.sessionRepository.findSession(expedientSessionIdsDto);
+    if (!session) {
+      throw new NotFoundException('La sesión especificada no existe');
+    }
+    return { data: plainToClass(CompleteSession, session, { excludeExtraneousValues: true }) };
+  }
 }
