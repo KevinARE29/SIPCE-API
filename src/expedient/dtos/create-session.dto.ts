@@ -1,13 +1,4 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsDateString,
-  IsPositive,
-  IsEnum,
-  IsOptional,
-  IsArray,
-  ValidateNested,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsDateString, IsPositive, IsEnum, IsOptional } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import {
   EnumServiceType,
@@ -19,8 +10,11 @@ import {
 } from '@expedient/constants/session.constants';
 import { IsId } from '@core/decorators/id.decorator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { IsDto } from '@core/decorators/is-dto.decorator';
+import { IsDtoArray } from '@core/decorators/is-dto-array.decorator';
 import { CreateEvaluationDto } from './create-evaluation.dto';
+import { ResponsiblesAssistenceDto } from './responsibles-assistence.dto';
+import { OtherResponsiblesAssistenceDto } from './other-responsible-assistence.dto';
 
 export class CreateSessionDto {
   @IsDateString({ message: validator.isDateString })
@@ -53,10 +47,27 @@ export class CreateSessionDto {
   @IsOptional()
   readonly participants?: number[];
 
-  @ApiProperty({ type: [CreateEvaluationDto] })
-  @IsArray({ message: validator.isArray })
-  @ValidateNested({ each: true })
-  @Type(() => CreateEvaluationDto)
+  @IsDtoArray(CreateEvaluationDto)
   @IsOptional()
   readonly evaluations?: CreateEvaluationDto[];
+
+  @IsString({ message: validator.isString })
+  @IsOptional()
+  readonly treatedTopics?: string;
+
+  @IsString({ message: validator.isString })
+  @IsOptional()
+  readonly agreements?: string;
+
+  @IsString({ message: validator.isString })
+  @IsOptional()
+  readonly startHour?: string;
+
+  @IsDtoArray(ResponsiblesAssistenceDto)
+  @IsOptional()
+  readonly responsibles?: ResponsiblesAssistenceDto[];
+
+  @IsDto(OtherResponsiblesAssistenceDto)
+  @IsOptional()
+  readonly otherResponsible?: OtherResponsiblesAssistenceDto;
 }

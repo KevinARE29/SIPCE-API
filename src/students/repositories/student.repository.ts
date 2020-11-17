@@ -147,7 +147,7 @@ export class StudentRepository extends Repository<Student> {
     counselorId: number,
     studentSessionsFilterDto: StudentSessionsFilterDto,
     pageDto: PageDto,
-  ): Promise<[Student[], number]> {
+  ): Promise<Student[]> {
     const { sort, firstname, lastname, code, currentGrade, currentShift } = studentSessionsFilterDto;
     const { page, perPage } = pageDto;
     const query = this.createQueryBuilder('student')
@@ -192,6 +192,6 @@ export class StudentRepository extends Repository<Student> {
     if (currentShift) {
       query.andWhere(`"currentShift"."id" = ${currentShift}`);
     }
-    return query.getManyAndCount();
+    return query.getMany();
   }
 }

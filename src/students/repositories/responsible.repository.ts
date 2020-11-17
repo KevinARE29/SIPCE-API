@@ -74,4 +74,13 @@ export class ResponsibleRepository extends Repository<Responsible> {
 
     return query.getManyAndCount();
   }
+
+  findStudentResponsiblesById(responsiblesIds: number[], studentId: number): Promise<Responsible[]> {
+    return this.createQueryBuilder('responsible')
+      .leftJoin('responsible.responsibleStudents', 'responsibleStudent')
+      .leftJoin('responsibleStudent.student', 'student')
+      .where('responsible.id IN (:...responsiblesIds)', { responsiblesIds: [null, ...responsiblesIds] })
+      .andWhere(`student.id = ${studentId}`)
+      .getMany();
+  }
 }

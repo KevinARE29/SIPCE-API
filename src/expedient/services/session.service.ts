@@ -16,6 +16,7 @@ import { UserRepository } from '@users/repositories/users.repository';
 import { CompleteSessionResponse } from '@expedient/docs/complete-session-response.doc';
 import { CompleteSession } from '@expedient/docs/complete-session.doc';
 import { EvaluationService } from './evaluation.service';
+import { SessionResponsibleAssistenceService } from './session-responsible-assistence.service';
 
 @Injectable()
 export class SessionService {
@@ -25,6 +26,7 @@ export class SessionService {
     private readonly sessionRepository: SessionRepository,
     private readonly evaluationService: EvaluationService,
     private readonly userRepository: UserRepository,
+    private readonly sessionResponsibleAssistenceService: SessionResponsibleAssistenceService,
   ) {}
 
   async getStudentsExpedientSessions(
@@ -32,12 +34,11 @@ export class SessionService {
     studentSessionsFilterDto: StudentSessionsFilterDto,
     counselorId: number,
   ): Promise<StudentSessionsResponse> {
-    const [students, count] = await this.studentRepository.getStudentsSessionsByCounselorId(
+    const students = await this.studentRepository.getStudentsSessionsByCounselorId(
       counselorId,
       studentSessionsFilterDto,
       pageDto,
     );
-    const pagination = getPagination(pageDto, count);
     const mappedStudents = students
       .filter(student => student.expedients[0])
       .map(student => ({
@@ -45,6 +46,7 @@ export class SessionService {
         expedient: student.expedients[0],
         sessionsCounter: student.expedients[0].sessions.length,
       }));
+    const pagination = getPagination(pageDto, mappedStudents.length);
     return { data: plainToClass(StudentSessions, mappedStudents, { excludeExtraneousValues: true }), pagination };
   }
 
@@ -52,28 +54,49 @@ export class SessionService {
     studentExpedientIdsDto: StudentExpedientIdsDto,
     createSessionDto: CreateSessionDto,
   ): Promise<CompleteSessionResponse> {
-    const { participants, evaluations, sessionType, ...sessionData } = createSessionDto;
-    if (!participants?.length && sessionType === EnumSessionType.ENTREVISTA_DOCENTE) {
-      throw new UnprocessableEntityException('Este tipo de sesión necesita que se anexe por lo menos un participante');
+    const saveSessionValidation = this.getSessionTypeValidation(createSessionDto);
+    if (!saveSessionValidation) {
+      throw new UnprocessableEntityException('No se han agregado los campos minimos para guardar esta sesión');
     }
+    const { participants, evaluations, responsibles, otherResponsible, ...sessionData } = createSessionDto;
     const studentExpedient = await this.expedientRepository.findExpedientByStudentId(studentExpedientIdsDto);
     if (!studentExpedient) {
       throw new NotFoundException('El expediente no pertenece al estudiante especificado');
     }
     const sessionToSave: Partial<Session> = {
       ...sessionData,
-      sessionType,
       expedient: studentExpedient,
     };
     if (participants?.length) {
       sessionToSave.counselor = await this.userRepository.findSessionParticipants(participants);
     }
     const session = await this.sessionRepository.save(sessionToSave);
-    if (evaluations) {
+    if (evaluations?.length) {
       const savedEvaluations = await this.evaluationService.createEvaluation(session, evaluations);
       session.evaluations = savedEvaluations;
     }
+    if (responsibles?.length) {
+      const savedSessionResponsibleAssistence = await this.sessionResponsibleAssistenceService.createSessionResponsibleAssistence(
+        session,
+        otherResponsible,
+        responsibles,
+        studentExpedientIdsDto.studentId,
+      );
+      session.sessionResponsibleAssistence = savedSessionResponsibleAssistence;
+    }
     this.sessionRepository.save(session);
     return { data: plainToClass(CompleteSession, session, { excludeExtraneousValues: true }) };
+  }
+
+  getSessionTypeValidation(createSessionDto: CreateSessionDto): boolean {
+    const { sessionType, participants, treatedTopics, agreements, responsibles, startHour } = createSessionDto;
+    switch (sessionType) {
+      case EnumSessionType.ENTREVISTA_DOCENTE:
+        return !!participants?.length;
+      case EnumSessionType.ENTREVISTA_PADRES_DE_FAMILIA:
+        return !!(startHour && treatedTopics && agreements && responsibles?.length);
+      default:
+        return true;
+    }
   }
 }
