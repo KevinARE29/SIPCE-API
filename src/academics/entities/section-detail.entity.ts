@@ -59,4 +59,10 @@ export class SectionDetail {
     student => student.sectionDetails,
   )
   students!: Student[];
+
+  @ManyToMany(
+    () => User,
+    user => user.auxSectionDetails,
+  )
+  auxTeachers!: User[];
 }
