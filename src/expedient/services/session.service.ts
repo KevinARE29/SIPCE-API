@@ -84,7 +84,7 @@ export class SessionService {
       session.evaluations = savedEvaluations;
     }
     if (responsibles?.length) {
-      const savedSessionResponsibleAssistence = await this.sessionResponsibleAssistenceService.createSessionResponsibleAssistence(
+      const savedSessionResponsibleAssistence = await this.sessionResponsibleAssistenceService.createOrUpdateSessionResponsibleAssistence(
         session,
         otherResponsible,
         responsibles,
@@ -140,7 +140,7 @@ export class SessionService {
     if (!session.draft) {
       throw new UnprocessableEntityException('La sesión no puede modificarse, ya que no es un borrador');
     }
-    const { participants, evaluations, draft, ...sessionData } = updateSessionDto;
+    const { participants, evaluations, responsibles, otherResponsible, draft, ...sessionData } = updateSessionDto;
     const sessionToSave: Partial<Session> = {
       ...session,
       ...sessionData,
@@ -156,6 +156,16 @@ export class SessionService {
     if (evaluations) {
       const savedEvaluations = await this.evaluationService.updateSessionEvaluationsArray(session, evaluations);
       sessionToSave.evaluations = savedEvaluations;
+    }
+    if (responsibles?.length) {
+      const savedSessionResponsibleAssistence = await this.sessionResponsibleAssistenceService.createOrUpdateSessionResponsibleAssistence(
+        session,
+        otherResponsible,
+        responsibles,
+        session.expedient.student.id,
+        session.sessionResponsibleAssistence.id,
+      );
+      sessionToSave.sessionResponsibleAssistence = savedSessionResponsibleAssistence;
     }
     const savedSession = await this.sessionRepository.save(sessionToSave);
     savedSession.evaluations = savedSession.evaluations.filter(evaluation => !evaluation.deletedAt);

@@ -13,11 +13,12 @@ export class SessionResponsibleAssistenceService {
     private readonly sessionResponsibleAssistenceRepository: SessionResponsibleAssistenceRepository,
   ) {}
 
-  async createSessionResponsibleAssistence(
+  async createOrUpdateSessionResponsibleAssistence(
     session: Session,
     otherResponsible: OtherResponsiblesAssistenceDto | undefined,
     responsibles: ResponsiblesAssistenceDto[],
     studentId: number,
+    sessionResponsibleAsistenceId?: number,
   ): Promise<SessionResponsibleAssistence> {
     const responsiblesIds = responsibles.map(responsible => responsible.id);
     const studentResponsibles = await this.responsibleRepository.findStudentResponsiblesById(
@@ -35,6 +36,9 @@ export class SessionResponsibleAssistenceService {
       responsible1,
       responsible1Assistence,
     };
+    if (sessionResponsibleAsistenceId) {
+      sessionResponsibleAsistence.id = sessionResponsibleAsistenceId;
+    }
     if (studentResponsibles.length > 1) {
       const responsible2 = studentResponsibles[1];
       const responsible2Assistence = responsibles.find(responsible => responsible.id === responsible2.id)?.attended;
