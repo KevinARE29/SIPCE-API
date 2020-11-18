@@ -17,6 +17,7 @@ import { CompleteSessionResponse } from '@expedient/docs/complete-session-respon
 import { CompleteSession } from '@expedient/docs/complete-session.doc';
 import { ExpedientSessionIdsDto } from '@expedient/dtos/expedient-session-ids.dto';
 import { getSessionsCounter } from '@expedient/utils/session.util';
+import { UpdateSessionDto } from '@expedient/dtos/update-session.dto';
 import { EvaluationService } from './evaluation.service';
 import { SessionResponsibleAssistenceService } from './session-responsible-assistence.service';
 
@@ -67,6 +68,7 @@ export class SessionService {
     }
     const sessionToSave: Partial<Session> = {
       ...sessionData,
+      draft,
       expedient: studentExpedient,
     };
     if (!draft) {
@@ -123,6 +125,40 @@ export class SessionService {
     if (!session) {
       throw new NotFoundException('La sesión especificada no existe');
     }
+    session.evaluations = session.evaluations.filter(evaluation => !evaluation.deletedAt);
     return { data: plainToClass(CompleteSession, session, { excludeExtraneousValues: true }) };
+  }
+
+  async updateSession(
+    expedientSessionIdsDto: ExpedientSessionIdsDto,
+    updateSessionDto: UpdateSessionDto,
+  ): Promise<CompleteSessionResponse> {
+    const session = await this.sessionRepository.findSession(expedientSessionIdsDto);
+    if (!session) {
+      throw new NotFoundException('La sesión especificada no existe');
+    }
+    if (!session.draft) {
+      throw new UnprocessableEntityException('La sesión no puede modificarse, ya que no es un borrador');
+    }
+    const { participants, evaluations, draft, ...sessionData } = updateSessionDto;
+    const sessionToSave: Partial<Session> = {
+      ...session,
+      ...sessionData,
+    };
+    if (!draft) {
+      const identifier = await this.sessionRepository.assignSessionIdentifier(session.sessionType);
+      sessionToSave.identifier = identifier;
+      sessionToSave.draft = false;
+    }
+    if (participants?.length) {
+      sessionToSave.counselor = await this.userRepository.findSessionParticipants(participants);
+    }
+    if (evaluations) {
+      const savedEvaluations = await this.evaluationService.updateSessionEvaluationsArray(session, evaluations);
+      sessionToSave.evaluations = savedEvaluations;
+    }
+    const savedSession = await this.sessionRepository.save(sessionToSave);
+    savedSession.evaluations = savedSession.evaluations.filter(evaluation => !evaluation.deletedAt);
+    return { data: plainToClass(CompleteSession, savedSession, { excludeExtraneousValues: true }) };
   }
 }
