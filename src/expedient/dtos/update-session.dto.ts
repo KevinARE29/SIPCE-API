@@ -4,7 +4,10 @@ import { EnumServiceType, serviceTypeKeys, TServiceValues } from '@expedient/con
 import { IsId } from '@core/decorators/id.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDtoArray } from '@core/decorators/is-dto-array.decorator';
+import { IsDto } from '@core/decorators/is-dto.decorator';
 import { EvaluationDto } from './evaluation.dto';
+import { ResponsiblesAssistenceDto } from './responsibles-assistence.dto';
+import { OtherResponsiblesAssistenceDto } from './other-responsible-assistence.dto';
 
 export class UpdateSessionDto {
   @IsDateString({ message: validator.isDateString })
@@ -37,4 +40,24 @@ export class UpdateSessionDto {
   @IsDtoArray(EvaluationDto)
   @IsOptional()
   readonly evaluations?: EvaluationDto[];
+
+  @IsString({ message: validator.isString })
+  @IsOptional()
+  readonly treatedTopics?: string;
+
+  @IsString({ message: validator.isString })
+  @IsOptional()
+  readonly agreements?: string;
+
+  @IsString({ message: validator.isString })
+  @IsOptional()
+  readonly startHour?: string;
+
+  @IsDtoArray(ResponsiblesAssistenceDto)
+  @IsOptional()
+  readonly responsibles?: ResponsiblesAssistenceDto[];
+
+  @IsDto(OtherResponsiblesAssistenceDto)
+  @IsOptional()
+  readonly otherResponsible?: OtherResponsiblesAssistenceDto;
 }
