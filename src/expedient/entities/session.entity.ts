@@ -23,6 +23,9 @@ export class Session {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Column('int', { default: 0 })
+  identifier!: number;
+
   @Column('enum', { name: 'session_type', enum: EnumSessionType, enumName: 'session_enum' })
   sessionType!: EnumSessionType;
 
@@ -38,11 +41,14 @@ export class Session {
   @Column('varchar')
   comments!: string;
 
-  @Column('varchar', { name: 'treated_topics' })
+  @Column('varchar', { name: 'treated_topics', nullable: true })
   treatedTopics!: string;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: true })
   agreements!: string;
+
+  @Column('varchar', { name: 'start_hour', nullable: true })
+  startHour!: string;
 
   @Column('boolean', { default: true })
   draft!: boolean;

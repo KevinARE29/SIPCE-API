@@ -111,6 +111,17 @@ export class User {
   )
   sectionDetails!: SectionDetail[];
 
+  @ManyToMany(
+    () => SectionDetail,
+    auxSectionDetail => auxSectionDetail.auxTeachers,
+  )
+  @JoinTable({
+    name: 'aux_teacher_section_detail',
+    joinColumns: [{ name: 'aux_teacher_id' }],
+    inverseJoinColumns: [{ name: 'section_detail_id' }],
+  })
+  auxSectionDetails!: SectionDetail[];
+
   @OneToMany(
     () => Schedule,
     schedule => schedule.ownerSchedule,

@@ -1,13 +1,16 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
+import { ApiTags } from '@nestjs/swagger';
+import { DashboardResponse } from '@reporting/docs/dashboard/dashboard-response.doc';
 import { ReportingService } from '../services/reporting.service';
 
+@ApiTags('Reporting Endpoints')
 @Controller('reporting')
 export class ReportingController {
   constructor(private readonly reportingService: ReportingService) {}
 
   @Get('')
-  async getAllFouls(@Res() res: Response): Promise<any> {
+  async generatePdf(@Res() res: Response): Promise<any> {
     const buffer = await this.reportingService.generatePdf();
     res.set({
       // pdf
@@ -20,5 +23,10 @@ export class ReportingController {
       Expires: 0,
     });
     res.end(buffer);
+  }
+
+  @Get('dashboard')
+  async getDashboard(): Promise<DashboardResponse> {
+    return this.reportingService.getDashboard();
   }
 }

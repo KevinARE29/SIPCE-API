@@ -10,13 +10,13 @@ export class SessionResponsibleAssistence {
   @Column('boolean', { name: 'responsible1_assistence' })
   responsible1Assistence!: boolean;
 
-  @Column('boolean', { name: 'responsible2_assistence' })
+  @Column('boolean', { name: 'responsible2_assistence', nullable: true })
   responsible2Assistence!: boolean;
 
-  @Column('varchar', { name: 'other_responsible_name' })
+  @Column('varchar', { name: 'other_responsible_name', nullable: true })
   otherResponsibleName!: string;
 
-  @Column('varchar', { name: 'other_responsible_relationship' })
+  @Column('varchar', { name: 'other_responsible_relationship', nullable: true })
   otherResponsibleRelationship!: string;
 
   @OneToOne(
@@ -38,7 +38,7 @@ export class SessionResponsibleAssistence {
   @ManyToOne(
     () => Responsible,
     responsible => responsible.responsible2,
-    { nullable: false },
+    { nullable: true },
   )
   @JoinColumn({ name: 'responsible2_id' })
   responsible2!: Responsible;
