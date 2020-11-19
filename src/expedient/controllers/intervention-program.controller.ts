@@ -21,7 +21,7 @@ export class InterventionProgramController {
   })
   @Auth('manage_expedient')
   @Get()
-  getInterventionProgrmas(
+  getCounselorInterventionPrograms(
     @Query() interventionProgramFilterDto: InterventionProgramFilterDto,
     @Query() pageDto: PageDto,
     @User() { id }: IAuthenticatedUser,
