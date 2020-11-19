@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards, Post, Body, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards, Post, Body, Delete, HttpCode, Patch } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
 import { ExpedientService } from '@expedient/services/expedient.service';
@@ -11,6 +11,7 @@ import { SessionService } from '@expedient/services/session.service';
 import { CompleteSessionResponse } from '@expedient/docs/complete-session-response.doc';
 import { PageDto } from '@core/dtos/page.dto';
 import { ExpedientSessionIdsDto } from '@expedient/dtos/expedient-session-ids.dto';
+import { UpdateSessionDto } from '@expedient/dtos/update-session.dto';
 
 @ApiTags('Expedients Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -66,5 +67,18 @@ export class ExpedientController {
     @Param() expedientSessionIdsDto: ExpedientSessionIdsDto,
   ): Promise<CompleteSessionResponse> {
     return this.sessionService.getSession(expedientSessionIdsDto);
+  }
+
+  @ApiOperation({
+    summary: 'Editar sesión en un determinado expediente',
+    description: 'Use este endpoint para editar una sesión en un determinado expediente',
+  })
+  @Auth('manage_expedient')
+  @Patch(':studentId/expedients/:expedientId/sessions/:sessionId')
+  UpdateStudentExpedientSession(
+    @Param() expedientSessionIdsDto: ExpedientSessionIdsDto,
+    @Body() updatSessionDto: UpdateSessionDto,
+  ): Promise<CompleteSessionResponse> {
+    return this.sessionService.updateSession(expedientSessionIdsDto, updatSessionDto);
   }
 }
