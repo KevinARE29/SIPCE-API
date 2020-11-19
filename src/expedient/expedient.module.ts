@@ -25,5 +25,6 @@ import { SessionResponsibleAssistenceService } from '@expedient/services/session
   ],
   providers: [ExpedientService, SessionService, EvaluationService, SessionResponsibleAssistenceService],
   controllers: [ExpedientController, SessionController],
+  exports: [TypeOrmModule],
 })
 export class ExpedientModule {}
