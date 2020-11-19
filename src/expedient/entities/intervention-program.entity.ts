@@ -20,6 +20,9 @@ export class InterventionProgram {
   @Column('varchar')
   name!: string;
 
+  @Column('varchar')
+  description!: string;
+
   @Column('enum', { enum: EnumInterventionProgramType, enumName: 'intervention_program_enum' })
   type!: EnumInterventionProgramType;
 
