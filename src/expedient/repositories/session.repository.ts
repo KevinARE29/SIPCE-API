@@ -62,6 +62,8 @@ export class SessionRepository extends Repository<Session> {
         'counselor',
         'sessionResponsibleAssistence.responsible1',
         'sessionResponsibleAssistence.responsible2',
+        'expedient',
+        'expedient.student',
       ],
     });
   }
