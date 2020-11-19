@@ -11,6 +11,9 @@ import { EvaluationService } from '@expedient/services/evaluation.service';
 import { EvaluationRepository } from '@expedient/repositories/evaluation.repository';
 import { SessionResponsibleAssistenceRepository } from '@expedient/repositories/session-responsible-assistence.repository';
 import { SessionResponsibleAssistenceService } from '@expedient/services/session-responsible-assistence.service';
+import { InterventionProgramRepository } from '@expedient/repositories/intervention-program.repository';
+import { InterventionProgramController } from '@expedient/controllers/intervention-program.controller';
+import { InterventionProgramService } from '@expedient/services/intervention-program.service';
 
 @Module({
   imports: [
@@ -21,9 +24,16 @@ import { SessionResponsibleAssistenceService } from '@expedient/services/session
       EvaluationRepository,
       ResponsibleRepository,
       SessionResponsibleAssistenceRepository,
+      InterventionProgramRepository,
     ]),
   ],
-  providers: [ExpedientService, SessionService, EvaluationService, SessionResponsibleAssistenceService],
-  controllers: [ExpedientController, SessionController],
+  providers: [
+    ExpedientService,
+    SessionService,
+    EvaluationService,
+    SessionResponsibleAssistenceService,
+    InterventionProgramService,
+  ],
+  controllers: [ExpedientController, SessionController, InterventionProgramController],
 })
 export class ExpedientModule {}
