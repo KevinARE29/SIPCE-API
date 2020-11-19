@@ -8,6 +8,9 @@ export class InterventionProgram {
   name!: number;
 
   @Expose()
+  description!: number;
+
+  @Expose()
   type!: string;
 
   @Expose()
