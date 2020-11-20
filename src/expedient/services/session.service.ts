@@ -42,13 +42,15 @@ export class SessionService {
       studentSessionsFilterDto,
       pageDto,
     );
-    const mappedStudents = students
-      .filter(student => student.expedients[0])
-      .map(student => ({
-        ...student,
-        expedient: student.expedients[0],
-        sessionsCounter: getSessionsCounter(student.expedients[0].sessions),
-      }));
+    const mappedStudents = students.map(student => ({
+      ...student,
+      expedient: student.expedients.filter(expedient => !expedient.finalConclusion).length
+        ? student.expedients.filter(expedient => !expedient.finalConclusion)[0]
+        : {},
+      sessionsCounter: student.expedients.filter(expedient => !expedient.finalConclusion).length
+        ? getSessionsCounter(student.expedients.filter(expedient => !expedient.finalConclusion)[0].sessions)
+        : 0,
+    }));
     const pagination = getPagination(pageDto, mappedStudents.length);
     return { data: plainToClass(StudentSessions, mappedStudents, { excludeExtraneousValues: true }), pagination };
   }
