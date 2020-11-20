@@ -19,3 +19,12 @@ export enum EnumServiceType {
 export type TService = keyof typeof EnumServiceType;
 export const serviceTypeKeys = Object.values(EnumServiceType).filter(key => typeof key === 'string');
 export type TServiceValues = typeof EnumServiceType[TService];
+
+export enum ESessionReport {
+  REPORTE_POR_TIPOS_DE_SESIÓN = 'session_type',
+  REPORTE_POR_TIPOS_DE_SERVICIO = 'service_type',
+}
+
+export type TSessionReport = keyof typeof ESessionReport;
+export const sessionReportKeys = Object.values(ESessionReport).filter(key => typeof key === 'string');
+export type TSessionReportalues = typeof ESessionReport[TSessionReport];

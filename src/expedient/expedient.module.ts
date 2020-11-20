@@ -35,5 +35,6 @@ import { InterventionProgramService } from '@expedient/services/intervention-pro
     InterventionProgramService,
   ],
   controllers: [ExpedientController, SessionController, InterventionProgramController],
+  exports: [TypeOrmModule],
 })
 export class ExpedientModule {}

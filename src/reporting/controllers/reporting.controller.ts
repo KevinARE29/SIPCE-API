@@ -1,7 +1,9 @@
-import { Controller, Get, Res } from '@nestjs/common';
+import { Controller, Get, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { DashboardResponse } from '@reporting/docs/dashboard/dashboard-response.doc';
+import { SessionsReportFilterDto } from '@reporting/dtos/sessions-report.dto';
+import { SessionsReportResponse } from '@reporting/docs/sessions-report-response.doc';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -28,5 +30,10 @@ export class ReportingController {
   @Get('dashboard')
   async getDashboard(): Promise<DashboardResponse> {
     return this.reportingService.getDashboard();
+  }
+
+  @Get('sessions')
+  getSessions(@Query() sessionsReportDto: SessionsReportFilterDto): Promise<SessionsReportResponse> {
+    return this.reportingService.getSessions(sessionsReportDto);
   }
 }
