@@ -20,11 +20,14 @@ export class InterventionProgram {
   @Column('varchar')
   name!: string;
 
+  @Column('varchar')
+  description!: string;
+
   @Column('enum', { enum: EnumInterventionProgramType, enumName: 'intervention_program_enum' })
   type!: EnumInterventionProgramType;
 
-  @Column('boolean')
-  global!: boolean;
+  @Column('boolean', { default: true })
+  status!: boolean;
 
   @OneToMany(
     () => Session,

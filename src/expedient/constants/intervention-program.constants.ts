@@ -7,3 +7,6 @@ export enum EnumInterventionProgramType {
 }
 
 export type TInterventionProgram = keyof typeof EnumInterventionProgramType;
+export const interventionProgramTypeKeys = Object.values(EnumInterventionProgramType).filter(
+  key => typeof key === 'string',
+);
