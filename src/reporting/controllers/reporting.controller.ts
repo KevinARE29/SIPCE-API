@@ -4,6 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { DashboardResponse } from '@reporting/docs/dashboard/dashboard-response.doc';
 import { SessionsReportFilterDto } from '@reporting/dtos/sessions-report.dto';
 import { SessionsReportResponse } from '@reporting/docs/sessions-report-response.doc';
+import { Auth } from '@auth/decorators/auth.decorator';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -33,6 +34,7 @@ export class ReportingController {
   }
 
   @Get('sessions')
+  @Auth('generate_sessions_reports')
   getSessions(@Query() sessionsReportDto: SessionsReportFilterDto): Promise<SessionsReportResponse> {
     return this.reportingService.getSessions(sessionsReportDto);
   }
