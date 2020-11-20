@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, Body, Post } from '@nestjs/common';
 import { PageDto } from '@core/dtos/page.dto';
 import { Auth } from '@auth/decorators/auth.decorator';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -7,6 +7,8 @@ import { IAuthenticatedUser } from '@users/interfaces/users.interface';
 import { User } from '@users/decorators/user.decorator';
 import { InterventionProgramService } from '@expedient/services/intervention-program.service';
 import { InterventionProgramFilterDto } from '@expedient/dtos/intervention-program-filter.dto';
+import { InterventionProgramsResponse } from '@expedient/docs/intervention-programs-response.doc';
+import { CreateInterventionProgramDto } from '@expedient/dtos/create-intervention-program.dto';
 import { InterventionProgramResponse } from '@expedient/docs/intervention-program-response.doc';
 
 @ApiTags('Intervention Programs Endpoints')
@@ -25,7 +27,20 @@ export class InterventionProgramController {
     @Query() interventionProgramFilterDto: InterventionProgramFilterDto,
     @Query() pageDto: PageDto,
     @User() { id }: IAuthenticatedUser,
-  ): Promise<InterventionProgramResponse> {
+  ): Promise<InterventionProgramsResponse> {
     return this.interventonProgramService.findCounselorInterventionPrograms(id, interventionProgramFilterDto, pageDto);
+  }
+
+  @ApiOperation({
+    summary: 'Crear un programa de intervención',
+    description: 'Use este endpoint para crear un programa de intervención',
+  })
+  @Auth('manage_expedient')
+  @Post()
+  createCounselorInterventionProgram(
+    @User() { id }: IAuthenticatedUser,
+    @Body() createInterventionProgramDto: CreateInterventionProgramDto,
+  ): Promise<InterventionProgramResponse> {
+    return this.interventonProgramService.createCounselorInterventionProgram(id, createInterventionProgramDto);
   }
 }

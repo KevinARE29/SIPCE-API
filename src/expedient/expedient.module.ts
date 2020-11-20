@@ -14,6 +14,7 @@ import { SessionResponsibleAssistenceService } from '@expedient/services/session
 import { InterventionProgramRepository } from '@expedient/repositories/intervention-program.repository';
 import { InterventionProgramController } from '@expedient/controllers/intervention-program.controller';
 import { InterventionProgramService } from '@expedient/services/intervention-program.service';
+import { UserRepository } from '@users/repositories/users.repository';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { InterventionProgramService } from '@expedient/services/intervention-pro
       ResponsibleRepository,
       SessionResponsibleAssistenceRepository,
       InterventionProgramRepository,
+      UserRepository,
     ]),
   ],
   providers: [
