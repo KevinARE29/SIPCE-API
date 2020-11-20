@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards, Body, Post } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, Body, Post, Delete, HttpCode, Param } from '@nestjs/common';
 import { PageDto } from '@core/dtos/page.dto';
 import { Auth } from '@auth/decorators/auth.decorator';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -10,6 +10,7 @@ import { InterventionProgramFilterDto } from '@expedient/dtos/intervention-progr
 import { InterventionProgramsResponse } from '@expedient/docs/intervention-programs-response.doc';
 import { CreateInterventionProgramDto } from '@expedient/dtos/create-intervention-program.dto';
 import { InterventionProgramResponse } from '@expedient/docs/intervention-program-response.doc';
+import { InterventionProgramIdsDto } from '@expedient/dtos/intervention-program-ids.dto';
 
 @ApiTags('Intervention Programs Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -42,5 +43,19 @@ export class InterventionProgramController {
     @Body() createInterventionProgramDto: CreateInterventionProgramDto,
   ): Promise<InterventionProgramResponse> {
     return this.interventonProgramService.createCounselorInterventionProgram(id, createInterventionProgramDto);
+  }
+
+  @ApiOperation({
+    summary: 'Eliminar un programa de intervención',
+    description: 'Use este endpoint para eliminar un programa de intervención',
+  })
+  @Auth('manage_expedient')
+  @Delete(':interventionProgramId')
+  @HttpCode(204)
+  DeleteCounselorInterventionProgram(
+    @Param() interventionProgramIdsDto: InterventionProgramIdsDto,
+    @User() { id }: IAuthenticatedUser,
+  ): Promise<void> {
+    return this.interventonProgramService.deleteCounselorInterventionProgram(interventionProgramIdsDto, id);
   }
 }

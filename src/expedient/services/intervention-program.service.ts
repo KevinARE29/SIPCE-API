@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InterventionProgramRepository } from '@expedient/repositories/intervention-program.repository';
 import { InterventionProgramFilterDto } from '@expedient/dtos/intervention-program-filter.dto';
 import { PageDto } from '@core/dtos/page.dto';
@@ -9,6 +9,7 @@ import { InterventionProgram } from '@expedient/docs/intervention-program.doc';
 import { CreateInterventionProgramDto } from '@expedient/dtos/create-intervention-program.dto';
 import { UserRepository } from '@users/repositories/users.repository';
 import { InterventionProgramResponse } from '@expedient/docs/intervention-program-response.doc';
+import { InterventionProgramIdsDto } from '@expedient/dtos/intervention-program-ids.dto';
 
 @Injectable()
 export class InterventionProgramService {
@@ -43,5 +44,26 @@ export class InterventionProgramService {
     };
     const interventionProgram = await this.interventionProgramRepository.save(interventionProgramToSave);
     return { data: plainToClass(InterventionProgram, interventionProgram, { excludeExtraneousValues: true }) };
+  }
+
+  async deleteCounselorInterventionProgram(
+    interventionProgramIdsDto: InterventionProgramIdsDto,
+    counserlorId: number,
+  ): Promise<void> {
+    const { interventionProgramId } = interventionProgramIdsDto;
+    const interventionProgram = await this.interventionProgramRepository.findOne(interventionProgramId, {
+      where: { counselor: { id: counserlorId }, deletedAt: null },
+      relations: ['sessions'],
+    });
+    if (!interventionProgram) {
+      throw new NotFoundException('El programa de intervención especificado no fue encontrado');
+    }
+    if (interventionProgram.sessions.length) {
+      throw new UnprocessableEntityException(
+        'El programa de intervención no puede ser borrado, ya que tiene sesiones asociadas',
+      );
+    }
+    interventionProgram.deletedAt = new Date();
+    this.interventionProgramRepository.save(interventionProgram);
   }
 }
