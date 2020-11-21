@@ -10,6 +10,7 @@ import { CreateInterventionProgramDto } from '@expedient/dtos/create-interventio
 import { UserRepository } from '@users/repositories/users.repository';
 import { InterventionProgramResponse } from '@expedient/docs/intervention-program-response.doc';
 import { InterventionProgramIdsDto } from '@expedient/dtos/intervention-program-ids.dto';
+import { UpdateInterventionProgramDto } from '@expedient/dtos/update-intervention-program.dto';
 
 @Injectable()
 export class InterventionProgramService {
@@ -65,5 +66,31 @@ export class InterventionProgramService {
     }
     interventionProgram.deletedAt = new Date();
     this.interventionProgramRepository.save(interventionProgram);
+  }
+
+  async updateCounselorInterventionProgram(
+    interventionProgramIdsDto: InterventionProgramIdsDto,
+    counserlorId: number,
+    updateIntervationProgramDto: UpdateInterventionProgramDto,
+  ): Promise<InterventionProgramResponse> {
+    const { interventionProgramId } = interventionProgramIdsDto;
+    const interventionProgram = await this.interventionProgramRepository.findOne(interventionProgramId, {
+      where: { counselor: { id: counserlorId }, deletedAt: null },
+      relations: ['sessions'],
+    });
+    if (!interventionProgram) {
+      throw new NotFoundException('El programa de intervención especificado no fue encontrado');
+    }
+    if (interventionProgram.sessions.length) {
+      throw new UnprocessableEntityException(
+        'El programa de intervención no puede ser actualizado, ya que tiene sesiones asociadas',
+      );
+    }
+    const interventionProgramToSave = {
+      ...interventionProgram,
+      ...updateIntervationProgramDto,
+    };
+    const savedInterventionProgram = await this.interventionProgramRepository.save(interventionProgramToSave);
+    return { data: plainToClass(InterventionProgram, savedInterventionProgram, { excludeExtraneousValues: true }) };
   }
 }
