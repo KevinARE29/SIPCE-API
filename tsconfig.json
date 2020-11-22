@@ -26,7 +26,8 @@
       "@counseling/*": ["src/counseling/*"],
       "@fouls/*": ["src/fouls/*"],
       "@sanctions/*": ["src/sanctions/*"],
-      "@reporting/*": ["src/reporting/*"]
+      "@reporting/*": ["src/reporting/*"],
+      "@history/*": ["src/history/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

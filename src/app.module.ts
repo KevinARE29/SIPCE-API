@@ -16,6 +16,7 @@ import { SanctionsModule } from '@sanctions/sanctions.module';
 import { ReportingModule } from '@reporting/reporting.module';
 import { BullModule } from '@nestjs/bull/dist/bull.module';
 import { bullFactory } from '@reporting/factories/bull.factory';
+import { HistoryModule } from '@history/history.module';
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { bullFactory } from '@reporting/factories/bull.factory';
     FoulsModule,
     SanctionsModule,
     ReportingModule,
+    HistoryModule,
   ],
 })
 export class AppModule {}
