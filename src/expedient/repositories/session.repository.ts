@@ -44,8 +44,11 @@ export class SessionRepository extends Repository<Session> {
     return query.getManyAndCount();
   }
 
-  async assignSessionIdentifier(sessionType: string): Promise<number> {
-    const sessions = await this.find({ where: { sessionType }, order: { identifier: 'DESC' } });
+  async assignSessionIdentifier(sessionType: string, expedientId: number): Promise<number> {
+    const sessions = await this.find({
+      where: { sessionType, expedient: { id: expedientId } },
+      order: { identifier: 'DESC' },
+    });
     if (!sessions || !sessions[0].identifier) {
       return 1;
     }

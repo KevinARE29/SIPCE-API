@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ExpedientService } from '@expedient/services/expedient.service';
 import { ExpedientController } from '@expedient/controllers/expedient.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { StudentRepository, ResponsibleRepository } from '@students/repositories';
+import { StudentRepository, ResponsibleRepository, ResponsibleStudentRepository } from '@students/repositories';
 import { SessionService } from '@expedient/services/session.service';
 import { SessionController } from '@expedient/controllers/session.controller';
 import { ExpedientRepository } from '@expedient/repositories/expedient.repository';
@@ -15,6 +15,7 @@ import { InterventionProgramRepository } from '@expedient/repositories/intervent
 import { InterventionProgramController } from '@expedient/controllers/intervention-program.controller';
 import { InterventionProgramService } from '@expedient/services/intervention-program.service';
 import { UserRepository } from '@users/repositories/users.repository';
+import { ResponsibleService } from '@students/services';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UserRepository } from '@users/repositories/users.repository';
       SessionResponsibleAssistenceRepository,
       InterventionProgramRepository,
       UserRepository,
+      ResponsibleStudentRepository,
     ]),
   ],
   providers: [
@@ -35,6 +37,7 @@ import { UserRepository } from '@users/repositories/users.repository';
     EvaluationService,
     SessionResponsibleAssistenceService,
     InterventionProgramService,
+    ResponsibleService,
   ],
   controllers: [ExpedientController, SessionController, InterventionProgramController],
   exports: [TypeOrmModule],
