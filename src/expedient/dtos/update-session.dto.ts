@@ -1,4 +1,4 @@
-import { IsString, IsDateString, IsPositive, IsEnum, IsOptional, IsBoolean } from 'class-validator';
+import { IsString, IsDateString, IsPositive, IsEnum, IsOptional, IsBoolean, IsNotEmpty } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import { EnumServiceType, serviceTypeKeys, TServiceValues } from '@expedient/constants/session.constants';
 import { IsId } from '@core/decorators/id.decorator';
@@ -7,7 +7,7 @@ import { IsDtoArray } from '@core/decorators/is-dto-array.decorator';
 import { IsDto } from '@core/decorators/is-dto.decorator';
 import { EvaluationDto } from './evaluation.dto';
 import { ResponsiblesAssistenceDto } from './responsibles-assistence.dto';
-import { OtherResponsiblesAssistenceDto } from './other-responsible-assistence.dto';
+import { UpdateOtherResponsiblesAssistenceDto } from './update-other-responsible-assistence.dto';
 
 export class UpdateSessionDto {
   @IsDateString({ message: validator.isDateString })
@@ -30,7 +30,7 @@ export class UpdateSessionDto {
   readonly comments!: string;
 
   @IsBoolean({ message: validator.isBoolean })
-  @IsOptional()
+  @IsNotEmpty({ message: validator.isNotEmpty })
   readonly draft!: boolean;
 
   @IsId({ each: true })
@@ -57,7 +57,7 @@ export class UpdateSessionDto {
   @IsOptional()
   readonly responsibles?: ResponsiblesAssistenceDto[];
 
-  @IsDto(OtherResponsiblesAssistenceDto)
+  @IsDto(UpdateOtherResponsiblesAssistenceDto)
   @IsOptional()
-  readonly otherResponsible?: OtherResponsiblesAssistenceDto;
+  readonly otherResponsible?: UpdateOtherResponsiblesAssistenceDto;
 }
