@@ -8,6 +8,15 @@ import { plainToClass } from 'class-transformer';
 import { PageDto } from '@core/dtos/page.dto';
 import { getPagination } from '@core/utils/pagination.util';
 import { Session } from '@expedient/docs/session.doc';
+import { StudentIdDto } from '@students/dtos/student-id.dto';
+import {
+  getSessionsTypeCounter,
+  getExpedientInterventionPrograms,
+  getExpedientEvaluations,
+} from '@expedient/utils/session.util';
+import { CompleteExpedient } from '@expedient/docs/complete-expedient.doc';
+import { initialStudentExpedient } from '@expedient/constants/expedient.constants';
+import { StudentExpedientsResponse } from '@expedient/docs/student-expedients-response.doc';
 
 @Injectable()
 export class ExpedientService {
@@ -33,5 +42,35 @@ export class ExpedientService {
     const pagination = getPagination(pageDto, count);
     const data = plainToClass(Session, sessions, { excludeExtraneousValues: true });
     return { data, pagination };
+  }
+
+  async findStudentExpedients(studentIdDto: StudentIdDto): Promise<StudentExpedientsResponse> {
+    const { studentId } = studentIdDto;
+    const studentExpedients = await this.expedientRepository.findStudentExpedients(studentId);
+    const expedientsToReturn = await Promise.all(
+      studentExpedients.map(async expedient => ({
+        ...expedient,
+        sessionsCounter: getSessionsTypeCounter(expedient.sessions.filter(session => !session.deletedAt)),
+        activeInterventionPrograms: getExpedientInterventionPrograms(
+          await this.sessionRepository.findSessionsInterventionPrograms(expedient.id),
+        ),
+        evaluations: getExpedientEvaluations(expedient.sessions.filter(session => !session.deletedAt)),
+        expedientGrade: `${expedient.gradeDetail.grade.name} (${expedient.gradeDetail.cycleDetail.schoolYear.year})`,
+      })),
+    );
+    const currentYear = new Date().getFullYear();
+    const initialExpedient: any = initialStudentExpedient;
+    if (expedientsToReturn[0]) {
+      if (
+        expedientsToReturn[0].gradeDetail.cycleDetail.schoolYear.year !== currentYear ||
+        (expedientsToReturn[0].finalConclusion &&
+          expedientsToReturn[0].gradeDetail.grade.id !== expedientsToReturn[0].student.currentGrade.id)
+      ) {
+        expedientsToReturn.unshift(initialExpedient);
+      }
+    } else {
+      return { data: plainToClass(CompleteExpedient, [initialExpedient], { excludeExtraneousValues: true }) };
+    }
+    return { data: plainToClass(CompleteExpedient, expedientsToReturn, { excludeExtraneousValues: true }) };
   }
 }
