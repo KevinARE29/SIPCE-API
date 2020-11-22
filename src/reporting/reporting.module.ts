@@ -2,6 +2,7 @@ import { ExpedientModule } from '@expedient/expedient.module';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { StudentModule } from '@students/students.module';
 import { JOBS_QUEUE } from './constants/reporting.constant';
 import { ReportingController } from './controllers/reporting.controller';
 import { Dashboard } from './entities/dashboard.view.entity';
@@ -15,6 +16,7 @@ import { ReportingService } from './services/reporting.service';
     }),
     TypeOrmModule.forFeature([Dashboard]),
     ExpedientModule,
+    StudentModule,
   ],
   providers: [ReportingService, PdfProcessor],
   controllers: [ReportingController],

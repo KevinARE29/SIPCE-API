@@ -37,6 +37,6 @@ import { UserRepository } from '@users/repositories/users.repository';
     InterventionProgramService,
   ],
   controllers: [ExpedientController, SessionController, InterventionProgramController],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, SessionService],
 })
 export class ExpedientModule {}
