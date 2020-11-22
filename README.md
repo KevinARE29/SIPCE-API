@@ -33,6 +33,7 @@ API para el Sistema Informático para el control y seguimiento del historial con
 | JWT_SECRET_ACCESS_TOKEN       | [Your JWT_SECRET_ACCESS_TOKEN]                                               |
 | JWT_SECRET_REFRESH_TOKEN      | [Your JWT_SECRET_REFRESH_TOKEN]                                              |
 | JWT_SECRET_PASSWORD_RESET     | [Your JWT_SECRET_PASSWORD_RESET]                                             |
+| JWT_SECRET_REPORT             | [Your JWT_SECRET_REPORT]                                                     |
 | ACCESS_TOKEN_EXPIRATION       | [Your ACCESS_TOKEN_EXPIRATION]                                               |
 | REFRESH_TOKEN_EXPIRATION      | [Your REFRESH_TOKEN_EXPIRATION]                                              |
 | PASSWORD_RESET_EXPIRATION     | [Your PASSWORD_RESET_EXPIRATION]                                             |

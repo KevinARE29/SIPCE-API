@@ -43,6 +43,6 @@ import { ImageSubscriber } from './subscribers/image.subscriber';
     StudentAssignationService,
     ImageSubscriber,
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, StudentService],
 })
 export class StudentModule {}

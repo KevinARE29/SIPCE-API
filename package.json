@@ -141,7 +141,9 @@
       "^@fouls(.*)$": "<rootDir>/fouls$1",
       "^@sanctions(.*)$": "<rootDir>/sanctions$1",
       "^@reporting(.*)$": "<rootDir>/reporting$1",
+      "^@expedient(.*)$": "<rootDir>/expedient$1",
       "^@history(.*)$": "<rootDir>/history$1"
+      
     },
     "testRegex": ".spec.ts$",
     "transform": {

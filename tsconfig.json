@@ -27,6 +27,7 @@
       "@fouls/*": ["src/fouls/*"],
       "@sanctions/*": ["src/sanctions/*"],
       "@reporting/*": ["src/reporting/*"],
+      "@expedient/*": ["src/expedient/*"],
       "@history/*": ["src/history/*"]
     }
   },

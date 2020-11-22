@@ -9,6 +9,12 @@ import { ResponsibleStudent } from '@students/entities/responsible-student.entit
 import { Responsible } from '@students/entities/responsible.entity';
 import { Shift } from '@academics/entities/shift.entity';
 import { Grade } from '@academics/entities/grade.entity';
+import { ESchoolYearStatus } from '@academics/constants/academic.constants';
+import {
+  StudentSessionsFilterDto,
+  sortOptionsMap as studentSessionSortOptionsMap,
+} from '@expedient/dtos/student-sessions-filter.dto';
+import { getOrderBy } from '@core/utils/sort.util';
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> {
@@ -135,5 +141,57 @@ export class StudentRepository extends Repository<Student> {
       .andWhere(`"student"."status" = '${EStudentStatus['Cursando Año Escolar']}'`)
       .andWhere('student.deletedAt is null')
       .getMany();
+  }
+
+  getStudentsSessionsByCounselorId(
+    counselorId: number,
+    studentSessionsFilterDto: StudentSessionsFilterDto,
+    pageDto: PageDto,
+  ): Promise<[Student[], number]> {
+    const { sort, firstname, lastname, code, currentGrade, currentShift } = studentSessionsFilterDto;
+    const { page, perPage } = pageDto;
+    const query = this.createQueryBuilder('student')
+      .leftJoinAndSelect('student.currentShift', 'currentShift')
+      .leftJoinAndSelect('student.currentGrade', 'currentGrade')
+      .leftJoinAndSelect('student.expedients', 'expedients')
+      .leftJoinAndSelect('expedients.sessions', 'sessions')
+      .leftJoin('student.sectionDetails', 'sectionDetails')
+      .leftJoin('sectionDetails.gradeDetail', 'gradeDetail')
+      .leftJoin('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoin('gradeDetail.counselor', 'counselor')
+      .leftJoin('cycleDetail.schoolYear', 'schoolYear')
+      .andWhere(`"counselor"."id" = ${counselorId}`)
+      .andWhere(`"schoolYear"."status" = '${ESchoolYearStatus['En curso']}'`)
+      .andWhere('student.deletedAt is null')
+      .take(perPage)
+      .skip((page - 1) * perPage);
+
+    if (sort) {
+      const order = getOrderBy(sort, studentSessionSortOptionsMap);
+      query.orderBy(order);
+    } else {
+      query.orderBy({ 'student.id': 'DESC' });
+    }
+
+    if (code) {
+      query.andWhere(`student.code ILIKE '%${code}%'`);
+    }
+
+    if (firstname) {
+      query.andWhere(`student.firstname ILIKE '%${firstname}%'`);
+    }
+
+    if (lastname) {
+      query.andWhere(`student.lastname ILIKE '%${lastname}%'`);
+    }
+
+    if (currentGrade) {
+      query.andWhere(`"currentGrade"."id" = ${currentGrade}`);
+    }
+
+    if (currentShift) {
+      query.andWhere(`"currentShift"."id" = ${currentShift}`);
+    }
+    return query.getManyAndCount();
   }
 }

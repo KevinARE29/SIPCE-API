@@ -44,6 +44,7 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
         'sectionDetail',
         'sectionDetail.gradeDetail = gradeDetail.id',
       )
+      .leftJoinAndSelect('sectionDetail.auxTeachers', 'auxTeachers')
       .leftJoinAndSelect('sectionDetail.section', 'section')
       .leftJoinAndSelect('sectionDetail.teacher', 'teacher')
       .leftJoinAndSelect('sectionDetail.students', 'student');
