@@ -18,6 +18,10 @@ import { CompleteSession } from '@expedient/docs/complete-session.doc';
 import { ExpedientSessionIdsDto } from '@expedient/dtos/expedient-session-ids.dto';
 import { getSessionsCounter } from '@expedient/utils/session.util';
 import { UpdateSessionDto } from '@expedient/dtos/update-session.dto';
+import { Responsible } from '@students/entities/responsible.entity';
+import { ResponsibleService } from '@students/services';
+import { EResponsibleRelationship } from '@students/constants/student.constant';
+import { SessionResponsibleAssistence } from '@expedient/entities/session-responsible-assistence.entity';
 import { EvaluationService } from './evaluation.service';
 import { SessionResponsibleAssistenceService } from './session-responsible-assistence.service';
 
@@ -30,6 +34,7 @@ export class SessionService {
     private readonly evaluationService: EvaluationService,
     private readonly userRepository: UserRepository,
     private readonly sessionResponsibleAssistenceService: SessionResponsibleAssistenceService,
+    private readonly responsibleService: ResponsibleService,
   ) {}
 
   async getStudentsExpedientSessions(
@@ -92,7 +97,7 @@ export class SessionService {
         responsibles,
         studentExpedientIdsDto.studentId,
       );
-      session.sessionResponsibleAssistence = savedSessionResponsibleAssistence;
+      session.sessionResponsibleAssistence = savedSessionResponsibleAssistence as SessionResponsibleAssistence;
     }
     this.sessionRepository.save(session);
     return { data: plainToClass(CompleteSession, session, { excludeExtraneousValues: true }) };
@@ -123,9 +128,22 @@ export class SessionService {
   }
 
   async getSession(expedientSessionIdsDto: ExpedientSessionIdsDto): Promise<CompleteSessionResponse> {
+    const { studentId } = expedientSessionIdsDto;
     const session = await this.sessionRepository.findSession(expedientSessionIdsDto);
     if (!session) {
       throw new NotFoundException('La sesión especificada no existe');
+    }
+    if (session.sessionResponsibleAssistence && session.sessionResponsibleAssistence.responsible1) {
+      session.sessionResponsibleAssistence.responsible1 = await this.concatResponsibleRelationship(
+        session.sessionResponsibleAssistence.responsible1,
+        studentId,
+      );
+    }
+    if (session.sessionResponsibleAssistence && session.sessionResponsibleAssistence.responsible2) {
+      session.sessionResponsibleAssistence.responsible2 = await this.concatResponsibleRelationship(
+        session.sessionResponsibleAssistence.responsible2,
+        studentId,
+      );
     }
     session.evaluations = session.evaluations.filter(evaluation => !evaluation.deletedAt);
     return { data: plainToClass(CompleteSession, session, { excludeExtraneousValues: true }) };
@@ -135,6 +153,7 @@ export class SessionService {
     expedientSessionIdsDto: ExpedientSessionIdsDto,
     updateSessionDto: UpdateSessionDto,
   ): Promise<CompleteSessionResponse> {
+    const { studentId } = expedientSessionIdsDto;
     const session = await this.sessionRepository.findSession(expedientSessionIdsDto);
     if (!session) {
       throw new NotFoundException('La sesión especificada no existe');
@@ -159,7 +178,7 @@ export class SessionService {
       const savedEvaluations = await this.evaluationService.updateSessionEvaluationsArray(session, evaluations);
       sessionToSave.evaluations = savedEvaluations;
     }
-    if (responsibles?.length) {
+    if (responsibles?.length || otherResponsible) {
       const savedSessionResponsibleAssistence = await this.sessionResponsibleAssistenceService.createOrUpdateSessionResponsibleAssistence(
         session,
         otherResponsible,
@@ -170,7 +189,29 @@ export class SessionService {
       sessionToSave.sessionResponsibleAssistence = savedSessionResponsibleAssistence;
     }
     const savedSession = await this.sessionRepository.save(sessionToSave);
+    if (savedSession.sessionResponsibleAssistence && savedSession.sessionResponsibleAssistence.responsible1) {
+      savedSession.sessionResponsibleAssistence.responsible1 = await this.concatResponsibleRelationship(
+        savedSession.sessionResponsibleAssistence.responsible1,
+        studentId,
+      );
+    }
+    if (savedSession.sessionResponsibleAssistence && savedSession.sessionResponsibleAssistence.responsible2) {
+      savedSession.sessionResponsibleAssistence.responsible2 = await this.concatResponsibleRelationship(
+        savedSession.sessionResponsibleAssistence.responsible2,
+        studentId,
+      );
+    }
     savedSession.evaluations = savedSession.evaluations.filter(evaluation => !evaluation.deletedAt);
     return { data: plainToClass(CompleteSession, savedSession, { excludeExtraneousValues: true }) };
+  }
+
+  async concatResponsibleRelationship(responsible: Responsible, studentId: number): Promise<Responsible> {
+    return {
+      ...responsible,
+      relationship:
+        EResponsibleRelationship[
+          await this.responsibleService.getStudentResponsibleRelationship(studentId, responsible.id)
+        ],
+    } as Responsible;
   }
 }

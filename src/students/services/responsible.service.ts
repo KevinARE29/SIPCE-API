@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PageDto } from '@core/dtos/page.dto';
 import { getPagination } from '@core/utils/pagination.util';
 import { plainToClass } from 'class-transformer';
@@ -120,5 +120,15 @@ export class ResponsibleService {
       await queryRunner.release();
       throw err;
     }
+  }
+
+  async getStudentResponsibleRelationship(studentId: number, responsibleId: number): Promise<EResponsibleRelationship> {
+    const studentResponsible = await this.responsibleStudentRepository.findOne({
+      where: { student: { id: studentId }, responsible: { id: responsibleId } },
+    });
+    if (!studentResponsible) {
+      throw new NotFoundException('La relacion entre el estudiante y el responsable no existe');
+    }
+    return studentResponsible.relationship;
   }
 }
