@@ -42,7 +42,7 @@ export class SessionService {
     studentSessionsFilterDto: StudentSessionsFilterDto,
     counselorId: number,
   ): Promise<StudentSessionsResponse> {
-    const students = await this.studentRepository.getStudentsSessionsByCounselorId(
+    const [students, count] = await this.studentRepository.getStudentsSessionsByCounselorId(
       counselorId,
       studentSessionsFilterDto,
       pageDto,
@@ -56,7 +56,7 @@ export class SessionService {
         ? getSessionsCounter(student.expedients.filter(expedient => !expedient.finalConclusion)[0].sessions)
         : 0,
     }));
-    const pagination = getPagination(pageDto, mappedStudents.length);
+    const pagination = getPagination(pageDto, count);
     return { data: plainToClass(StudentSessions, mappedStudents, { excludeExtraneousValues: true }), pagination };
   }
 
@@ -64,6 +64,7 @@ export class SessionService {
     studentExpedientIdsDto: StudentExpedientIdsDto,
     createSessionDto: CreateSessionDto,
   ): Promise<CompleteSessionResponse> {
+    const { expedientId } = studentExpedientIdsDto;
     const saveSessionValidation = this.getSessionTypeValidation(createSessionDto);
     if (!saveSessionValidation) {
       throw new UnprocessableEntityException('No se han agregado los campos minimos para guardar esta sesión');
@@ -79,7 +80,7 @@ export class SessionService {
       expedient: studentExpedient,
     };
     if (!draft) {
-      const identifier = await this.sessionRepository.assignSessionIdentifier(sessionData.sessionType);
+      const identifier = await this.sessionRepository.assignSessionIdentifier(sessionData.sessionType, expedientId);
       sessionToSave.identifier = identifier;
     }
     if (participants?.length) {
@@ -153,7 +154,7 @@ export class SessionService {
     expedientSessionIdsDto: ExpedientSessionIdsDto,
     updateSessionDto: UpdateSessionDto,
   ): Promise<CompleteSessionResponse> {
-    const { studentId } = expedientSessionIdsDto;
+    const { studentId, expedientId } = expedientSessionIdsDto;
     const session = await this.sessionRepository.findSession(expedientSessionIdsDto);
     if (!session) {
       throw new NotFoundException('La sesión especificada no existe');
@@ -167,7 +168,7 @@ export class SessionService {
       ...sessionData,
     };
     if (!draft) {
-      const identifier = await this.sessionRepository.assignSessionIdentifier(session.sessionType);
+      const identifier = await this.sessionRepository.assignSessionIdentifier(session.sessionType, expedientId);
       sessionToSave.identifier = identifier;
       sessionToSave.draft = false;
     }
