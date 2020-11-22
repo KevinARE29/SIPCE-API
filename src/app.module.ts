@@ -42,6 +42,7 @@ import { ExpedientModule } from '@expedient/expedient.module';
         JWT_SECRET_REFRESH_TOKEN: Joi.string().required(),
         JWT_SECRET_PASSWORD_RESET: Joi.string().required(),
         JWT_SECRET_CONFIRMATION_TOKEN: Joi.string().required(),
+        JWT_SECRET_REPORT: Joi.string().required(),
         ACCESS_TOKEN_EXPIRATION: Joi.number().default(1200000), // 20 min
         REFRESH_TOKEN_EXPIRATION: Joi.number().default(7200000), // 2 hours
         PASSWORD_RESET_EXPIRATION: Joi.number().default(86400000), // 24 hours

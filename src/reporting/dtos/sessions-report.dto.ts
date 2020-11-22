@@ -56,7 +56,7 @@ export class SessionsReportFilterDto {
   @IsEnum(EnumServiceType, {
     message: `serviceType: Debe ser uno de los siguientes valores: ${serviceTypeKeys}`,
   })
-  readonly serviceType?: TServiceValues;
+  readonly serviceType!: TServiceValues;
 
   @ApiProperty({ enum: ESessionReport })
   @IsEnum(ESessionReport, {
