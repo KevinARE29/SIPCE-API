@@ -12,6 +12,7 @@ import { SessionsReportFilterDto } from '@reporting/dtos/sessions-report.dto';
 import { SessionRepository } from '@expedient/repositories/session.repository';
 import { SessionsReport } from '@reporting/docs/sessions-report.doc';
 import { SessionsReportResponse } from '@reporting/docs/sessions-report-response.doc';
+import { PdfRequestDto } from '@reporting/dtos/pdf-request.dto';
 
 @Injectable()
 export class ReportingService {
@@ -22,9 +23,8 @@ export class ReportingService {
     private readonly sessionRepository: SessionRepository,
   ) {}
 
-  async generatePdf(): Promise<Buffer> {
-    const jobData = { reportName: 'test' };
-    const job = await this.jobsQueue.add(PDF_JOB, jobData);
+  async generatePdf(pdfRequestDto: PdfRequestDto): Promise<Buffer> {
+    const job = await this.jobsQueue.add(PDF_JOB, pdfRequestDto);
     const pdfObjectBuffer = await job.finished();
     return Buffer.from(pdfObjectBuffer);
   }
