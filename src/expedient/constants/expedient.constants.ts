@@ -1,0 +1,20 @@
+export const initialStudentExpedient = {
+  id: null,
+  referrerName: null,
+  referrerCharge: null,
+  reason: null,
+  problemDescription: null,
+  diagnosticImpression: null,
+  diagnosticImpressionCategories: [],
+  actionPlan: null,
+  finalConclusion: null,
+  sessionsCounter: {
+    individualSessionCounter: 0,
+    parentsInterviewCounter: 0,
+    teachersInterviewCounter: 0,
+  },
+  externalPsychologicalTreatments: [],
+  activeInterventionPrograms: [],
+  evaluations: [],
+  expedientGrade: null,
+};

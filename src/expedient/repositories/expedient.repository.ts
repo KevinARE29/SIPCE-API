@@ -10,4 +10,21 @@ export class ExpedientRepository extends Repository<Expedient> {
       where: { id: expedientId, student: { id: studentId } },
     });
   }
+
+  findStudentExpedients(studentId: number): Promise<Expedient[]> {
+    const query = this.createQueryBuilder('expedient')
+      .leftJoinAndSelect('expedient.externalPsychologicalTreatments', 'externalPsychologicalTreatments')
+      .leftJoinAndSelect('expedient.sessions', 'sessions')
+      .leftJoinAndSelect('sessions.evaluations', 'evaluations')
+      .leftJoinAndSelect('expedient.gradeDetail', 'gradeDetail')
+      .leftJoinAndSelect('gradeDetail.grade', 'grade')
+      .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoinAndSelect('cycleDetail.schoolYear', 'schoolYear')
+      .leftJoinAndSelect('expedient.student', 'student')
+      .leftJoinAndSelect('student.currentGrade', 'currentGrade')
+      .orderBy({ 'expedient.createdAt': 'DESC' })
+      .andWhere(`student.id = ${studentId}`)
+      .andWhere('expedient.deletedAt is null');
+    return query.getMany();
+  }
 }

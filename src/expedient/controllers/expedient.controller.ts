@@ -12,12 +12,24 @@ import { CompleteSessionResponse } from '@expedient/docs/complete-session-respon
 import { PageDto } from '@core/dtos/page.dto';
 import { ExpedientSessionIdsDto } from '@expedient/dtos/expedient-session-ids.dto';
 import { UpdateSessionDto } from '@expedient/dtos/update-session.dto';
+import { StudentIdDto } from '@students/dtos/student-id.dto';
+import { StudentExpedientsResponse } from '@expedient/docs/student-expedients-response.doc';
 
 @ApiTags('Expedients Endpoints')
 @UseGuards(ContentTypeGuard)
 @Controller('students')
 export class ExpedientController {
   constructor(private readonly expedientService: ExpedientService, private readonly sessionService: SessionService) {}
+
+  @ApiOperation({
+    summary: 'Consulta de los expedientes de un estudiante',
+    description: 'Use este endpoint para consultar los expedientes de un estudiante',
+  })
+  @Auth('manage_expedient')
+  @Get(':studentId/expedients')
+  getStudentExpedients(@Param() studentIdDto: StudentIdDto): Promise<StudentExpedientsResponse> {
+    return this.expedientService.findStudentExpedients(studentIdDto);
+  }
 
   @ApiOperation({
     summary: 'Consulta de las sesiones de un estudiante en un determinado expediente',

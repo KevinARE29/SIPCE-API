@@ -143,4 +143,15 @@ export class SessionRepository extends Repository<Session> {
       [[null, ...sessionIds]],
     );
   }
+
+  findSessionsInterventionPrograms(expedientId: number): Promise<Session[]> {
+    const query = this.createQueryBuilder('session')
+      .leftJoin('session.expedient', 'expedient')
+      .leftJoinAndSelect('session.interventionProgram', 'interventionProgram')
+      .distinctOn(['interventionProgram.id'])
+      .andWhere('session.deletedAt is null')
+      .andWhere(`"expedient"."id" = ${expedientId}`);
+
+    return query.getMany();
+  }
 }
