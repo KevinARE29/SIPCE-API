@@ -147,7 +147,7 @@ export class StudentRepository extends Repository<Student> {
     counselorId: number,
     studentSessionsFilterDto: StudentSessionsFilterDto,
     pageDto: PageDto,
-  ): Promise<Student[]> {
+  ): Promise<[Student[], number]> {
     const { sort, firstname, lastname, code, currentGrade, currentShift } = studentSessionsFilterDto;
     const { page, perPage } = pageDto;
     const query = this.createQueryBuilder('student')
@@ -162,7 +162,6 @@ export class StudentRepository extends Repository<Student> {
       .leftJoin('cycleDetail.schoolYear', 'schoolYear')
       .andWhere(`"counselor"."id" = ${counselorId}`)
       .andWhere(`"schoolYear"."status" = '${ESchoolYearStatus['En curso']}'`)
-      .andWhere('expedients.finalConclusion is null')
       .andWhere('student.deletedAt is null')
       .take(perPage)
       .skip((page - 1) * perPage);
@@ -193,6 +192,6 @@ export class StudentRepository extends Repository<Student> {
     if (currentShift) {
       query.andWhere(`"currentShift"."id" = ${currentShift}`);
     }
-    return query.getMany();
+    return query.getManyAndCount();
   }
 }

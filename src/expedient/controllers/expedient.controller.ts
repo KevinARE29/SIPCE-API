@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards, Post, Body, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards, Post, Body, Delete, HttpCode, Patch } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
 import { ExpedientService } from '@expedient/services/expedient.service';
@@ -11,12 +11,25 @@ import { SessionService } from '@expedient/services/session.service';
 import { CompleteSessionResponse } from '@expedient/docs/complete-session-response.doc';
 import { PageDto } from '@core/dtos/page.dto';
 import { ExpedientSessionIdsDto } from '@expedient/dtos/expedient-session-ids.dto';
+import { UpdateSessionDto } from '@expedient/dtos/update-session.dto';
+import { StudentIdDto } from '@students/dtos/student-id.dto';
+import { StudentExpedientsResponse } from '@expedient/docs/student-expedients-response.doc';
 
 @ApiTags('Expedients Endpoints')
 @UseGuards(ContentTypeGuard)
 @Controller('students')
 export class ExpedientController {
   constructor(private readonly expedientService: ExpedientService, private readonly sessionService: SessionService) {}
+
+  @ApiOperation({
+    summary: 'Consulta de los expedientes de un estudiante',
+    description: 'Use este endpoint para consultar los expedientes de un estudiante',
+  })
+  @Auth('manage_expedient')
+  @Get(':studentId/expedients')
+  getStudentExpedients(@Param() studentIdDto: StudentIdDto): Promise<StudentExpedientsResponse> {
+    return this.expedientService.findStudentExpedients(studentIdDto);
+  }
 
   @ApiOperation({
     summary: 'Consulta de las sesiones de un estudiante en un determinado expediente',
@@ -66,5 +79,18 @@ export class ExpedientController {
     @Param() expedientSessionIdsDto: ExpedientSessionIdsDto,
   ): Promise<CompleteSessionResponse> {
     return this.sessionService.getSession(expedientSessionIdsDto);
+  }
+
+  @ApiOperation({
+    summary: 'Editar sesión en un determinado expediente',
+    description: 'Use este endpoint para editar una sesión en un determinado expediente',
+  })
+  @Auth('manage_expedient')
+  @Patch(':studentId/expedients/:expedientId/sessions/:sessionId')
+  UpdateStudentExpedientSession(
+    @Param() expedientSessionIdsDto: ExpedientSessionIdsDto,
+    @Body() updatSessionDto: UpdateSessionDto,
+  ): Promise<CompleteSessionResponse> {
+    return this.sessionService.updateSession(expedientSessionIdsDto, updatSessionDto);
   }
 }

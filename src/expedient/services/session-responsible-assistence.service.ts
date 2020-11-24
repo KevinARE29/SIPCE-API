@@ -13,34 +13,46 @@ export class SessionResponsibleAssistenceService {
     private readonly sessionResponsibleAssistenceRepository: SessionResponsibleAssistenceRepository,
   ) {}
 
-  async createSessionResponsibleAssistence(
+  async createOrUpdateSessionResponsibleAssistence(
     session: Session,
     otherResponsible: OtherResponsiblesAssistenceDto | undefined,
-    responsibles: ResponsiblesAssistenceDto[],
+    responsibles: ResponsiblesAssistenceDto[] | undefined,
     studentId: number,
-  ): Promise<SessionResponsibleAssistence> {
-    const responsiblesIds = responsibles.map(responsible => responsible.id);
-    const studentResponsibles = await this.responsibleRepository.findStudentResponsiblesById(
-      responsiblesIds,
-      studentId,
-    );
-    if (!studentResponsibles) {
-      throw new NotFoundException('Los responsables enviados no corresponden al estudiante');
-    }
-    const responsible1 = studentResponsibles[0];
-    const responsible1Assistence = responsibles.find(responsible => responsible.id === responsible1.id)?.attended;
+    sessionResponsibleAsistenceId?: number,
+  ): Promise<SessionResponsibleAssistence | undefined> {
     const sessionResponsibleAsistence: Partial<SessionResponsibleAssistence> = {
       ...otherResponsible,
       session,
-      responsible1,
-      responsible1Assistence,
     };
-    if (studentResponsibles.length > 1) {
-      const responsible2 = studentResponsibles[1];
-      const responsible2Assistence = responsibles.find(responsible => responsible.id === responsible2.id)?.attended;
-      sessionResponsibleAsistence.responsible2 = responsible2;
-      sessionResponsibleAsistence.responsible2Assistence = responsible2Assistence;
+    if (responsibles?.length) {
+      const responsiblesIds = responsibles.map(responsible => responsible.id);
+      const studentResponsibles = await this.responsibleRepository.findStudentResponsiblesById(
+        responsiblesIds,
+        studentId,
+      );
+      if (!studentResponsibles) {
+        throw new NotFoundException('Los responsables enviados no corresponden al estudiante');
+      }
+      const responsible1 = studentResponsibles[0];
+      const responsible1Assistence = responsibles.find(responsible => responsible.id === responsible1.id)?.attended;
+      sessionResponsibleAsistence.responsible1 = responsible1;
+      sessionResponsibleAsistence.responsible1Assistence = responsible1Assistence;
+      if (studentResponsibles.length > 1) {
+        const responsible2 = studentResponsibles[1];
+        const responsible2Assistence = responsibles.find(responsible => responsible.id === responsible2.id)?.attended;
+        sessionResponsibleAsistence.responsible2 = responsible2;
+        sessionResponsibleAsistence.responsible2Assistence = responsible2Assistence;
+      }
     }
-    return this.sessionResponsibleAssistenceRepository.save(sessionResponsibleAsistence);
+    if (sessionResponsibleAsistenceId) {
+      sessionResponsibleAsistence.id = sessionResponsibleAsistenceId;
+    }
+
+    const savedResponsibleAsistence = await this.sessionResponsibleAssistenceRepository.save(
+      sessionResponsibleAsistence,
+    );
+    return this.sessionResponsibleAssistenceRepository.findOne(savedResponsibleAsistence.id, {
+      relations: ['responsible1', 'responsible2'],
+    });
   }
 }

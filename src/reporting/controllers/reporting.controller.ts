@@ -1,17 +1,30 @@
-import { Controller, Get, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DashboardResponse } from '@reporting/docs/dashboard/dashboard-response.doc';
+import { SessionsReportFilterDto } from '@reporting/dtos/sessions-report.dto';
+import { SessionsReportResponse } from '@reporting/docs/sessions-report-response.doc';
+import { Auth } from '@auth/decorators/auth.decorator';
+import { ExpedientSessionIdsDto } from '@expedient/dtos/expedient-session-ids.dto';
+import { SessionService } from '@expedient/services/session.service';
+import { StudentService } from '@students/services';
+import { InterviewLogResponse } from '@reporting/docs/interview-log-response.doc';
+import { PdfRequestDto } from '@reporting/dtos/pdf-request.dto';
+import { SimpleJwt } from '@reporting/guards/simple-jwt.guard';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
 @Controller('reporting')
 export class ReportingController {
-  constructor(private readonly reportingService: ReportingService) {}
+  constructor(
+    private readonly reportingService: ReportingService,
+    private readonly studentService: StudentService,
+    private readonly sessionService: SessionService,
+  ) {}
 
-  @Get('')
-  async generatePdf(@Res() res: Response): Promise<any> {
-    const buffer = await this.reportingService.generatePdf();
+  @Post('')
+  async generatePdf(@Res() res: Response, @Body() pdfRequestDto: PdfRequestDto): Promise<any> {
+    const buffer = await this.reportingService.generatePdf(pdfRequestDto);
     res.set({
       // pdf
       'Content-Type': 'application/pdf',
@@ -25,8 +38,40 @@ export class ReportingController {
     res.end(buffer);
   }
 
+  @ApiOperation({
+    summary: 'Consultar dashboard',
+    description: 'Use este endpoint para consultar el dashboard',
+  })
+  @Auth()
   @Get('dashboard')
   async getDashboard(): Promise<DashboardResponse> {
     return this.reportingService.getDashboard();
+  }
+
+  @ApiOperation({
+    summary: 'Generar reportes de sesiones',
+    description: 'Use este endpoint para generar reportes de sesiones',
+  })
+  @Get('sessions')
+  @Auth('generate_sessions_reports')
+  getSessions(@Query() sessionsReportDto: SessionsReportFilterDto): Promise<SessionsReportResponse> {
+    return this.reportingService.getSessions(sessionsReportDto);
+  }
+
+  @ApiOperation({
+    summary: 'Exportar bitácora de entrevista con padres de familia',
+    description: 'Use este endpoint para exportar bitácoras de entrevista con padres de familia',
+  })
+  @UseGuards(SimpleJwt)
+  @Get('students/:studentId/expedients/:expedientId/sessions/:sessionId')
+  async getStudentExpedientSession(
+    @Param() expedientSessionIdsDto: ExpedientSessionIdsDto,
+  ): Promise<InterviewLogResponse> {
+    const [student, session] = await Promise.all([
+      this.studentService.getStudent(expedientSessionIdsDto.studentId),
+      this.sessionService.getSession(expedientSessionIdsDto),
+    ]);
+
+    return { data: { student: student.data, session: session.data } };
   }
 }
