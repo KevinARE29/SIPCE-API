@@ -1,7 +1,6 @@
 export enum EQuestionType {
-  'ACEPTACIÓN' = 'Aceptación',
+  'ACEPTACIÓN/RECHAZO' = 'Aceptación/Rechazo',
   'LIDERAZGO' = 'Liderazgo',
-  'RECHAZO' = 'Rechazo',
 }
 
 export type TQuestionType = keyof typeof EQuestionType;

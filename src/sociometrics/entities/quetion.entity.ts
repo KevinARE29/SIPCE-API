@@ -8,8 +8,11 @@ export class Question {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 256 })
-  question!: string;
+  @Column('varchar', { length: 256, name: 'quetion_q' })
+  questionP!: string;
+
+  @Column('varchar', { length: 256, name: 'quetion_n', nullable: true })
+  questionN!: string;
 
   @Column('enum', { enum: EQuestionType, enumName: 'question_type_enum' })
   type!: EQuestionType;
