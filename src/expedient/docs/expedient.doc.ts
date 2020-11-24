@@ -8,9 +8,6 @@ export class Expedient {
   referrerName!: string;
 
   @Expose()
-  referrerCharge!: string;
-
-  @Expose()
   reason!: string;
 
   @Expose()
@@ -21,6 +18,9 @@ export class Expedient {
 
   @Expose()
   diagnosticImpressionCategories!: string[];
+
+  @Expose()
+  externalPsychologicalTreatments!: string[];
 
   @Expose()
   actionPlan!: string;
