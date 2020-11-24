@@ -14,6 +14,8 @@ import { ExpedientSessionIdsDto } from '@expedient/dtos/expedient-session-ids.dt
 import { UpdateSessionDto } from '@expedient/dtos/update-session.dto';
 import { StudentIdDto } from '@students/dtos/student-id.dto';
 import { StudentExpedientsResponse } from '@expedient/docs/student-expedients-response.doc';
+import { CreateExpedientDto } from '@expedient/dtos/create-expedient.dto';
+import { StudentExpedientResponse } from '@expedient/docs/student-expedient-response.doc';
 
 @ApiTags('Expedients Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -29,6 +31,19 @@ export class ExpedientController {
   @Get(':studentId/expedients')
   getStudentExpedients(@Param() studentIdDto: StudentIdDto): Promise<StudentExpedientsResponse> {
     return this.expedientService.findStudentExpedients(studentIdDto);
+  }
+
+  @ApiOperation({
+    summary: 'Crear expediente de un estudiante',
+    description: 'Use este endpoint para crear expediente de un estudiante',
+  })
+  @Auth('manage_expedient')
+  @Post(':studentId/expedients')
+  OpenStudentExpedients(
+    @Param() studentIdDto: StudentIdDto,
+    @Body() createExpedientDto: CreateExpedientDto,
+  ): Promise<StudentExpedientResponse> {
+    return this.expedientService.openStudentExpedient(studentIdDto, createExpedientDto);
   }
 
   @ApiOperation({
