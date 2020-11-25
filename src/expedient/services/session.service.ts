@@ -24,6 +24,7 @@ import { EResponsibleRelationship } from '@students/constants/student.constant';
 import { SessionResponsibleAssistence } from '@expedient/entities/session-responsible-assistence.entity';
 import { EvaluationService } from './evaluation.service';
 import { SessionResponsibleAssistenceService } from './session-responsible-assistence.service';
+import { InterventionProgramService } from './intervention-program.service';
 
 @Injectable()
 export class SessionService {
@@ -35,6 +36,7 @@ export class SessionService {
     private readonly userRepository: UserRepository,
     private readonly sessionResponsibleAssistenceService: SessionResponsibleAssistenceService,
     private readonly responsibleService: ResponsibleService,
+    private readonly interventionProgramService: InterventionProgramService,
   ) {}
 
   async getStudentsExpedientSessions(
@@ -69,7 +71,15 @@ export class SessionService {
     if (!saveSessionValidation) {
       throw new UnprocessableEntityException('No se han agregado los campos minimos para guardar esta sesión');
     }
-    const { participants, evaluations, responsibles, otherResponsible, draft, ...sessionData } = createSessionDto;
+    const {
+      participants,
+      evaluations,
+      responsibles,
+      otherResponsible,
+      draft,
+      interventionProgramId,
+      ...sessionData
+    } = createSessionDto;
     const studentExpedient = await this.expedientRepository.findExpedientByStudentId(studentExpedientIdsDto);
     if (!studentExpedient) {
       throw new NotFoundException('El expediente no pertenece al estudiante especificado');
@@ -85,6 +95,12 @@ export class SessionService {
     }
     if (participants?.length) {
       sessionToSave.counselor = await this.userRepository.findSessionParticipants(participants);
+    }
+    if (interventionProgramId) {
+      const interventionProgram = await this.interventionProgramService.getInterventionProgramOrFail(
+        interventionProgramId,
+      );
+      sessionToSave.interventionProgram = interventionProgram;
     }
     const session = await this.sessionRepository.save(sessionToSave);
     if (evaluations?.length) {
@@ -105,14 +121,22 @@ export class SessionService {
   }
 
   getSessionTypeValidation(createSessionDto: CreateSessionDto): boolean {
-    const { sessionType, participants, treatedTopics, agreements, responsibles, startHour } = createSessionDto;
+    const {
+      sessionType,
+      participants,
+      treatedTopics,
+      agreements,
+      responsibles,
+      startHour,
+      interventionProgramId,
+    } = createSessionDto;
     switch (sessionType) {
       case EnumSessionType.ENTREVISTA_DOCENTE:
         return !!participants?.length;
       case EnumSessionType.ENTREVISTA_PADRES_DE_FAMILIA:
         return !!(startHour && treatedTopics && agreements && responsibles?.length);
       default:
-        return true;
+        return !!interventionProgramId;
     }
   }
 
@@ -162,7 +186,15 @@ export class SessionService {
     if (!session.draft) {
       throw new UnprocessableEntityException('La sesión no puede modificarse, ya que no es un borrador');
     }
-    const { participants, evaluations, responsibles, otherResponsible, draft, ...sessionData } = updateSessionDto;
+    const {
+      participants,
+      evaluations,
+      responsibles,
+      otherResponsible,
+      draft,
+      interventionProgramId,
+      ...sessionData
+    } = updateSessionDto;
     const sessionToSave: Partial<Session> = {
       ...session,
       ...sessionData,
@@ -188,6 +220,12 @@ export class SessionService {
         session.sessionResponsibleAssistence.id,
       );
       sessionToSave.sessionResponsibleAssistence = savedSessionResponsibleAssistence;
+    }
+    if (interventionProgramId) {
+      const interventionProgram = await this.interventionProgramService.getInterventionProgramOrFail(
+        interventionProgramId,
+      );
+      sessionToSave.interventionProgram = interventionProgram;
     }
     const savedSession = await this.sessionRepository.save(sessionToSave);
     if (savedSession.sessionResponsibleAssistence && savedSession.sessionResponsibleAssistence.responsible1) {
