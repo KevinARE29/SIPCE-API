@@ -20,6 +20,7 @@ import { Shift } from '@academics/entities/shift.entity';
 import { Schedule } from '@schedules/entities/schedules.entity';
 import { Request } from '@counseling/entities/request.entity';
 import { Expedient } from '@expedient/entities/expedient.entity';
+import { BehavioralHistory } from '@history/entities/behavioral-history.entity';
 import { ResponsibleStudent } from './responsible-student.entity';
 import { Image } from './image.entity';
 
@@ -145,4 +146,10 @@ export class Student {
       this.currentPhoto = orderedImages.slice(-1)[0];
     }
   }
+
+  @OneToMany(
+    () => BehavioralHistory,
+    behavioralHistory => behavioralHistory.studentId,
+  )
+  behavioralHistorys!: BehavioralHistory[];
 }

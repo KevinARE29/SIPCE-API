@@ -1,11 +1,21 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { User } from '@users/entities/users.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { BehavioralHistory } from './behavioral-history.entity';
 
 @Entity()
 export class ClassDiary {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 256 })
+  @Column('varchar', { length: 512 })
   description!: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
@@ -16,4 +26,20 @@ export class ClassDiary {
 
   @Column({ name: 'deleted_at', nullable: true, type: 'timestamptz' })
   deletedAt!: Date;
+
+  @ManyToOne(
+    () => BehavioralHistory,
+    behavioralHistory => behavioralHistory.classDiarys,
+    { nullable: true },
+  )
+  @JoinColumn({ name: 'behavioral_history_id' })
+  behavioralHistoryId?: BehavioralHistory;
+
+  @ManyToOne(
+    () => User,
+    user => user.classDiarys,
+    { nullable: true },
+  )
+  @JoinColumn({ name: 'reporter_id' })
+  reporterId?: User;
 }

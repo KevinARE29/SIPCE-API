@@ -5,7 +5,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('History Endpoints')
 @UseGuards(ContentTypeGuard)
-@Controller('sanctions')
+@Controller('assignation/foul')
 export class FoulSanctionAssignationController {
   constructor(private readonly sanctionsService: FoulSanctionAssignationService) {}
 }

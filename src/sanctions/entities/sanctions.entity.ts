@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { FoulSanctionAssignation } from '@history/entities/foul-sanction-assignation.entity';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class Sanction {
@@ -19,4 +20,10 @@ export class Sanction {
 
   @Column({ name: 'deleted_at', nullable: true, type: 'timestamptz' })
   deletedAt!: Date;
+
+  @OneToMany(
+    () => FoulSanctionAssignation,
+    foulSanctionAssignation => foulSanctionAssignation.sanctionId,
+  )
+  foulSanctionAssignations!: FoulSanctionAssignation[];
 }
