@@ -60,4 +60,8 @@ export class UpdateSessionDto {
   @IsDto(UpdateOtherResponsiblesAssistenceDto)
   @IsOptional()
   readonly otherResponsible?: UpdateOtherResponsiblesAssistenceDto;
+
+  @IsId()
+  @IsOptional()
+  readonly interventionProgramId?: number;
 }
