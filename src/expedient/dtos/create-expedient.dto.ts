@@ -16,21 +16,21 @@ export class CreateExpedientDto {
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  readonly diagnosticImpression!: string;
+  readonly diagnosticImpression?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString, each: true })
-  readonly diagnosticImpressionCategories!: string[];
+  readonly diagnosticImpressionCategories?: string[];
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  readonly actionPlan!: string;
+  readonly actionPlan?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString })
-  readonly finalConclusion!: string;
+  readonly finalConclusion?: string;
 
   @IsOptional()
   @IsString({ message: validator.isString, each: true })
-  readonly externalPsychologicalTreatments!: string[];
+  readonly externalPsychologicalTreatments?: string[];
 }
