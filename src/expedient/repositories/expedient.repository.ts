@@ -13,7 +13,6 @@ export class ExpedientRepository extends Repository<Expedient> {
 
   findStudentExpedients(studentId: number): Promise<Expedient[]> {
     const query = this.createQueryBuilder('expedient')
-      .leftJoinAndSelect('expedient.externalPsychologicalTreatments', 'externalPsychologicalTreatments')
       .leftJoinAndSelect('expedient.sessions', 'sessions')
       .leftJoinAndSelect('sessions.evaluations', 'evaluations')
       .leftJoinAndSelect('expedient.gradeDetail', 'gradeDetail')
