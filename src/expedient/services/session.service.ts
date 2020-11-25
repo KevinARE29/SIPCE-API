@@ -22,6 +22,7 @@ import { Responsible } from '@students/entities/responsible.entity';
 import { ResponsibleService } from '@students/services';
 import { EResponsibleRelationship } from '@students/constants/student.constant';
 import { SessionResponsibleAssistence } from '@expedient/entities/session-responsible-assistence.entity';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 import { EvaluationService } from './evaluation.service';
 import { SessionResponsibleAssistenceService } from './session-responsible-assistence.service';
 import { InterventionProgramService } from './intervention-program.service';
@@ -62,6 +63,7 @@ export class SessionService {
     return { data: plainToClass(StudentSessions, mappedStudents, { excludeExtraneousValues: true }), pagination };
   }
 
+  @Transactional()
   async createStudentExpedientSession(
     studentExpedientIdsDto: StudentExpedientIdsDto,
     createSessionDto: CreateSessionDto,
@@ -116,7 +118,7 @@ export class SessionService {
       );
       session.sessionResponsibleAssistence = savedSessionResponsibleAssistence as SessionResponsibleAssistence;
     }
-    this.sessionRepository.save(session);
+    await this.sessionRepository.save(session);
     return { data: plainToClass(CompleteSession, session, { excludeExtraneousValues: true }) };
   }
 
@@ -174,6 +176,7 @@ export class SessionService {
     return { data: plainToClass(CompleteSession, session, { excludeExtraneousValues: true }) };
   }
 
+  @Transactional()
   async updateSession(
     expedientSessionIdsDto: ExpedientSessionIdsDto,
     updateSessionDto: UpdateSessionDto,
