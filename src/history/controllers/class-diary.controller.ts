@@ -11,7 +11,7 @@ import { AnnotationResponse } from '@history/docs/annotation-response.doc';
 
 @ApiTags('Class Diary Endpoints (Annotations)')
 @UseGuards(ContentTypeGuard)
-@Controller('student/:studentId/histories/:historyId')
+@Controller('students/:studentId/histories/:historyId')
 export class ClassDiaryController {
   constructor(private readonly classDiaryService: ClassDiaryService) {}
 
