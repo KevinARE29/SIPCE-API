@@ -110,6 +110,7 @@ export class StudentRepository extends Repository<Student> {
         'rStudent',
         'rStudent.student = student.id',
       )
+      .leftJoinAndSelect('image.grade', 'imageGrade')
       .leftJoinAndMapOne('rStudent.responsible', Responsible, 'responsible', 'rStudent.responsible = responsible.id')
       .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
       .leftJoinAndSelect('sectionDetail.section', 'section')
