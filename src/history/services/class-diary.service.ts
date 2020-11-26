@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ClassDiaryRepository } from '@history/repository/class-diary.repository';
 import { StudentHistoryIdsDto } from '@history/dtos/student-history-ids.dto';
 import { CreateAnnotationDto } from '@history/dtos/create-annotation.dto';
@@ -22,6 +22,11 @@ export class ClassDiaryService {
     createAnnotationDto: CreateAnnotationDto,
   ): Promise<AnnotationResponse> {
     const studentHistory = await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(studentHistoryIdsDto);
+    if (studentHistory.finalConclusion) {
+      throw new UnprocessableEntityException(
+        'No se puede crear una nueva anotación ya que el historial de conducta ya esta cerrado',
+      );
+    }
     const reporter = await this.userRepository.findByIdOrThrow(reporterId);
     const annotation = {
       ...createAnnotationDto,
