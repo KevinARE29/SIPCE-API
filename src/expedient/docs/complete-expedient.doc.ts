@@ -1,7 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { Expedient } from './expedient.doc';
 import { SessionTypeCounter } from './session-type-counter.doc';
-import { ExternalPsychologicalTreatments } from './external-psychologicalTreatments.doc';
 import { InterventionProgram } from './intervention-program.doc';
 import { Evaluation } from './evaluation.doc';
 
@@ -9,10 +8,6 @@ export class CompleteExpedient extends Expedient {
   @Expose()
   @Type(() => SessionTypeCounter)
   sessionsCounter!: SessionTypeCounter;
-
-  @Expose()
-  @Type(() => ExternalPsychologicalTreatments)
-  externalPsychologicalTreatments!: ExternalPsychologicalTreatments[];
 
   @Expose()
   @Type(() => InterventionProgram)
