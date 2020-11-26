@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { SociometricTest } from './sociometric-test.entity';
 
 @Entity()
 export class Preset {
@@ -22,4 +31,12 @@ export class Preset {
 
   @Column({ name: 'deleted_at', nullable: true, type: 'timestamptz' })
   deletedAt!: Date;
+
+  @ManyToOne(
+    () => SociometricTest,
+    sociometricTest => sociometricTest.presets,
+    { nullable: false },
+  )
+  @JoinColumn({ name: 'sociometric_test_id' })
+  sociometricTest!: SociometricTest;
 }

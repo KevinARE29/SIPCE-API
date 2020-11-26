@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Preset } from './preset.entity';
 import { QuestionBank } from './quetion-bank.entity';
 import { SociometricTestDetail } from './sociometric-test-detail.entity';
 
@@ -57,4 +58,10 @@ export class SociometricTest {
     sociometricTestDetail => sociometricTestDetail.sociometricTest,
   )
   sociometricTestDetails!: SociometricTestDetail[];
+
+  @OneToMany(
+    () => Preset,
+    preset => preset.sociometricTest,
+  )
+  presets!: Preset[];
 }
