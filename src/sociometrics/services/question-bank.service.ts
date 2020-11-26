@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { PageDto } from '@core/dtos/page.dto';
 import { getPagination } from '@core/utils/pagination.util';
 import { QuestionBankRepository } from '@sociometrics/repositories/question-bank.repository';
@@ -83,7 +83,12 @@ export class QuestionBankService {
     updateQuestionBankDto: QuestionBankDto,
   ): Promise<QuestionBankResponse> {
     const questionBank = await this.questionBankRepository.findByIdOrThrow(questionBankId, counselorId);
-    // TODO: Add validation if there are any sociometric test associated
+
+    if (questionBank.sociometricTests.length) {
+      throw new UnprocessableEntityException(
+        'El banco de preguntas especificado no se puede actualizar por estar vinculado a 1 o más pruebas sociométricas ',
+      );
+    }
 
     await this.questionRepository.delete({ questionBank });
     const questions = updateQuestionBankDto.questions.map(question => ({ ...question, questionBank }));
@@ -106,7 +111,13 @@ export class QuestionBankService {
 
   async deleteQuestionBank(counselorId: number, questionBankId: number): Promise<void> {
     const questionBank = await this.questionBankRepository.findByIdOrThrow(questionBankId, counselorId);
-    // TODO: Add validation if there are any sociometric test associated
+
+    if (questionBank.sociometricTests.length) {
+      throw new UnprocessableEntityException(
+        'El banco de preguntas especificado no se puede eliminar por estar vinculado a 1 o más pruebas sociométricas ',
+      );
+    }
+
     questionBank.deletedAt = new Date();
     await this.questionBankRepository.save(questionBank);
   }
