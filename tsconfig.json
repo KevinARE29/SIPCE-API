@@ -28,6 +28,7 @@
       "@sanctions/*": ["src/sanctions/*"],
       "@reporting/*": ["src/reporting/*"],
       "@expedient/*": ["src/expedient/*"],
+      "@sociometrics/*": ["src/sociometrics/*"],
       "@history/*": ["src/history/*"]
     }
   },
