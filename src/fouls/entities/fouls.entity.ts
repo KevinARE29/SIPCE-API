@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { EnumFoulsType } from '@fouls/constants/fouls.constants';
+import { FoulSanctionAssignation } from '@history/entities/foul-sanction-assignation.entity';
 
 @Entity()
 export class Foul {
@@ -23,4 +24,10 @@ export class Foul {
 
   @Column({ name: 'deleted_at', nullable: true, type: 'timestamptz' })
   deletedAt!: Date;
+
+  @OneToMany(
+    () => FoulSanctionAssignation,
+    foulSanctionAssignation => foulSanctionAssignation.foulId,
+  )
+  foulSanctionAssignations!: FoulSanctionAssignation[];
 }
