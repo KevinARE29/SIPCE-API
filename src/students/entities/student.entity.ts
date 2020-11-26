@@ -138,7 +138,7 @@ export class Student {
 
   @AfterLoad()
   getLastImage() {
-    if (this.images?.length) {
+    if (this.images?.length && this.images[0].grade) {
       const orderedImages = this.images.sort((a, b) => {
         return a.grade.id - b.grade.id;
       });
