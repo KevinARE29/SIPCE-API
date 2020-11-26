@@ -1,4 +1,5 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { Question } from './question.doc';
 
 export class QuestionBank {
   @Expose()
@@ -8,5 +9,6 @@ export class QuestionBank {
   name!: string;
 
   @Expose()
-  questions!: number;
+  @Type(() => Question)
+  questions!: Question;
 }
