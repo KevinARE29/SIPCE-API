@@ -77,7 +77,8 @@
     "socket.io-redis": "^5.4.0",
     "streamifier": "^0.1.1",
     "swagger-ui-express": "^4.1.4",
-    "typeorm": "^0.2.25"
+    "typeorm": "^0.2.25",
+    "typeorm-transactional-cls-hooked": "^0.1.12"
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.11",
@@ -142,7 +143,8 @@
       "^@sanctions(.*)$": "<rootDir>/sanctions$1",
       "^@reporting(.*)$": "<rootDir>/reporting$1",
       "^@expedient(.*)$": "<rootDir>/expedient$1",
-      "^@sociometrics(.*)$": "<rootDir>/sociometrics$1"
+      "^@sociometrics(.*)$": "<rootDir>/sociometrics$1",
+      "^@history(.*)$": "<rootDir>/history$1"
     },
     "testRegex": ".spec.ts$",
     "transform": {

@@ -8,10 +8,16 @@ import { LogService } from '@logs/services/log.service';
 import { urlencoded, json } from 'express';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import {
+  initializeTransactionalContext,
+  patchTypeORMRepositoryWithBaseRepository,
+} from 'typeorm-transactional-cls-hooked';
 import { AllExceptionsFilter } from './core/filters/http-exception.filter';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  initializeTransactionalContext();
+  patchTypeORMRepositoryWithBaseRepository();
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(helmet());
   app.use(json({ limit: '50mb' }));

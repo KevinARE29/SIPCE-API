@@ -30,7 +30,7 @@ export class SessionResponsibleAssistenceService {
         responsiblesIds,
         studentId,
       );
-      if (!studentResponsibles) {
+      if (!studentResponsibles.length) {
         throw new NotFoundException('Los responsables enviados no corresponden al estudiante');
       }
       const responsible1 = studentResponsibles[0];

@@ -18,6 +18,7 @@ import { BullModule } from '@nestjs/bull/dist/bull.module';
 import { bullFactory } from '@reporting/factories/bull.factory';
 import { ExpedientModule } from '@expedient/expedient.module';
 import { SociometricsModule } from '@sociometrics/sociometrics.module';
+import { HistoryModule } from '@history/history.module';
 
 @Module({
   imports: [
@@ -87,6 +88,7 @@ import { SociometricsModule } from '@sociometrics/sociometrics.module';
     ReportingModule,
     ExpedientModule,
     SociometricsModule,
+    HistoryModule,
   ],
 })
 export class AppModule {}

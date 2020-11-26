@@ -20,6 +20,7 @@ import { Schedule } from '@schedules/entities/schedules.entity';
 import { InterventionProgram } from '@expedient/entities/intervention-program.entity';
 import { Session } from '@expedient/entities/session.entity';
 import { QuestionBank } from '@sociometrics/entities/quetion-bank.entity';
+import { ClassDiary } from '@history/entities/class-diary.entity';
 
 @Entity()
 export class User {
@@ -151,4 +152,10 @@ export class User {
     questionBank => questionBank.counselor,
   )
   questionBanks!: QuestionBank[];
+
+  @OneToMany(
+    () => ClassDiary,
+    classDiary => classDiary.reporterId,
+  )
+  classDiarys!: ClassDiary[];
 }

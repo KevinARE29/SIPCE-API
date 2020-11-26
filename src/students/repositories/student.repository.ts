@@ -110,6 +110,7 @@ export class StudentRepository extends Repository<Student> {
         'rStudent',
         'rStudent.student = student.id',
       )
+      .leftJoinAndSelect('image.grade', 'imageGrade')
       .leftJoinAndMapOne('rStudent.responsible', Responsible, 'responsible', 'rStudent.responsible = responsible.id')
       .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
       .leftJoinAndSelect('sectionDetail.section', 'section')
@@ -193,5 +194,19 @@ export class StudentRepository extends Repository<Student> {
       query.andWhere(`"currentShift"."id" = ${currentShift}`);
     }
     return query.getManyAndCount();
+  }
+
+  getStudentCurrentAssignation(studentId: number): Promise<Student | undefined> {
+    return this.createQueryBuilder('student')
+      .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
+      .leftJoinAndSelect('sectionDetail.gradeDetail', 'gradeDetail')
+      .leftJoinAndSelect('gradeDetail.grade', 'grade')
+      .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoinAndSelect('cycleDetail.schoolYear', 'schoolYear')
+      .andWhere(`"student"."id" = ${studentId}`)
+      .andWhere(`"schoolYear"."status" = '${ESchoolYearStatus['En curso']}'`)
+      .andWhere('student.deletedAt is null')
+      .orderBy({ 'grade.id': 'DESC' })
+      .getOne();
   }
 }
