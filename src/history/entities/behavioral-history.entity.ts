@@ -18,7 +18,7 @@ export class BehavioralHistory {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { name: 'final_conclusion', length: 512 })
+  @Column('varchar', { name: 'final_conclusion', length: 512, nullable: true })
   finalConclusion!: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
