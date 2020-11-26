@@ -29,7 +29,7 @@ export class Question {
   @ManyToOne(
     () => QuestionBank,
     quetionBank => quetionBank.questions,
-    { nullable: false },
+    { nullable: false, eager: true },
   )
   @JoinColumn({ name: 'question_bank_id' })
   questionBank!: QuestionBank;
