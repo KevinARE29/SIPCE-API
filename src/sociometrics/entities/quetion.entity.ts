@@ -20,16 +20,10 @@ export class Question {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @CreateDateColumn({ name: 'updated_at', type: 'timestamptz' })
-  updatedAt!: Date;
-
-  @Column({ name: 'deleted_at', nullable: true, type: 'timestamptz' })
-  deletedAt!: Date;
-
   @ManyToOne(
     () => QuestionBank,
     quetionBank => quetionBank.questions,
-    { nullable: false, eager: true },
+    { nullable: false },
   )
   @JoinColumn({ name: 'question_bank_id' })
   questionBank!: QuestionBank;

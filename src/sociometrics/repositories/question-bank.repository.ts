@@ -9,7 +9,7 @@ import { QuestionBankFilterDto, questionBankSortOptionsMap } from '@sociometrics
 export class QuestionBankRepository extends Repository<QuestionBank> {
   async findByIdOrThrow(id: number, counselorId: number): Promise<QuestionBank> {
     const questionBank = await this.findOne({
-      where: { id, counselor: { id: counselorId } },
+      where: { id, counselor: { id: counselorId }, deletedAt: null },
       relations: ['questions'],
     });
     if (!questionBank) {
