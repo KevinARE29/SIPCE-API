@@ -10,7 +10,7 @@ export class BehavioralHistoryRepository extends Repository<BehavioralHistory> {
       where: { studentId: { id: studentId }, deletedAt: null },
     });
     if (!behavioralHistory) {
-      throw new NotFoundException('El historial de comportamiento no fue encontrado');
+      throw new NotFoundException('El historial académico y conductual no fue encontrado');
     }
     return behavioralHistory;
   }

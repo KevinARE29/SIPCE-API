@@ -16,8 +16,8 @@ export class ClassDiaryController {
   constructor(private readonly classDiaryService: ClassDiaryService) {}
 
   @ApiOperation({
-    summary: 'Crear una anotación en un historial de comportamiento de un estudiante',
-    description: 'Use este endpoint para crear una anotación en un historial de comportamiento de un estudiante',
+    summary: 'Crear una anotación en un historial académico y conductual',
+    description: 'Use este endpoint para crear una anotación en un historial académico y conductual',
   })
   @Auth('create_class_diary')
   @Post('annotations')

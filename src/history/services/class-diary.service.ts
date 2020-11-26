@@ -24,7 +24,7 @@ export class ClassDiaryService {
     const studentHistory = await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(studentHistoryIdsDto);
     if (studentHistory.finalConclusion) {
       throw new UnprocessableEntityException(
-        'No se puede crear una nueva anotación ya que el historial de conducta ya esta cerrado',
+        'No se puede crear una nueva anotación ya que el historial académico y conductual ya esta cerrado',
       );
     }
     const reporter = await this.userRepository.findByIdOrThrow(reporterId);
