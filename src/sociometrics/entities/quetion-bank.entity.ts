@@ -1,7 +1,17 @@
 /* istanbul ignore file */
 import { User } from '@users/entities/users.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  OneToMany,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Question } from './quetion.entity';
+import { SociometricTest } from './sociometric-test.entity';
 
 @Entity()
 export class QuestionBank {
@@ -14,7 +24,7 @@ export class QuestionBank {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @CreateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt!: Date;
 
   @Column({ name: 'deleted_at', nullable: true, type: 'timestamptz' })
@@ -33,4 +43,10 @@ export class QuestionBank {
     question => question.questionBank,
   )
   questions!: Question[];
+
+  @OneToMany(
+    () => SociometricTest,
+    sociometricTest => sociometricTest.questionBank,
+  )
+  sociometricTests!: SociometricTest[];
 }

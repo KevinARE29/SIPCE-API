@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 import { EQuestionType } from '@sociometrics/constants/sociometric.constant';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, OneToMany } from 'typeorm';
+import { Answer } from './answer.entity';
 import { QuestionBank } from './quetion-bank.entity';
 
 @Entity()
@@ -27,4 +28,10 @@ export class Question {
   )
   @JoinColumn({ name: 'question_bank_id' })
   questionBank!: QuestionBank;
+
+  @OneToMany(
+    () => Answer,
+    answer => answer.question,
+  )
+  answers!: Answer[];
 }
