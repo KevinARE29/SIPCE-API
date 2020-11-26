@@ -74,4 +74,8 @@ export class CreateSessionDto {
   @IsDto(OtherResponsiblesAssistenceDto)
   @IsOptional()
   readonly otherResponsible?: OtherResponsiblesAssistenceDto;
+
+  @IsId()
+  @IsOptional()
+  readonly interventionProgramId?: number;
 }

@@ -19,6 +19,7 @@ import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { Schedule } from '@schedules/entities/schedules.entity';
 import { InterventionProgram } from '@expedient/entities/intervention-program.entity';
 import { Session } from '@expedient/entities/session.entity';
+import { ClassDiary } from '@history/entities/class-diary.entity';
 
 @Entity()
 export class User {
@@ -144,4 +145,10 @@ export class User {
     session => session.counselor,
   )
   sessions!: Session[];
+
+  @OneToMany(
+    () => ClassDiary,
+    classDiary => classDiary.reporterId,
+  )
+  classDiarys!: ClassDiary[];
 }

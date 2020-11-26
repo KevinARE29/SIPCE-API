@@ -11,6 +11,8 @@ import { UserRepository } from '@users/repositories/users.repository';
 import { InterventionProgramResponse } from '@expedient/docs/intervention-program-response.doc';
 import { InterventionProgramIdsDto } from '@expedient/dtos/intervention-program-ids.dto';
 import { UpdateInterventionProgramDto } from '@expedient/dtos/update-intervention-program.dto';
+import { AvailableInterventionProgramResponse } from '@expedient/docs/available-intervention-programs-response.doc';
+import { InterventionProgram as InterventionProgramEntity } from '@expedient/entities/intervention-program.entity';
 
 @Injectable()
 export class InterventionProgramService {
@@ -92,5 +94,22 @@ export class InterventionProgramService {
     };
     const savedInterventionProgram = await this.interventionProgramRepository.save(interventionProgramToSave);
     return { data: plainToClass(InterventionProgram, savedInterventionProgram, { excludeExtraneousValues: true }) };
+  }
+
+  async getAvailableInterventionPrograms(counselorId: number): Promise<AvailableInterventionProgramResponse> {
+    const interventionPrograms = await this.interventionProgramRepository.find({
+      where: { counselor: { id: counselorId }, deletedAt: null },
+    });
+    return { data: plainToClass(InterventionProgram, interventionPrograms, { excludeExtraneousValues: true }) };
+  }
+
+  async getInterventionProgramOrFail(interventionProgramId: number): Promise<InterventionProgramEntity> {
+    const interventionProgram = await this.interventionProgramRepository.findOne(interventionProgramId, {
+      where: { deletedAt: null },
+    });
+    if (!interventionProgram) {
+      throw new NotFoundException('El programa de intervención no fue encontrado');
+    }
+    return interventionProgram;
   }
 }
