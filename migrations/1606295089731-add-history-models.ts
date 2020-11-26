@@ -14,9 +14,6 @@ export class AddHistoryModels1606295089731 implements MigrationInterface {
       `CREATE TABLE "public"."class_diary" ("id" SERIAL NOT NULL, "description" character varying(512) NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "behavioral_history_id" integer, "reporter_id" integer, CONSTRAINT "PK_6c950103a20eecea7133e3ad133" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "public"."foul_sanction" ("id" SERIAL NOT NULL, "name" character varying(128) NOT NULL, "description" character varying(256) NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, CONSTRAINT "UQ_31e431b07a2ae246d88ca74436b" UNIQUE ("name"), CONSTRAINT "PK_2620e5544b771f2b53b308b20b1" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "public"."foul_sanction_assignation" ADD CONSTRAINT "FK_eed8666c3dcb04c4cd0e719776a" FOREIGN KEY ("behavioral_history_id") REFERENCES "public"."behavioral_history"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -63,7 +60,6 @@ export class AddHistoryModels1606295089731 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "public"."foul_sanction_assignation" DROP CONSTRAINT "FK_eed8666c3dcb04c4cd0e719776a"`,
     );
-    await queryRunner.query(`DROP TABLE "public"."foul_sanction"`);
     await queryRunner.query(`DROP TABLE "public"."class_diary"`);
     await queryRunner.query(`DROP TABLE "public"."behavioral_history"`);
     await queryRunner.query(`DROP TABLE "public"."foul_sanction_assignation"`);

@@ -30,16 +30,14 @@ export class ClassDiary {
   @ManyToOne(
     () => BehavioralHistory,
     behavioralHistory => behavioralHistory.classDiarys,
-    { nullable: true },
   )
   @JoinColumn({ name: 'behavioral_history_id' })
-  behavioralHistoryId?: BehavioralHistory;
+  behavioralHistoryId!: BehavioralHistory;
 
   @ManyToOne(
     () => User,
     user => user.classDiarys,
-    { nullable: true },
   )
   @JoinColumn({ name: 'reporter_id' })
-  reporterId?: User;
+  reporterId!: User;
 }

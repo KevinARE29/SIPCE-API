@@ -18,7 +18,7 @@ export class BehavioralHistory {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { name: 'final_conclusion', length: 512, unique: true })
+  @Column('varchar', { name: 'final_conclusion', length: 512 })
   finalConclusion!: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
@@ -41,10 +41,9 @@ export class BehavioralHistory {
   @ManyToOne(
     () => Student,
     student => student.behavioralHistorys,
-    { nullable: true },
   )
   @JoinColumn({ name: 'student_id' })
-  studentId?: Student;
+  studentId!: Student;
 
   @OneToMany(
     () => ClassDiary,
