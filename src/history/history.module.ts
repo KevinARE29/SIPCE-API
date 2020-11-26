@@ -1,11 +1,23 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserRepository } from '@users/repositories/users.repository';
 import { FoulSanctionAssignationController } from './controllers/foul-sanction-assignation.controller';
 import { FoulSanctionAssignationRepository } from './repository/foul-sanction-assignation.repository';
 import { FoulSanctionAssignationService } from './services/foul-sanction-assignation.service';
+import { ClassDiaryRepository } from './repository/class-diary.repository';
+import { ClassDiaryService } from './services/class-diary.service';
+import { ClassDiaryController } from './controllers/class-diary.controller';
+import { BehavioralHistoryRepository } from './repository/behavioral-history.repository';
 @Module({
-  imports: [TypeOrmModule.forFeature([FoulSanctionAssignationRepository])],
-  controllers: [FoulSanctionAssignationController],
-  providers: [FoulSanctionAssignationService],
+  imports: [
+    TypeOrmModule.forFeature([
+      FoulSanctionAssignationRepository,
+      ClassDiaryRepository,
+      BehavioralHistoryRepository,
+      UserRepository,
+    ]),
+  ],
+  controllers: [FoulSanctionAssignationController, ClassDiaryController],
+  providers: [FoulSanctionAssignationService, ClassDiaryService],
 })
 export class HistoryModule {}
