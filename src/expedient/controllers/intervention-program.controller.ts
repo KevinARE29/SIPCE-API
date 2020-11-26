@@ -12,6 +12,8 @@ import { CreateInterventionProgramDto } from '@expedient/dtos/create-interventio
 import { InterventionProgramResponse } from '@expedient/docs/intervention-program-response.doc';
 import { InterventionProgramIdsDto } from '@expedient/dtos/intervention-program-ids.dto';
 import { UpdateInterventionProgramDto } from '@expedient/dtos/update-intervention-program.dto';
+import { AvailableInterventionProgramResponse } from '@expedient/docs/available-intervention-programs-response.doc';
+
 @ApiTags('Intervention Programs Endpoints')
 @UseGuards(ContentTypeGuard)
 @Controller('intervention-programs')
@@ -75,5 +77,15 @@ export class InterventionProgramController {
       id,
       updateInterventionProgramDto,
     );
+  }
+
+  @ApiOperation({
+    summary: 'Obtener los programas de intervención disponibles para una sesión individual',
+    description: 'Use este endpoint para obtener los programas de intervención disponibles para una sesión individual',
+  })
+  @Auth('manage_expedient')
+  @Get('availables')
+  getAvailableInterventionPrograms(@User() { id }: IAuthenticatedUser): Promise<AvailableInterventionProgramResponse> {
+    return this.interventonProgramService.getAvailableInterventionPrograms(id);
   }
 }
