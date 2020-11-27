@@ -6,9 +6,17 @@ import { NotFoundException } from '@nestjs/common';
 export class BehavioralHistoryRepository extends Repository<BehavioralHistory> {
   async findBehavioralHistoryOrFail(studentHistoryIdsDto: StudentHistoryIdsDto): Promise<BehavioralHistory> {
     const { historyId, studentId } = studentHistoryIdsDto;
-    const behavioralHistory = await this.findOne(historyId, {
-      where: { studentId: { id: studentId }, deletedAt: null },
-    });
+    const query = this.createQueryBuilder('behavioral_history')
+      .leftJoinAndSelect('behavioral_history.studentId', 'studentId')
+      .leftJoinAndSelect('behavioral_history.sectionDetailId', 'sectionDetailId')
+      .leftJoinAndSelect('sectionDetailId.gradeDetail', 'gradeDetail')
+      .leftJoinAndSelect('sectionDetailId.teacher', 'teacher')
+      .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoinAndSelect('cycleDetail.schoolYear', 'schoolYear')
+      .andWhere(`studentId.id = ${studentId}`)
+      .andWhere(`behavioral_history.id = ${historyId}`)
+      .andWhere('behavioral_history.deletedAt is null');
+    const behavioralHistory = await query.getOne();
     if (!behavioralHistory) {
       throw new NotFoundException('El historial académico y conductual no fue encontrado');
     }
