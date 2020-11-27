@@ -11,4 +11,7 @@ export class QuestionBank {
   @Expose()
   @Type(() => Question)
   questions!: Question;
+
+  @Expose()
+  editable!: boolean;
 }

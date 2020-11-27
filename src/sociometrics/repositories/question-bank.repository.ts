@@ -28,6 +28,7 @@ export class QuestionBankRepository extends Repository<QuestionBank> {
     const query = this.createQueryBuilder('questionBank')
       .leftJoin(`questionBank.counselor`, `counselor`)
       .leftJoinAndSelect(`questionBank.questions`, `question`)
+      .leftJoinAndSelect(`questionBank.sociometricTests`, `sociometricTest`)
       .andWhere(`counselor.id = ${counselorId}`)
       .andWhere('questionBank.deletedAt is null');
 

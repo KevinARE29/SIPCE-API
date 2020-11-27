@@ -37,8 +37,12 @@ export class QuestionBankService {
       questionBankFilterDto,
       counselorId,
     );
+    const mappedQuestionBanks = questionBanks.map(questionBank => ({
+      ...questionBank,
+      editable: !questionBank.sociometricTests.length,
+    }));
     const pagination = getPagination(pageDto, count);
-    return { data: plainToClass(QuestionBank, questionBanks, { excludeExtraneousValues: true }), pagination };
+    return { data: plainToClass(QuestionBank, mappedQuestionBanks, { excludeExtraneousValues: true }), pagination };
   }
 
   @Transactional()
