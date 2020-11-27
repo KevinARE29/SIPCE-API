@@ -1,5 +1,5 @@
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
-import { Controller, UseGuards, Post, Param, Body, Patch } from '@nestjs/common';
+import { Controller, UseGuards, Post, Param, Body, Patch, Delete, HttpCode } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ClassDiaryService } from '@history/services/class-diary.service';
 import { User } from '@users/decorators/user.decorator';
@@ -43,5 +43,19 @@ export class ClassDiaryController {
     @Body() updateAnnotationDto: UpdateAnnotationDto,
   ): Promise<AnnotationResponse> {
     return this.classDiaryService.updateClassDiaryAnnotation(id, historyAnnotationIdsDto, updateAnnotationDto);
+  }
+
+  @ApiOperation({
+    summary: 'Eliminar una anotación en un historial académico y conductual',
+    description: 'Use este endpoint para eliminar una anotación en un historial académico y conductual',
+  })
+  @Auth('delete_class_diary')
+  @HttpCode(204)
+  @Delete('annotations/:annotationId')
+  deleteAnnotation(
+    @User() { id }: IAuthenticatedUser,
+    @Param() historyAnnotationIdsDto: HistoryAnnotationIdsDto,
+  ): Promise<void> {
+    return this.classDiaryService.deleteClassDiaryAnnotation(id, historyAnnotationIdsDto);
   }
 }

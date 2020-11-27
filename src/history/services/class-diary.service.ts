@@ -47,7 +47,7 @@ export class ClassDiaryService {
     const studentHistory = await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(historyAnnotationIdsDto);
     if (studentHistory.finalConclusion) {
       throw new UnprocessableEntityException(
-        'No se puede crear una nueva anotación ya que el historial académico y conductual ya esta cerrado',
+        'No se puede modificar esta anotación ya que el historial académico y conductual ya esta cerrado',
       );
     }
     const annotation = await this.classDiaryRepository.findAnnotationOrFail(historyAnnotationIdsDto);
@@ -73,5 +73,29 @@ export class ClassDiaryService {
     const diff = currentDate.getTime() - annotationCreatedAtDate.getTime();
     const hoursDiff = diff / (1000 * 60 * 60);
     return hoursDiff > 24;
+  }
+
+  async deleteClassDiaryAnnotation(
+    reporterId: number,
+    historyAnnotationIdsDto: HistoryAnnotationIdsDto,
+  ): Promise<void> {
+    const studentHistory = await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(historyAnnotationIdsDto);
+    if (studentHistory.finalConclusion) {
+      throw new UnprocessableEntityException(
+        'No se puede eliminar esta anotación ya que el historial académico y conductual ya esta cerrado',
+      );
+    }
+    const annotation = await this.classDiaryRepository.findAnnotationOrFail(historyAnnotationIdsDto);
+    if (annotation.reporterId.id !== reporterId) {
+      throw new ForbiddenException('No tienes permisos para eliminar esta anotación');
+    }
+    const timeDiff = this.getTimeDiff(annotation.createdAt);
+    if (timeDiff) {
+      throw new UnprocessableEntityException(
+        'No se puede eliminar esta anotación ya que han transcurrido más de 24 horas desde su registro',
+      );
+    }
+    annotation.deletedAt = new Date();
+    this.classDiaryRepository.save(annotation);
   }
 }
