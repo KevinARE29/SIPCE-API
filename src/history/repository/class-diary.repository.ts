@@ -11,7 +11,7 @@ export class ClassDiaryRepository extends Repository<ClassDiary> {
       relations: ['reporterId'],
     });
     if (!annotation) {
-      throw new NotFoundException('El diario de clases no fue encontrado');
+      throw new NotFoundException('La anotación especificada no fue encontrada');
     }
     return annotation;
   }
