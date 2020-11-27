@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from '@users/repositories/users.repository';
+import { PeriodRepository } from '@academics/repositories';
 import { FoulSanctionAssignationController } from './controllers/foul-sanction-assignation.controller';
 import { FoulSanctionAssignationRepository } from './repository/foul-sanction-assignation.repository';
 import { FoulSanctionAssignationService } from './services/foul-sanction-assignation.service';
@@ -17,6 +18,7 @@ import { BehavioralHistoryController } from './controllers/behavioral-history.co
       ClassDiaryRepository,
       BehavioralHistoryRepository,
       UserRepository,
+      PeriodRepository,
     ]),
   ],
   controllers: [FoulSanctionAssignationController, ClassDiaryController, BehavioralHistoryController],
