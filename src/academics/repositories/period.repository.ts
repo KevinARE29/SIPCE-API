@@ -39,4 +39,8 @@ export class PeriodRepository extends Repository<Period> {
     }
     return period;
   }
+
+  getActivePeriods(): Promise<Period[]> {
+    return this.find({ where: { active: true } });
+  }
 }
