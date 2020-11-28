@@ -19,7 +19,7 @@ export class FoulSanctionAssignationService {
     const foulAssignations = await this.foulSanctionAssignationRepository.findBehavioralHistoryFouls(
       studentHistoryIdsDto,
     );
-    const activePeriods = await this.periodRepository.getActivePeriods();
+    const activePeriods = await this.periodRepository.find();
     const foulsCounter = activePeriods.map(period => ({
       period: period.name,
       foulsCounter: getFoulsCounter(foulAssignations, period.id),
