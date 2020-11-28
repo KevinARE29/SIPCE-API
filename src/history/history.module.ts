@@ -8,6 +8,8 @@ import { ClassDiaryRepository } from './repository/class-diary.repository';
 import { ClassDiaryService } from './services/class-diary.service';
 import { ClassDiaryController } from './controllers/class-diary.controller';
 import { BehavioralHistoryRepository } from './repository/behavioral-history.repository';
+import { BehavioralHistoryService } from './services/behavioral-history.service';
+import { BehavioralHistoryController } from './controllers/behavioral-history.controller';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -17,7 +19,7 @@ import { BehavioralHistoryRepository } from './repository/behavioral-history.rep
       UserRepository,
     ]),
   ],
-  controllers: [FoulSanctionAssignationController, ClassDiaryController],
-  providers: [FoulSanctionAssignationService, ClassDiaryService],
+  controllers: [FoulSanctionAssignationController, ClassDiaryController, BehavioralHistoryController],
+  providers: [FoulSanctionAssignationService, ClassDiaryService, BehavioralHistoryService],
 })
 export class HistoryModule {}
