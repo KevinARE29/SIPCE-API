@@ -3,6 +3,7 @@ import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { Section } from '@academics/entities/section.entity';
 import { activeSchoolYearStatus } from '@academics/constants/academic.constants';
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(SectionDetail)
 export class SectionDetailRepository extends Repository<SectionDetail> {
@@ -56,5 +57,15 @@ export class SectionDetailRepository extends Repository<SectionDetail> {
         activeSchoolYearStatus: [null, ...activeSchoolYearStatus],
       })
       .getOne();
+  }
+
+  async findSectionDetailOrThrow(shiftId: number, gradeId: number, sectionId: number): Promise<SectionDetail> {
+    const sectionDetail = await this.findSectionDetail(shiftId, gradeId, sectionId);
+
+    if (!sectionDetail) {
+      throw new NotFoundException('Asignación de turno, grado y sección no encontrada');
+    }
+
+    return sectionDetail;
   }
 }
