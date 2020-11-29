@@ -5,3 +5,4 @@ export * from './period.controller';
 export * from './school-year.controller';
 export * from './section.controller';
 export * from './shift.controller';
+export * from './section-detail.controller';

@@ -90,6 +90,7 @@ export class SociometricTestService {
     const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(sociometricTestId, counselorId);
     const {
       sectionDetail: {
+        id: sectionDetailId,
         section,
         students,
         gradeDetail: {
@@ -110,7 +111,7 @@ export class SociometricTestService {
     return {
       data: plainToClass(
         SociometricTest,
-        { ...mappedSociometricTest, students: mappedStudents },
+        { ...mappedSociometricTest, students: mappedStudents, sectionDetailId },
         {
           excludeExtraneousValues: true,
         },

@@ -5,3 +5,5 @@ export * from './period.service';
 export * from './school-year.service';
 export * from './section.service';
 export * from './shift.service';
+export * from './section-detail.service';
+export * from './assignation.service';

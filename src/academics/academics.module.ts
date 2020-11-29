@@ -9,6 +9,7 @@ import {
   ShiftController,
   SchoolYearController,
   CloseSchoolYearController,
+  SectionDetailController,
 } from './controllers';
 import {
   ShiftRepository,
@@ -29,8 +30,9 @@ import {
   ShiftService,
   SchoolYearService,
   CloseSchoolYearService,
+  AssignationService,
+  SectionDetailService,
 } from './services';
-import { AssignationService } from './services/assignation.service';
 
 @Module({
   imports: [
@@ -55,6 +57,7 @@ import { AssignationService } from './services/assignation.service';
     ShiftController,
     SchoolYearController,
     CloseSchoolYearController,
+    SectionDetailController,
   ],
   providers: [
     AssignationService,
@@ -65,6 +68,7 @@ import { AssignationService } from './services/assignation.service';
     ShiftService,
     SchoolYearService,
     CloseSchoolYearService,
+    SectionDetailService,
   ],
   exports: [TypeOrmModule, AssignationService],
 })
