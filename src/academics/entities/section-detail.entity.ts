@@ -9,6 +9,7 @@ import {
   ManyToMany,
   Column,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@users/entities/users.entity';
@@ -75,9 +76,9 @@ export class SectionDetail {
   )
   behavioralHistorys!: BehavioralHistory[];
 
-  @OneToMany(
+  @OneToOne(
     () => SociometricTest,
     sociometricTest => sociometricTest.sectionDetail,
   )
-  sociometricTests!: SociometricTest[];
+  sociometricTest!: SociometricTest;
 }
