@@ -15,8 +15,14 @@ export class ClassDiary {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Column('varchar')
+  title!: string;
+
   @Column('varchar', { length: 512 })
   description!: string;
+
+  @Column({ name: 'annotation_date', type: 'timestamptz' })
+  annotationDate!: Date;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;

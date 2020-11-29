@@ -25,6 +25,10 @@ export class CurrentAssignationDto {
 
   @IsOptional()
   @IsId()
+  readonly auxTeacherId?: number;
+
+  @IsOptional()
+  @IsId()
   readonly counselorId?: number;
 
   @IsOptional()

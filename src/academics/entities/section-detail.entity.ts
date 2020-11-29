@@ -9,11 +9,13 @@ import {
   ManyToMany,
   Column,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@users/entities/users.entity';
 import { Student } from '@students/entities/student.entity';
 import { BehavioralHistory } from '@history/entities/behavioral-history.entity';
+import { SociometricTest } from '@sociometrics/entities/sociometric-test.entity';
 import { Section } from './section.entity';
 import { GradeDetail } from './grade-detail.entity';
 
@@ -73,4 +75,10 @@ export class SectionDetail {
     behavioralHistory => behavioralHistory.sectionDetailId,
   )
   behavioralHistorys!: BehavioralHistory[];
+
+  @OneToOne(
+    () => SociometricTest,
+    sociometricTest => sociometricTest.sectionDetail,
+  )
+  sociometricTest!: SociometricTest;
 }

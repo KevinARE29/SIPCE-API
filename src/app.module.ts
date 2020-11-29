@@ -17,7 +17,9 @@ import { ReportingModule } from '@reporting/reporting.module';
 import { BullModule } from '@nestjs/bull/dist/bull.module';
 import { bullFactory } from '@reporting/factories/bull.factory';
 import { ExpedientModule } from '@expedient/expedient.module';
+import { SociometricsModule } from '@sociometrics/sociometrics.module';
 import { HistoryModule } from '@history/history.module';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
@@ -85,6 +87,7 @@ import { HistoryModule } from '@history/history.module';
     SanctionsModule,
     ReportingModule,
     ExpedientModule,
+    SociometricsModule,
     HistoryModule,
   ],
 })

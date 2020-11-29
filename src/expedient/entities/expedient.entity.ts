@@ -4,13 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
-  JoinTable,
   OneToMany,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { ExternalPsychologicalTreatment } from '@expedient/entities/external-psychological-treatment.entity';
 import { Student } from '@students/entities/student.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { Session } from '@expedient/entities/session.entity';
@@ -23,26 +20,26 @@ export class Expedient {
   @Column('varchar', { name: 'referrer_name' })
   referrerName!: string;
 
-  @Column('varchar', { name: 'referrer_charge' })
-  referrerCharge!: string;
-
   @Column('varchar')
   reason!: string;
 
   @Column('varchar', { name: 'problem_description' })
   problemDescription!: string;
 
-  @Column('varchar', { name: 'diagnostic_impression' })
+  @Column('varchar', { name: 'diagnostic_impression', nullable: true })
   diagnosticImpression!: string;
 
-  @Column('varchar', { array: true, name: 'diagnostic_impression_categories' })
+  @Column('varchar', { array: true, name: 'diagnostic_impression_categories', nullable: true })
   diagnosticImpressionCategories!: string[];
 
-  @Column('varchar', { name: 'action_plan' })
+  @Column('varchar', { name: 'action_plan', nullable: true })
   actionPlan!: string;
 
   @Column('varchar', { name: 'final_conclusion', nullable: true })
   finalConclusion!: string;
+
+  @Column('varchar', { array: true, name: 'external_psychological_treatments', nullable: true })
+  externalPsychologicalTreatments!: string[];
 
   @OneToMany(
     () => Session,
@@ -50,17 +47,6 @@ export class Expedient {
     { nullable: true },
   )
   sessions!: Session[];
-
-  @ManyToMany(
-    () => ExternalPsychologicalTreatment,
-    externalPsychologicalTreatment => externalPsychologicalTreatment.expedients,
-  )
-  @JoinTable({
-    name: 'expedient_external_psychological_treatment',
-    joinColumns: [{ name: 'expedient_id' }],
-    inverseJoinColumns: [{ name: 'external_psychological_treatment_id' }],
-  })
-  externalPsychologicalTreatments!: ExternalPsychologicalTreatment[];
 
   @ManyToOne(
     () => Student,

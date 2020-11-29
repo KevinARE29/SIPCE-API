@@ -15,6 +15,10 @@ import {
   sortOptionsMap as studentSessionSortOptionsMap,
 } from '@expedient/dtos/student-sessions-filter.dto';
 import { getOrderBy } from '@core/utils/sort.util';
+import {
+  StudentsBehavioralHistoryFilterDto,
+  sortOptionsMap as studentsBehavioralHistorySortOptionsMap,
+} from '@history/dtos/students-behavioral-history-filter.dto';
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> {
@@ -110,6 +114,7 @@ export class StudentRepository extends Repository<Student> {
         'rStudent',
         'rStudent.student = student.id',
       )
+      .leftJoinAndSelect('image.grade', 'imageGrade')
       .leftJoinAndMapOne('rStudent.responsible', Responsible, 'responsible', 'rStudent.responsible = responsible.id')
       .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
       .leftJoinAndSelect('sectionDetail.section', 'section')
@@ -192,6 +197,87 @@ export class StudentRepository extends Repository<Student> {
     if (currentShift) {
       query.andWhere(`"currentShift"."id" = ${currentShift}`);
     }
+    return query.getManyAndCount();
+  }
+
+  getStudentCurrentAssignation(studentId: number): Promise<Student | undefined> {
+    return this.createQueryBuilder('student')
+      .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
+      .leftJoinAndSelect('sectionDetail.gradeDetail', 'gradeDetail')
+      .leftJoinAndSelect('gradeDetail.grade', 'grade')
+      .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoinAndSelect('cycleDetail.schoolYear', 'schoolYear')
+      .andWhere(`"student"."id" = ${studentId}`)
+      .andWhere(`"schoolYear"."status" = '${ESchoolYearStatus['En curso']}'`)
+      .andWhere('student.deletedAt is null')
+      .orderBy({ 'grade.id': 'DESC' })
+      .getOne();
+  }
+
+  getStudentsBehavioralHistoryByCounselorId(
+    userId: number,
+    pageDto: PageDto,
+    studentsBehavioralHistoryFilterDto: StudentsBehavioralHistoryFilterDto,
+    adminstrative: boolean,
+  ): Promise<[Student[], number]> {
+    const { page, perPage } = pageDto;
+    const { sort, code, firstname, lastname, currentShift, currentGrade, section } = studentsBehavioralHistoryFilterDto;
+    const query = this.createQueryBuilder('student')
+      .leftJoinAndSelect('student.currentShift', 'currentShift')
+      .leftJoinAndSelect('student.currentGrade', 'currentGrade')
+      .leftJoinAndSelect('student.behavioralHistorys', 'behavioralHistorys')
+      .leftJoinAndSelect('behavioralHistorys.classDiarys', 'classDiarys')
+      .leftJoinAndSelect('behavioralHistorys.foulSanctionAssignations', 'foulSanctionAssignations')
+      .leftJoinAndSelect('student.sectionDetails', 'sectionDetails')
+      .leftJoinAndSelect('sectionDetails.section', 'section')
+      .leftJoinAndSelect('sectionDetails.teacher', 'teacher')
+      .leftJoinAndSelect('sectionDetails.auxTeachers', 'auxTeachers')
+      .leftJoin('sectionDetails.gradeDetail', 'gradeDetail')
+      .leftJoin('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoin('gradeDetail.counselor', 'counselor')
+      .leftJoin('cycleDetail.schoolYear', 'schoolYear')
+      .andWhere(`"schoolYear"."status" = '${ESchoolYearStatus['En curso']}'`)
+      .andWhere('student.deletedAt is null')
+      .take(perPage)
+      .skip((page - 1) * perPage);
+
+    if (!adminstrative) {
+      query.andWhere(`("teacher"."id" = ${userId} OR "auxTeachers"."id" IN (:...teachersIds))`, {
+        teachersIds: [null, userId],
+      });
+    }
+
+    if (sort) {
+      const order = getOrderBy(sort, studentsBehavioralHistorySortOptionsMap);
+      query.orderBy(order);
+    } else {
+      query.orderBy({ 'student.id': 'DESC' });
+    }
+
+    if (code) {
+      query.andWhere(`student.code ILIKE '%${code}%'`);
+    }
+
+    if (firstname) {
+      query.andWhere(`student.firstname ILIKE '%${firstname}%'`);
+    }
+
+    if (lastname) {
+      query.andWhere(`student.lastname ILIKE '%${lastname}%'`);
+    }
+
+    if (currentGrade) {
+      query.andWhere(`"currentGrade"."id" = ${currentGrade}`);
+    }
+
+    if (currentShift) {
+      query.andWhere(`"currentShift"."id" = ${currentShift}`);
+    }
+
+    if (section) {
+      query.andWhere(`"section"."id" = ${section}`);
+    }
+
     return query.getManyAndCount();
   }
 }

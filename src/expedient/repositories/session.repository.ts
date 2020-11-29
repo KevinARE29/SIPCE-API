@@ -49,7 +49,7 @@ export class SessionRepository extends Repository<Session> {
       where: { sessionType, expedient: { id: expedientId } },
       order: { identifier: 'DESC' },
     });
-    if (!sessions || !sessions[0].identifier) {
+    if (!sessions.length || !sessions[0].identifier) {
       return 1;
     }
     return sessions[0].identifier + 1;
@@ -142,5 +142,16 @@ export class SessionRepository extends Repository<Session> {
     `,
       [[null, ...sessionIds]],
     );
+  }
+
+  findSessionsInterventionPrograms(expedientId: number): Promise<Session[]> {
+    const query = this.createQueryBuilder('session')
+      .leftJoin('session.expedient', 'expedient')
+      .leftJoinAndSelect('session.interventionProgram', 'interventionProgram')
+      .distinctOn(['interventionProgram.id'])
+      .andWhere('session.deletedAt is null')
+      .andWhere(`"expedient"."id" = ${expedientId}`);
+
+    return query.getMany();
   }
 }
