@@ -49,7 +49,7 @@ export class SessionRepository extends Repository<Session> {
       where: { sessionType, expedient: { id: expedientId } },
       order: { identifier: 'DESC' },
     });
-    if (!sessions || !sessions[0].identifier) {
+    if (!sessions.length || !sessions[0].identifier) {
       return 1;
     }
     return sessions[0].identifier + 1;
