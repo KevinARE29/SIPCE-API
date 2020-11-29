@@ -1,5 +1,5 @@
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
-import { Controller, UseGuards, Post, Param, Body, Patch, Delete, HttpCode } from '@nestjs/common';
+import { Controller, UseGuards, Post, Param, Body, Patch, Delete, HttpCode, Get, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ClassDiaryService } from '@history/services/class-diary.service';
 import { User } from '@users/decorators/user.decorator';
@@ -10,6 +10,9 @@ import { Auth } from '@auth/decorators/auth.decorator';
 import { AnnotationResponse } from '@history/docs/annotation-response.doc';
 import { HistoryAnnotationIdsDto } from '@history/dtos/history-annotation-ids.dto';
 import { UpdateAnnotationDto } from '@history/dtos/update-annotation.dto';
+import { PageDto } from '@core/dtos/page.dto';
+import { AnnotationsFilterDto } from '@history/dtos/annotations-filter.dto';
+import { CompleteAnnotationResponse } from '@history/docs/complete-annotation-response.doc';
 
 @ApiTags('Class Diary Endpoints (Annotations)')
 @UseGuards(ContentTypeGuard)
@@ -29,6 +32,20 @@ export class ClassDiaryController {
     @Body() createAnnotationDto: CreateAnnotationDto,
   ): Promise<AnnotationResponse> {
     return this.classDiaryService.createClassDiaryAnnotation(id, studentHistoryIdsDto, createAnnotationDto);
+  }
+
+  @ApiOperation({
+    summary: 'Obtener las anotaciones asociadas a un historial académico y conductual',
+    description: 'Use este endpoint para obtener las anotaciones asociadas a un historial académico y conductual',
+  })
+  @Auth('retrieve_class_diary')
+  @Get('annotations')
+  getAnnotations(
+    @Param() studentHistoryIdsDto: StudentHistoryIdsDto,
+    @Query() pageDto: PageDto,
+    @Query() annotationsFilterDto: AnnotationsFilterDto,
+  ): Promise<CompleteAnnotationResponse> {
+    return this.classDiaryService.getClassDiaryAnnotation(studentHistoryIdsDto, pageDto, annotationsFilterDto);
   }
 
   @ApiOperation({

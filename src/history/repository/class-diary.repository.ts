@@ -2,6 +2,9 @@ import { EntityRepository, Repository } from 'typeorm';
 import { ClassDiary } from '@history/entities/class-diary.entity';
 import { HistoryAnnotationIdsDto } from '@history/dtos/history-annotation-ids.dto';
 import { NotFoundException } from '@nestjs/common';
+import { PageDto } from '@core/dtos/page.dto';
+import { AnnotationsFilterDto, sortOptionsMap } from '@history/dtos/annotations-filter.dto';
+import { getOrderBy } from '@core/utils/sort.util';
 @EntityRepository(ClassDiary)
 export class ClassDiaryRepository extends Repository<ClassDiary> {
   async findAnnotationOrFail(historyAnnotationIdsDto: HistoryAnnotationIdsDto): Promise<ClassDiary> {
@@ -14,5 +17,46 @@ export class ClassDiaryRepository extends Repository<ClassDiary> {
       throw new NotFoundException('La anotación especificada no fue encontrada');
     }
     return annotation;
+  }
+
+  findAnnotations(
+    behavioralHistoryId: number,
+    pageDto: PageDto,
+    annotationsFilterDto: AnnotationsFilterDto,
+  ): Promise<[ClassDiary[], number]> {
+    const { page, perPage } = pageDto;
+    const { sort, title, startedAt, finishedAt, reporter } = annotationsFilterDto;
+    const query = this.createQueryBuilder('class_diary')
+      .leftJoinAndSelect('class_diary.behavioralHistoryId', 'behavioralHistoryId')
+      .leftJoinAndSelect('class_diary.reporterId', 'reporterId')
+      .andWhere(`"behavioralHistoryId"."id" = ${behavioralHistoryId}`)
+      .andWhere('class_diary.deletedAt is null')
+      .take(perPage)
+      .skip((page - 1) * perPage);
+
+    if (sort) {
+      const order = getOrderBy(sort, sortOptionsMap);
+      query.orderBy(order);
+    } else {
+      query.orderBy({ 'class_diary.id': 'DESC' });
+    }
+
+    if (title) {
+      query.andWhere(`"class_diary"."title" ILIKE '%${title}%'`);
+    }
+
+    if (reporter) {
+      query.andWhere(`"reporterId"."firstname" ILIKE '%${reporter}%'`);
+    }
+
+    if (startedAt) {
+      query.andWhere(`class_diary.annotationDate >= '${startedAt}'`);
+    }
+
+    if (finishedAt) {
+      query.andWhere(`class_diary.annotationDate <= '${finishedAt}'`);
+    }
+
+    return query.getManyAndCount();
   }
 }
