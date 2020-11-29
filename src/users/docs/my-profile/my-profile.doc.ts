@@ -42,6 +42,9 @@ export class MyProfile {
   teacherAssignation!: any;
 
   @Expose()
+  auxTeacherAssignation!: any;
+
+  @Expose()
   counselorAssignation!: any;
 
   @Expose()
