@@ -128,7 +128,7 @@ export class SociometricTestService {
 
     if (sociometricTest.status !== 'Creada') {
       throw new UnprocessableEntityException(
-        'La prueba sociometrica especificada se encuentra activa y no se puede actualizar',
+        'La prueba sociométrica especificada se encuentra activa y no se puede actualizar',
       );
     }
 
@@ -166,7 +166,7 @@ export class SociometricTestService {
 
     if (sociometricTest.status !== 'Creada') {
       throw new UnprocessableEntityException(
-        'La prueba sociometrica especificada se encuentra activa y no se puede eliminar',
+        'La prueba sociométrica especificada se encuentra activa y no se puede eliminar',
       );
     }
 
