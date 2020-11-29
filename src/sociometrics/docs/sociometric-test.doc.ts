@@ -11,6 +11,9 @@ export class SociometricTest {
   id!: number;
 
   @Expose()
+  sectionDetailId!: number;
+
+  @Expose()
   @Type(() => Shift)
   shift!: Shift;
 
