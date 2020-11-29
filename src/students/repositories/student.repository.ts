@@ -280,4 +280,31 @@ export class StudentRepository extends Repository<Student> {
 
     return query.getManyAndCount();
   }
+
+  async getStudentAcademicInformation(studentId: number): Promise<Student> {
+    const query = this.createQueryBuilder('student')
+      .leftJoinAndSelect('student.expedients', 'expedients')
+      .leftJoinAndSelect('expedients.gradeDetail', 'gradeDetail')
+      .leftJoinAndSelect('gradeDetail.counselor', 'counselor')
+      .leftJoinAndSelect('gradeDetail.grade', 'grade')
+      .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoinAndSelect('cycleDetail.schoolYear', 'schoolYear')
+      .leftJoinAndSelect('student.behavioralHistorys', 'behavioralHistorys')
+      .leftJoinAndSelect('behavioralHistorys.foulSanctionAssignations', 'foulSanctionAssignations')
+      .leftJoinAndSelect('behavioralHistorys.sectionDetailId', 'bSectionDetail')
+      .leftJoinAndSelect('bSectionDetail.teacher', 'teacher')
+      .leftJoinAndSelect('bSectionDetail.gradeDetail', 'bGradeDetail')
+      .leftJoinAndSelect('bGradeDetail.grade', 'bGrade')
+      .leftJoinAndSelect('bGradeDetail.cycleDetail', 'bCycleDetail')
+      .leftJoinAndSelect('bCycleDetail.schoolYear', 'bSchoolYear')
+      .orderBy({ 'behavioralHistorys.createdAt': 'DESC' })
+      .andWhere(`"student"."id" = ${studentId}`)
+      .andWhere('student.deletedAt is null');
+
+    const student = await query.getOne();
+    if (!student) {
+      throw new NotFoundException('El estudiante especificado no fue encontrado');
+    }
+    return student;
+  }
 }
