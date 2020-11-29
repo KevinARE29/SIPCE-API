@@ -70,7 +70,7 @@ export class SociometricTestService {
     const existingSociometricTest = await this.sociometricTestRepository.findBySectionDetail(sectionDetail);
     if (existingSociometricTest) {
       throw new UnprocessableEntityException(
-        'Ya existe una prueba sociométrica para el grado y sección especificados en el actual año escolar en curso',
+        'Ya existe una prueba sociométrica para el grado y sección especificados en el año escolar en curso',
       );
     }
 
@@ -128,7 +128,7 @@ export class SociometricTestService {
 
     if (sociometricTest.status !== 'Creada') {
       throw new UnprocessableEntityException(
-        'La prueba sociometrica especificada ya se encuentra activa y no se puede actualizar',
+        'La prueba sociometrica especificada se encuentra activa y no se puede actualizar',
       );
     }
 
@@ -140,7 +140,7 @@ export class SociometricTestService {
       const existingSociometricTest = await this.sociometricTestRepository.findBySectionDetail(sectionDetail);
       if (existingSociometricTest) {
         throw new UnprocessableEntityException(
-          'Ya existe una prueba sociométrica para el grado y sección especificados en el actual año escolar en curso',
+          'Ya existe una prueba sociométrica para el grado y sección especificados en el año escolar en curso',
         );
       }
     }
@@ -166,7 +166,7 @@ export class SociometricTestService {
 
     if (sociometricTest.status !== 'Creada') {
       throw new UnprocessableEntityException(
-        'La prueba sociometrica especificada ya se encuentra activa y no se puede eliminar',
+        'La prueba sociometrica especificada se encuentra activa y no se puede eliminar',
       );
     }
 
