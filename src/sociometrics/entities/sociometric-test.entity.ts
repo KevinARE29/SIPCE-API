@@ -7,6 +7,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -19,7 +20,7 @@ export class SociometricTest {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('enum', { enum: ESociometricTestStatus, enumName: 'sociometric_test_status_enum' })
+  @Column('enum', { enum: ESociometricTestStatus, enumName: 'sociometric_test_status_enum', default: 'Creada' })
   status!: ESociometricTestStatus;
 
   @Column('smallint', { name: 'answers_per_question' })
@@ -45,9 +46,9 @@ export class SociometricTest {
   @JoinColumn({ name: 'question_bank_id' })
   questionBank!: QuestionBank;
 
-  @ManyToOne(
+  @OneToOne(
     () => SectionDetail,
-    sectionDetail => sectionDetail.sociometricTests,
+    sectionDetail => sectionDetail.sociometricTest,
     { nullable: false },
   )
   @JoinColumn({ name: 'section_detail_id' })

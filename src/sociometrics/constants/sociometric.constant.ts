@@ -8,9 +8,10 @@ export const questionTypeKeys = Object.values(EQuestionType).filter(key => typeo
 export type TQuestionTypeValues = typeof EQuestionType[TQuestionType];
 
 export enum ESociometricTestStatus {
-  'PROGRAMADA' = 'Programada',
+  'CREADA' = 'Creada',
   'EN CURSO' = 'En curso',
   'FINALIZADA' = 'Finalizada',
+  'PROGRAMADA' = 'Programada',
 }
 
 export type TSociometricTestStatus = keyof typeof ESociometricTestStatus;
