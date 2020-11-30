@@ -60,16 +60,6 @@ export class FoulSanctionAssignationService {
     };
   }
 
-  async getSingleFoulSanctionAssignation(
-    foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
-  ): Promise<FoulSanctionAssignationResponse> {
-    await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(foulSanctionAssignationIdDto);
-    const sanction = await this.foulSanctionAssignationRepository.findByIdOrThrow(
-      foulSanctionAssignationIdDto.assignationId,
-    );
-    return { data: plainToClass(FoulSanctionAssignationDoc, sanction, { excludeExtraneousValues: true }) };
-  }
-
   async createFoulSanctionAssignation(
     teacherId: number,
     createFoulSanctionAssignationDto: CreateFoulSanctionAssignationDto,

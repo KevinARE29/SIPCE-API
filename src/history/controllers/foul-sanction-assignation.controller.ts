@@ -34,12 +34,12 @@ export class FoulSanctionAssignationController {
     return this.foulSanctionAssignationService.findAllFoulsOnHistory(studentHistoryIdsDto);
   }
 
-  @Auth('view_fouls_sanction_assignation')
   @ApiOperation({
     summary: 'Buscar Asignaciones de Faltas y Sanciones',
     description:
       'Use este endpoint para buscar asignaciones de faltas y sanciones en el historial académico y conductual de un estudiante específico.',
   })
+  @Auth('view_fouls_sanction_assignation')
   @Get('/assignations')
   getAllFoulSanctionAssignation(
     @Param() studentHistoryIdsDto: StudentHistoryIdsDto,
@@ -54,28 +54,11 @@ export class FoulSanctionAssignationController {
   }
 
   @ApiOperation({
-    summary: 'Buscar Asignación de Faltas y Sanciones',
-    description:
-      'Use este endpoint para buscar una asignación específica en el histortial conductual de un estudiante específico.',
-  })
-  @Auth('view_fouls_sanction_assignation')
-  @ApiOperation({
-    summary: 'Ver detalle de una Asignación',
-    description: 'Use este endpoint para ver el detalle de una asignación de falta y sanción específica.',
-  })
-  @Get('/assignations/:assignationId')
-  getSingleFoulSanctionAssignation(
-    @Param() foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
-  ): Promise<FoulSanctionAssignationResponse> {
-    return this.foulSanctionAssignationService.getSingleFoulSanctionAssignation(foulSanctionAssignationIdDto);
-  }
-
-  @Auth('created_fouls_sanction_assignation')
-  @ApiOperation({
     summary: 'Crear asignaciones de faltas y sanciones a un estudiante específico',
     description:
       'Use este endpoint para crear una asignación de falta y sanción en historial académico conductual de un estudiante específico.',
   })
+  @Auth('create_fouls_sanction_assignation')
   @Post('/assignations')
   async createFoulSanctionAssignation(
     @User() { id }: IAuthenticatedUser,
@@ -89,12 +72,12 @@ export class FoulSanctionAssignationController {
     );
   }
 
-  @Auth('update_fouls_sanction_assignation')
   @ApiOperation({
     summary: 'Actualizar una asignación específica',
     description:
       'Use este endpoint para actualizar los datos de una asignación de falta y sanción específica presente en el historial académico conductual de un estudiante específico.',
   })
+  @Auth('update_fouls_sanction_assignation')
   @Put('/assignations/:assignationId')
   async updateEvent(
     @User() { id }: IAuthenticatedUser,
@@ -108,12 +91,12 @@ export class FoulSanctionAssignationController {
     );
   }
 
-  @Auth('delete_fouls_sanction_assignation')
   @ApiOperation({
     summary: 'Eliminar un asignación',
     description:
       'Use este endpoint para eliminar una asignación específica en el historial académico conductual de un estudiante específico.',
   })
+  @Auth('delete_fouls_sanction_assignation')
   @HttpCode(204)
   @Delete('/assignations/:assignationId')
   async deleteFouls(
