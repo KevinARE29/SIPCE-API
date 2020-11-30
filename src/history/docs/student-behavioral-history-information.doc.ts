@@ -21,7 +21,7 @@ export class StudentBehavioralHistoryInformation {
   behavioralHistoryYear!: number;
 
   @Expose()
-  foulsCounter!: number;
+  foulsAlert!: boolean;
 
   @Expose()
   @Type(() => MinimalSyncedExpedientData)
