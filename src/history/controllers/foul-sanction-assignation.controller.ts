@@ -71,7 +71,7 @@ export class FoulSanctionAssignationController {
 
   @Auth('created_fouls_sanction_assignation')
   @ApiOperation({
-    summary: 'Crear asignaciones de faltas y sancionesa un estudiante especificó',
+    summary: 'Crear asignaciones de faltas y sanciones a un estudiante especificó',
     description:
       'Use este endpoint para crear una asignación de falta y sancion en historial conductual de un estudiante especificó.',
   })
