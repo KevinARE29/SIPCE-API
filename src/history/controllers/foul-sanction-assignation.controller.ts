@@ -63,9 +63,9 @@ export class FoulSanctionAssignationController {
   })
   @Get('/assignations/:assignationId')
   getSingleFoulSanctionAssignation(
-    @Param() idDto: FoulSanctionAssignationIdDto,
+    @Param() foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
   ): Promise<FoulSanctionAssignationResponse> {
-    return this.foulSanctionAssignationService.getSingleFoulSanctionAssignation(idDto);
+    return this.foulSanctionAssignationService.getSingleFoulSanctionAssignation(foulSanctionAssignationIdDto);
   }
 
   @Auth('created_fouls_sanction_assignation')
@@ -110,7 +110,7 @@ export class FoulSanctionAssignationController {
   })
   @HttpCode(204)
   @Delete('/assignations/:assignationId')
-  async deleteFouls(@Param() idDto: FoulSanctionAssignationIdDto): Promise<void> {
-    return this.foulSanctionAssignationService.deleteFoulSanctionAssignation(idDto);
+  async deleteFouls(@Param() foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto): Promise<void> {
+    return this.foulSanctionAssignationService.deleteFoulSanctionAssignation(foulSanctionAssignationIdDto);
   }
 }
