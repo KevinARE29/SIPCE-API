@@ -38,7 +38,7 @@ export class FoulSanctionAssignationController {
     description:
       'Use este endpoint para buscar asignaciones de faltas y sanciones en el histortial conductual de un estudiante especificó.',
   })
-  @Get('/assignation')
+  @Get('/assignations')
   getAllFoulSanctionAssignation(
     @Param() studentHistoryIdsDto: StudentHistoryIdsDto,
     @Query() pageDto: PageDto,
@@ -61,7 +61,7 @@ export class FoulSanctionAssignationController {
     summary: 'Ver detalle de una Asignación',
     description: 'Use este endpoint para ver el detalle de una asignación de falta y sanción específica.',
   })
-  @Get('/assignation:assignationId')
+  @Get('/assignations/:assignationId')
   getSingleFoulSanctionAssignation(
     @Param() idDto: FoulSanctionAssignationIdDto,
   ): Promise<FoulSanctionAssignationResponse> {
@@ -74,7 +74,7 @@ export class FoulSanctionAssignationController {
     description:
       'Use este endpoint para crear una asignación de falta y sancion en historial conductual de un estudiante especificó.',
   })
-  @Post('/assignation')
+  @Post('/assignations')
   async createFoulSanctionAssignation(
     @Body() createFoulSanctionAssignationDto: CreateFoulSanctionAssignationDto,
     @Param() studentHistoryIdsDto: StudentHistoryIdsDto,
@@ -85,13 +85,13 @@ export class FoulSanctionAssignationController {
     );
   }
 
-  @Auth('view_fouls_sanction_assignation')
+  @Auth('update_fouls_sanction_assignation')
   @ApiOperation({
     summary: 'Actualizar una asignación específica',
     description:
       'Use este endpoint para actualizar los datos de una asignación de falta y sancion específica presente en el historial conductual de un estudiante especificó.',
   })
-  @Put('/assignation:assignationId')
+  @Put('/assignations/:assignationId')
   async updateEvent(
     @Param() foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
     @Body() updateFoulSanctionAssignationDto: UpdateFoulSanctionAssignationDto,
@@ -109,7 +109,7 @@ export class FoulSanctionAssignationController {
       'Use este endpoint para eliminar una asignación específica en el historial conductual de un estudiante especificó.',
   })
   @HttpCode(204)
-  @Delete('/assignation:assignationId')
+  @Delete('/assignations/:assignationId')
   async deleteFouls(@Param() idDto: FoulSanctionAssignationIdDto): Promise<void> {
     return this.foulSanctionAssignationService.deleteFoulSanctionAssignation(idDto);
   }
