@@ -1,9 +1,10 @@
 import { Student } from '@students/entities/student.entity';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { Question } from './quetion.entity';
 import { SociometricTestDetail } from './sociometric-test-detail.entity';
 
 @Entity()
+@Unique(['sociometricTestDetail', 'student', 'question'])
 export class Answer {
   @PrimaryGeneratedColumn()
   id!: number;
