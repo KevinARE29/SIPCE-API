@@ -291,6 +291,7 @@ export class StudentRepository extends Repository<Student> {
       .leftJoinAndSelect('cycleDetail.schoolYear', 'schoolYear')
       .leftJoinAndSelect('student.behavioralHistorys', 'behavioralHistorys')
       .leftJoinAndSelect('behavioralHistorys.foulSanctionAssignations', 'foulSanctionAssignations')
+      .leftJoinAndSelect('foulSanctionAssignations.foulId', 'foulId')
       .leftJoinAndSelect('behavioralHistorys.sectionDetailId', 'bSectionDetail')
       .leftJoinAndSelect('bSectionDetail.teacher', 'teacher')
       .leftJoinAndSelect('bSectionDetail.gradeDetail', 'bGradeDetail')

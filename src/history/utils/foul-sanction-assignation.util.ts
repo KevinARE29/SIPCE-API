@@ -24,3 +24,16 @@ export function getFoulsCounter(foulSanctionAssignation: FoulSanctionAssignation
     totalSanctions,
   };
 }
+
+export function getFoulsAlertState(foulSanctionAssignation: FoulSanctionAssignation[]): boolean {
+  const minorFouls = foulSanctionAssignation.filter(
+    foulAssignation => foulAssignation.foulId.foulsType === EnumFoulsType.Leves,
+  );
+  const seriousFouls = foulSanctionAssignation.filter(
+    foulAssignation => foulAssignation.foulId.foulsType === EnumFoulsType.Graves,
+  );
+  const verySeriousFouls = foulSanctionAssignation.filter(
+    foulAssignation => foulAssignation.foulId.foulsType === EnumFoulsType['Muy Graves'],
+  );
+  return minorFouls.length >= 3 || seriousFouls.length >= 1 || verySeriousFouls.length >= 1;
+}

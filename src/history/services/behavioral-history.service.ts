@@ -21,6 +21,7 @@ import { StudentBehavioralHistoryInformation } from '@history/docs/student-behav
 import { StudentBehavioralHistoryInformationResponse } from '@history/docs/student-behavioral-history-information-response.doc';
 import { StudentBehavioralHistoryInformationFiltersDto } from '@history/dtos/student-behavioral-history-information-filters.dto';
 import { StudentIdDto } from '@students/dtos/student-id.dto';
+import { getFoulsAlertState } from '@history/utils/foul-sanction-assignation.util';
 
 @Injectable()
 export class BehavioralHistoryService {
@@ -103,7 +104,7 @@ export class BehavioralHistoryService {
       author: `${behavioralHistory.sectionDetailId?.teacher.firstname} ${behavioralHistory.sectionDetailId?.teacher.lastname}`,
       behavioralHistoryGrade: `${behavioralHistory.sectionDetailId?.gradeDetail.grade.name} (${behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.year})`,
       behavioralHistoryYear: behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.year,
-      foulsCounter: behavioralHistory.foulSanctionAssignations.length,
+      foulsAlert: getFoulsAlertState(behavioralHistory.foulSanctionAssignations),
       expedients: syncWithStudentExpedients(
         studentAcademicData.expedients,
         behavioralHistory.sectionDetailId?.gradeDetail.grade.name,
