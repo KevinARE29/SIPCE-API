@@ -68,4 +68,22 @@ export class SectionDetailRepository extends Repository<SectionDetail> {
 
     return sectionDetail;
   }
+
+  async findByIdOrThrow(sectionDetailId: number): Promise<SectionDetail> {
+    const sectionDetail = await this.createQueryBuilder('sectionDetail')
+      .leftJoinAndSelect('sectionDetail.students', 'student')
+      .leftJoinAndSelect('sectionDetail.section', 'section')
+      .leftJoinAndSelect('student.images', 'image')
+      .leftJoinAndSelect('image.grade', 'grade')
+      .andWhere(`sectionDetail.id = ${sectionDetailId}`)
+      .orderBy(`student.lastname`, 'ASC')
+      .orderBy(`student.firstname`, 'ASC')
+      .getOne();
+
+    if (!sectionDetail) {
+      throw new NotFoundException(`No se encontró el detalle del grado solicitado`);
+    }
+
+    return sectionDetail;
+  }
 }

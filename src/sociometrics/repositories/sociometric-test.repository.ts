@@ -12,10 +12,11 @@ import { SectionDetail } from '@academics/entities/section-detail.entity';
 
 @EntityRepository(SociometricTest)
 export class SociometricTestRepository extends Repository<SociometricTest> {
-  async findByIdOrThrow(id: number, counselorId: number): Promise<SociometricTest> {
+  async findByIdOrThrow(id: number): Promise<SociometricTest> {
     const questionBank = await this.createQueryBuilder('sociometricTest')
       .leftJoinAndSelect(`sociometricTest.sectionDetail`, `sectionDetail`)
       .leftJoinAndSelect(`sociometricTest.questionBank`, `questionBank`)
+      .leftJoinAndSelect(`questionBank.questions`, `question`)
       .leftJoinAndSelect(`sociometricTest.presets`, `preset`)
       .leftJoinAndSelect(`sociometricTest.sociometricTestDetails`, `sociometricTestDetail`)
       .leftJoinAndSelect(`sociometricTestDetail.student`, `student`)
@@ -27,7 +28,6 @@ export class SociometricTestRepository extends Repository<SociometricTest> {
       .leftJoinAndSelect(`gradeDetail.grade`, `grade`)
       .leftJoinAndSelect(`cycleDetail.shift`, `shift`)
       .andWhere(`sociometricTest.id = ${id}`)
-      .andWhere(`counselor.id = ${counselorId}`)
       .andWhere('sociometricTest.deletedAt is null')
       .getOne();
 

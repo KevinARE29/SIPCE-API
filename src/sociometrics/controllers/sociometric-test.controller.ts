@@ -51,11 +51,8 @@ export class SociometricTestController {
     description: 'Use este endpoint para obtener una prueba sociométrica específica',
   })
   @Get(':sociometricTestId')
-  getSociometricTest(
-    @User() { id }: IAuthenticatedUser,
-    @Param() { sociometricTestId }: SociometricTestIdDto,
-  ): Promise<SociometricTestResponse> {
-    return this.sociometricTestService.getSociometricTest(id, sociometricTestId);
+  getSociometricTest(@Param() { sociometricTestId }: SociometricTestIdDto): Promise<SociometricTestResponse> {
+    return this.sociometricTestService.getSociometricTest(sociometricTestId);
   }
 
   @Auth('manage_sociometric_tests')
@@ -79,10 +76,7 @@ export class SociometricTestController {
   })
   @HttpCode(204)
   @Delete(':sociometricTestId')
-  deleteSociometricTest(
-    @User() { id }: IAuthenticatedUser,
-    @Param() { sociometricTestId }: SociometricTestIdDto,
-  ): Promise<void> {
-    return this.sociometricTestService.deleteSociometricTest(id, sociometricTestId);
+  deleteSociometricTest(@Param() { sociometricTestId }: SociometricTestIdDto): Promise<void> {
+    return this.sociometricTestService.deleteSociometricTest(sociometricTestId);
   }
 }

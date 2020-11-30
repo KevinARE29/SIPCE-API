@@ -7,12 +7,14 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { Answer } from './answer.entity';
 import { SociometricTest } from './sociometric-test.entity';
 
 @Entity()
+@Unique(['sociometricTest', 'student'])
 export class SociometricTestDetail {
   @PrimaryGeneratedColumn()
   id!: number;
