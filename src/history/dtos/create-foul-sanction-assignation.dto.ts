@@ -1,10 +1,10 @@
 import { IsId } from '@core/decorators/id.decorator';
 import { validator } from '@core/messages/validator.message';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsDateString, IsNotEmpty } from 'class-validator';
 
 export class CreateFoulSanctionAssignationDto {
   @IsNotEmpty()
-  @IsString({ message: validator.isDateString })
+  @IsDateString({ message: validator.isDateString })
   readonly issueDate!: Date;
 
   @IsId({ each: true })
