@@ -81,7 +81,7 @@ export class SectionDetailRepository extends Repository<SectionDetail> {
       .getOne();
 
     if (!sectionDetail) {
-      throw new NotFoundException(`No se encontró section detail con id ${sectionDetailId}`);
+      throw new NotFoundException(`No se encontró el detalle del grado solicitado`);
     }
 
     return sectionDetail;
