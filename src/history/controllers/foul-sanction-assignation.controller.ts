@@ -1,4 +1,3 @@
-import { SchoolYear } from '@academics/decorators/school-year.decorator';
 import { ContentTypeGuard } from '@core/guards/content-type.guard';
 import { FoulSanctionAssignationService } from '@history/services/foul-sanction-assignation.service';
 import { Controller, UseGuards, Get, Param, Body, Post, Query, Put, HttpCode, Delete } from '@nestjs/common';
