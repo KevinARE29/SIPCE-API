@@ -86,8 +86,8 @@ export class SociometricTestService {
     };
   }
 
-  async getSociometricTest(counselorId: number, sociometricTestId: number): Promise<SociometricTestResponse> {
-    const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(sociometricTestId, counselorId);
+  async getSociometricTest(sociometricTestId: number): Promise<SociometricTestResponse> {
+    const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(sociometricTestId);
     const {
       sectionDetail: {
         id: sectionDetailId,
@@ -125,7 +125,7 @@ export class SociometricTestService {
     sociometricTestId: number,
     sociometricTestDto: SociometricTestDto,
   ): Promise<SociometricTestResponse> {
-    const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(sociometricTestId, counselorId);
+    const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(sociometricTestId);
 
     if (sociometricTest.status !== 'Creada') {
       throw new UnprocessableEntityException(
@@ -162,8 +162,8 @@ export class SociometricTestService {
     };
   }
 
-  async deleteSociometricTest(counselorId: number, sociometricTestId: number): Promise<void> {
-    const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(sociometricTestId, counselorId);
+  async deleteSociometricTest(sociometricTestId: number): Promise<void> {
+    const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(sociometricTestId);
 
     if (sociometricTest.status !== 'Creada') {
       throw new UnprocessableEntityException(
