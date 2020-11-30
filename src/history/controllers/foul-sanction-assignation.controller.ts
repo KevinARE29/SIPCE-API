@@ -99,7 +99,7 @@ export class FoulSanctionAssignationController {
   @Auth('delete_fouls_sanction_assignation')
   @HttpCode(204)
   @Delete('/assignations/:assignationId')
-  async deleteFouls(
+  async deleteFoulSanctionAssignation(
     @User() { id }: IAuthenticatedUser,
     @Param() foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
   ): Promise<void> {

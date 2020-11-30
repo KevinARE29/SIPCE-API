@@ -171,19 +171,26 @@ export class FoulSanctionAssignationService {
     const behavioralHistory = await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(
       foulSanctionAssignationIdDto,
     );
-    const schoolYearStatus = behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.status;
-    if (schoolYearStatus === ESchoolYearStatus.Histórico) {
-      throw new UnprocessableEntityException(
-        'Ya no se pueden realizar modificaciones ya que el año escolar ha finalizado',
-      );
-    }
     if (behavioralHistory.sectionDetailId?.teacher.id !== teacherId) {
       throw new UnprocessableEntityException('No tienes los permisos para realizar esta operación ');
     }
     const assignation = await this.foulSanctionAssignationRepository.findByIdOrThrow(
       foulSanctionAssignationIdDto.assignationId,
     );
+    const timeDiff = this.getTimeDiff(assignation.createdAt);
+    if (timeDiff) {
+      throw new UnprocessableEntityException(
+        'No se puede eliminar esta asignación ya que han transcurrido más de 24 horas desde su registro',
+      );
+    }
     assignation.deletedAt = new Date();
-    await this.foulSanctionAssignationRepository.save(assignation);
+    this.foulSanctionAssignationRepository.save(assignation);
+  }
+
+  getTimeDiff(annotationCreatedAtDate: Date): boolean {
+    const currentDate = new Date();
+    const diff = currentDate.getTime() - annotationCreatedAtDate.getTime();
+    const hoursDiff = diff / (1000 * 60 * 60);
+    return hoursDiff > 24;
   }
 }

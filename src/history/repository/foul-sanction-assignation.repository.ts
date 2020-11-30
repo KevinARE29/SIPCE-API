@@ -20,7 +20,10 @@ export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAs
   }
 
   async findByIdOrThrow(id: number): Promise<FoulSanctionAssignation> {
-    const query = await this.findOne(id, { relations: ['behavioralHistoryId', 'periodId', 'sanctionId', 'foulId'] });
+    const query = await this.findOne(id, {
+      where: { deletedAt: null },
+      relations: ['behavioralHistoryId', 'periodId', 'sanctionId', 'foulId'],
+    });
     if (!query) {
       throw new NotFoundException(`Asignación con id ${id} no encontrado`);
     }
