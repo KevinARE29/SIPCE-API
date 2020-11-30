@@ -15,7 +15,4 @@ export class CreateFoulSanctionAssignationDto {
 
   @IsId({ each: true })
   readonly foulIdAssignation!: number;
-
-  @IsId({ each: true })
-  readonly behavioralHistoryIdAssignation!: number;
 }

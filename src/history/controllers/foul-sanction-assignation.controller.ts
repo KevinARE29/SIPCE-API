@@ -12,6 +12,8 @@ import { FoulSanctionAssignationResponse } from '@history/docs/foul-sanction-ass
 import { FoulSanctionAssignationIdDto } from '@history/dtos/foul-sanction-assignation-id.dto';
 import { CreateFoulSanctionAssignationDto } from '@history/dtos/create-foul-sanction-assignation.dto';
 import { UpdateFoulSanctionAssignationDto } from '@history/dtos/update-foul-sanction-assignation.dto';
+import { IAuthenticatedUser } from '@users/interfaces/users.interface';
+import { User } from '@users/decorators/user.decorator';
 
 @ApiTags('Foul Sanction Assignation Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -76,10 +78,12 @@ export class FoulSanctionAssignationController {
   })
   @Post('/assignations')
   async createFoulSanctionAssignation(
+    @User() { id }: IAuthenticatedUser,
     @Body() createFoulSanctionAssignationDto: CreateFoulSanctionAssignationDto,
     @Param() studentHistoryIdsDto: StudentHistoryIdsDto,
   ): Promise<FoulSanctionAssignationResponse> {
     return this.foulSanctionAssignationService.createFoulSanctionAssignation(
+      id,
       createFoulSanctionAssignationDto,
       studentHistoryIdsDto,
     );
@@ -93,10 +97,12 @@ export class FoulSanctionAssignationController {
   })
   @Put('/assignations/:assignationId')
   async updateEvent(
+    @User() { id }: IAuthenticatedUser,
     @Param() foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
     @Body() updateFoulSanctionAssignationDto: UpdateFoulSanctionAssignationDto,
   ): Promise<FoulSanctionAssignationResponse> {
     return this.foulSanctionAssignationService.updateFoulSanctionAssignation(
+      id,
       updateFoulSanctionAssignationDto,
       foulSanctionAssignationIdDto,
     );
@@ -110,7 +116,10 @@ export class FoulSanctionAssignationController {
   })
   @HttpCode(204)
   @Delete('/assignations/:assignationId')
-  async deleteFouls(@Param() foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto): Promise<void> {
-    return this.foulSanctionAssignationService.deleteFoulSanctionAssignation(foulSanctionAssignationIdDto);
+  async deleteFouls(
+    @User() { id }: IAuthenticatedUser,
+    @Param() foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
+  ): Promise<void> {
+    return this.foulSanctionAssignationService.deleteFoulSanctionAssignation(id, foulSanctionAssignationIdDto);
   }
 }

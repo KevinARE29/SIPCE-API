@@ -1,7 +1,7 @@
 import { FoulSanctionAssignationResponse } from '@history/docs/foul-sanction-assignation-response.doc';
 import { CreateFoulSanctionAssignationDto } from '@history/dtos/create-foul-sanction-assignation.dto';
 import { FoulSanctionAssignationRepository } from '@history/repository/foul-sanction-assignation.repository';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { FoulSanctionAssignation as FoulSanctionAssignationDoc } from '@history/docs/foul-sanction-assignation.doc';
 import { plainToClass } from 'class-transformer';
 import { SanctionsRepository } from '@sanctions/repository/sanctions.repository';
@@ -17,6 +17,7 @@ import { FoulSanctionAssignationResponses } from '@history/docs/fouls-sanctions-
 import { FoulSanctionAssignationFilterDto } from '@history/dtos/foul-sanction-assignation-filter.dto';
 import { getPagination } from '@core/utils/pagination.util';
 import { FoulSanctionAssignationIdDto } from '@history/dtos/foul-sanction-assignation-id.dto';
+import { ESchoolYearStatus } from '@academics/constants/academic.constants';
 
 @Injectable()
 export class FoulSanctionAssignationService {
@@ -76,16 +77,22 @@ export class FoulSanctionAssignationService {
   }
 
   async createFoulSanctionAssignation(
+    teacherId: number,
     createFoulSanctionAssignationDto: CreateFoulSanctionAssignationDto,
     studentHistoryIdsDto: StudentHistoryIdsDto,
   ): Promise<FoulSanctionAssignationResponse> {
-    await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(studentHistoryIdsDto);
-    const {
-      periodIdAssignation,
-      foulIdAssignation,
-      sanctionIdAssignation,
-      behavioralHistoryIdAssignation,
-    } = createFoulSanctionAssignationDto;
+    const behavioralHistory = await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(studentHistoryIdsDto);
+    const schoolYearStatus = behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.status;
+    if (schoolYearStatus === ESchoolYearStatus.Histórico) {
+      throw new UnprocessableEntityException(
+        'Ya no se pueden realizar modificaciones ya que el año escolar ha finalizado',
+      );
+    }
+    if (behavioralHistory.sectionDetailId?.teacher.id !== teacherId) {
+      throw new UnprocessableEntityException('No tienes los permisos para realizar esta operación ');
+    }
+
+    const { periodIdAssignation, foulIdAssignation, sanctionIdAssignation } = createFoulSanctionAssignationDto;
 
     let periodId;
     let behavioralHistoryId;
@@ -101,8 +108,8 @@ export class FoulSanctionAssignationService {
     if (sanctionIdAssignation) {
       sanctionId = await this.sanctionsRepository.findOneOrFail(sanctionIdAssignation);
     }
-    if (behavioralHistoryIdAssignation) {
-      behavioralHistoryId = await this.behavioralHistoryRepository.findOneOrFail(behavioralHistoryIdAssignation);
+    if (studentHistoryIdsDto.historyId) {
+      behavioralHistoryId = await this.behavioralHistoryRepository.findOneOrFail(studentHistoryIdsDto.historyId);
     }
 
     return {
@@ -123,20 +130,27 @@ export class FoulSanctionAssignationService {
   }
 
   async updateFoulSanctionAssignation(
+    teacherId: number,
     updateFoulSanctionAssignationDto: UpdateFoulSanctionAssignationDto,
     foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
   ): Promise<FoulSanctionAssignationResponse> {
-    await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(foulSanctionAssignationIdDto);
+    const behavioralHistory = await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(
+      foulSanctionAssignationIdDto,
+    );
+    const schoolYearStatus = behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.status;
+    if (schoolYearStatus === ESchoolYearStatus.Histórico) {
+      throw new UnprocessableEntityException(
+        'Ya no se pueden realizar modificaciones ya que el año escolar ha finalizado',
+      );
+    }
+    if (behavioralHistory.sectionDetailId?.teacher.id !== teacherId) {
+      throw new UnprocessableEntityException('No tienes los permisos para realizar esta operación ');
+    }
     const currentAssignation = await this.foulSanctionAssignationRepository.findByIdOrThrow(
       foulSanctionAssignationIdDto.assignationId,
     );
 
-    const {
-      periodIdAssignation,
-      foulIdAssignation,
-      sanctionIdAssignation,
-      behavioralHistoryIdAssignation,
-    } = updateFoulSanctionAssignationDto;
+    const { periodIdAssignation, foulIdAssignation, sanctionIdAssignation } = updateFoulSanctionAssignationDto;
 
     if (periodIdAssignation) {
       currentAssignation.periodId = await this.periodRepository.findOneOrFail(periodIdAssignation);
@@ -147,9 +161,9 @@ export class FoulSanctionAssignationService {
     if (sanctionIdAssignation) {
       currentAssignation.sanctionId = await this.sanctionsRepository.findOneOrFail(sanctionIdAssignation);
     }
-    if (behavioralHistoryIdAssignation) {
+    if (foulSanctionAssignationIdDto.historyId) {
       currentAssignation.behavioralHistoryId = await this.behavioralHistoryRepository.findOneOrFail(
-        behavioralHistoryIdAssignation,
+        foulSanctionAssignationIdDto.historyId,
       );
     }
 
@@ -166,8 +180,22 @@ export class FoulSanctionAssignationService {
     };
   }
 
-  async deleteFoulSanctionAssignation(foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto): Promise<void> {
-    await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(foulSanctionAssignationIdDto);
+  async deleteFoulSanctionAssignation(
+    teacherId: number,
+    foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
+  ): Promise<void> {
+    const behavioralHistory = await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(
+      foulSanctionAssignationIdDto,
+    );
+    const schoolYearStatus = behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.status;
+    if (schoolYearStatus === ESchoolYearStatus.Histórico) {
+      throw new UnprocessableEntityException(
+        'Ya no se pueden realizar modificaciones ya que el año escolar ha finalizado',
+      );
+    }
+    if (behavioralHistory.sectionDetailId?.teacher.id !== teacherId) {
+      throw new UnprocessableEntityException('No tienes los permisos para realizar esta operación ');
+    }
     const assignation = await this.foulSanctionAssignationRepository.findByIdOrThrow(
       foulSanctionAssignationIdDto.assignationId,
     );
