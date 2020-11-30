@@ -1,13 +1,14 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, Validate, IsIn, IsDateString } from 'class-validator';
+import { IsOptional, Validate, IsDateString, IsString } from 'class-validator';
 import { SortOptionsValidator } from '@core/validators/sort-options.validator';
 import { getSortOptionsv2 } from '@core/utils/sort.util';
 import { validator } from '@core/messages/validator.message';
 import { IsId } from '@core/decorators/id.decorator';
+import { Type } from 'class-transformer';
 
 export const [sortOptions, sortOptionsMap] = getSortOptionsv2(
-  ['periodId', 'sanctionId', 'foulId', 'behavioralHistoryId'],
-  'issueDate',
+  ['issueDate', 'createdAt', 'foulId.numeral', 'sanctionId.name'],
+  'foul_sanction_assignation',
 );
 
 export class FoulSanctionAssignationFilterDto {
@@ -34,9 +35,15 @@ export class FoulSanctionAssignationFilterDto {
 
   @IsOptional()
   @IsId()
+  @Type(() => Number)
   readonly peridoId?: number;
 
   @IsOptional()
-  @IsIn(['false'], { message: validator.isIn })
-  readonly paginate?: string;
+  @IsId()
+  @Type(() => Number)
+  readonly foulId?: number;
+
+  @IsOptional()
+  @IsString()
+  readonly foulNumeral?: string;
 }

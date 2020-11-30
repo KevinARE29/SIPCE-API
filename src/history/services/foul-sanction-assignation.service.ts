@@ -47,17 +47,11 @@ export class FoulSanctionAssignationService {
     foulSanctionAssignationFilterDto: FoulSanctionAssignationFilterDto,
     studentHistoryIdsDto: StudentHistoryIdsDto,
   ): Promise<FoulSanctionAssignationResponses> {
-    if (foulSanctionAssignationFilterDto.paginate === 'false') {
-      const [assignations] = await this.foulSanctionAssignationRepository.getAllFoulSantionAssignation(
-        pageDto,
-        foulSanctionAssignationFilterDto,
-        studentHistoryIdsDto,
-      );
-      return { data: plainToClass(FoulSanctionAssignationDoc, assignations, { excludeExtraneousValues: true }) };
-    }
-    const [assignations, count] = await this.sanctionsRepository.getAllSanctions(
+    await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(studentHistoryIdsDto);
+    const [assignations, count] = await this.foulSanctionAssignationRepository.getAllFoulSantionAssignation(
       pageDto,
       foulSanctionAssignationFilterDto,
+      studentHistoryIdsDto,
     );
     const pagination = getPagination(pageDto, count);
     return {

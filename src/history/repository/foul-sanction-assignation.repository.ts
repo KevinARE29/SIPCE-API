@@ -40,7 +40,8 @@ export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAs
       createdStart,
       createdEnd,
       peridoId,
-      paginate,
+      foulId,
+      foulNumeral,
     } = foulSanctionAssignationFilterDto;
     const { historyId } = studentHistoryIdsDto;
     const query = this.createQueryBuilder('foul_sanction_assignation')
@@ -49,16 +50,9 @@ export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAs
       .leftJoinAndSelect('foul_sanction_assignation.sanctionId', 'sanctionId')
       .leftJoinAndSelect('foul_sanction_assignation.foulId', 'foulId')
       .andWhere(`behavioralHistoryId.id = ${historyId}`)
-      .andWhere(`peridoId.id = ${peridoId}`)
-      .andWhere('foul_sanction_assignation.deletedAt is null');
-
-    if (paginate === 'false') {
-      query.orderBy({ 'foul_sanction_assignation.id': 'ASC' });
-      return query.getManyAndCount();
-    }
-
-    query.take(perPage);
-    query.skip((page - 1) * perPage);
+      .andWhere('foul_sanction_assignation.deletedAt is null')
+      .take(perPage)
+      .skip((page - 1) * perPage);
 
     if (sort) {
       const order = getOrderBy(sort, sortOptionsMap);
@@ -80,6 +74,18 @@ export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAs
 
     if (createdEnd) {
       query.andWhere(`foul_sanction_assignation.issueDate <= '${issueDateEnd}'`);
+    }
+
+    if (peridoId) {
+      query.andWhere(`periodId.id = ${peridoId}`);
+    }
+
+    if (foulId) {
+      query.andWhere(`foulId.id = ${foulId}`);
+    }
+
+    if (foulNumeral) {
+      query.andWhere(`foulId.numeral ILIKE '%${foulNumeral}%'`);
     }
 
     return query.getManyAndCount();

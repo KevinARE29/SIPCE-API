@@ -1,6 +1,5 @@
 import { Period } from '@academics/docs/period.doc';
 import { Fouls } from '@fouls/docs/fouls.doc';
-import { ApiProperty } from '@nestjs/swagger';
 import { Sanctions } from '@sanctions/docs/sanctions.doc';
 import { Expose, Type } from 'class-transformer';
 
@@ -11,18 +10,18 @@ export class FoulSanctionAssignation {
   @Expose()
   issueDate!: Date;
 
-  @ApiProperty({ type: [Fouls] })
-  @Type(() => Fouls)
   @Expose()
+  createdAt!: Date;
+
+  @Type(() => Fouls)
+  @Expose({ name: 'foulId' })
   foul!: Fouls;
 
-  @ApiProperty({ type: [Sanctions] })
   @Type(() => Sanctions)
-  @Expose()
-  sanction?: Sanctions;
+  @Expose({ name: 'sanctionId' })
+  sanction!: Sanctions;
 
-  @ApiProperty({ type: [Period] })
   @Type(() => Period)
-  @Expose()
+  @Expose({ name: 'periodId' })
   period!: Period;
 }

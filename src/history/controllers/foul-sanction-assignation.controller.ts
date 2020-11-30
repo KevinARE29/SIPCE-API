@@ -34,11 +34,11 @@ export class FoulSanctionAssignationController {
     return this.foulSanctionAssignationService.findAllFoulsOnHistory(studentHistoryIdsDto);
   }
 
-  @Auth('view_fouls_sanction_assignations')
+  @Auth('view_fouls_sanction_assignation')
   @ApiOperation({
     summary: 'Buscar Asignaciones de Faltas y Sanciones',
     description:
-      'Use este endpoint para buscar asignaciones de faltas y sanciones en el histortial conductual de un estudiante específico.',
+      'Use este endpoint para buscar asignaciones de faltas y sanciones en el historial académico y conductual de un estudiante específico.',
   })
   @Get('/assignations')
   getAllFoulSanctionAssignation(
