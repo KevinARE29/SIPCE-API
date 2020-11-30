@@ -34,14 +34,14 @@ export class FoulSanctionAssignation {
     behavioralHistory => behavioralHistory.foulSanctionAssignations,
   )
   @JoinColumn({ name: 'behavioral_history_id' })
-  behavioralHistoryIdAssignation!: BehavioralHistory;
+  behavioralHistoryId!: BehavioralHistory;
 
   @ManyToOne(
     () => Period,
     period => period.foulSanctionAssignations,
   )
   @JoinColumn({ name: 'period_id' })
-  periodIdAssignation!: Period;
+  periodId!: Period;
 
   @ManyToOne(
     () => Sanction,
@@ -49,12 +49,12 @@ export class FoulSanctionAssignation {
     { nullable: true },
   )
   @JoinColumn({ name: 'sanction_id' })
-  sanctionIdAssignation?: Sanction;
+  sanctionId?: Sanction;
 
   @ManyToOne(
     () => Foul,
     foul => foul.foulSanctionAssignations,
   )
   @JoinColumn({ name: 'foul_id' })
-  foulIdAssignation!: Foul;
+  foulId!: Foul;
 }

@@ -8,14 +8,14 @@ export class CreateFoulSanctionAssignationDto {
   readonly issueDate!: Date;
 
   @IsId({ each: true })
-  readonly periodId!: number;
+  readonly periodIdAssignation!: number;
 
   @IsId({ each: true })
-  readonly sanctionId?: number;
+  readonly sanctionIdAssignation?: number;
 
   @IsId({ each: true })
-  readonly foulId!: number;
+  readonly foulIdAssignation!: number;
 
   @IsId({ each: true })
-  readonly behavioralHistoryId!: number;
+  readonly behavioralHistoryIdAssignation!: number;
 }

@@ -11,6 +11,12 @@ import { StudentHistoryIdsDto } from '@history/dtos/student-history-ids.dto';
 import { BehavioralHistoryRepository } from '@history/repository/behavioral-history.repository';
 import { getFoulsCounter } from '@history/utils/foul-sanction-assignation.util';
 import { FoulsAssignationCounterResponse } from '@history/docs/fouls-assignation-counter-response.doc';
+import { UpdateFoulSanctionAssignationDto } from '@history/dtos/update-foul-sanction-assignation.dto';
+import { PageDto } from '@core/dtos/page.dto';
+import { FoulSanctionAssignationResponses } from '@history/docs/fouls-sanctions-assignations-response.doc';
+import { FoulSanctionAssignationFilterDto } from '@history/dtos/foul-sanction-assignation-filter.dto';
+import { getPagination } from '@core/utils/pagination.util';
+import { FoulSanctionAssignationIdDto } from '@history/dtos/foul-sanction-assignation-id.dto';
 
 @Injectable()
 export class FoulSanctionAssignationService {
@@ -35,37 +41,78 @@ export class FoulSanctionAssignationService {
     return { data: foulsCounter };
   }
 
-  async createFouls(
-    createFoulSanctionAssignationDto: CreateFoulSanctionAssignationDto,
+  async getAllFoulSanctionAssignation(
+    pageDto: PageDto,
+    foulSanctionAssignationFilterDto: FoulSanctionAssignationFilterDto,
+    studentHistoryIdsDto: StudentHistoryIdsDto,
+  ): Promise<FoulSanctionAssignationResponses> {
+    if (foulSanctionAssignationFilterDto.paginate === 'false') {
+      const [assignations] = await this.foulSanctionAssignationRepository.getAllFoulSantionAssignation(
+        pageDto,
+        foulSanctionAssignationFilterDto,
+        studentHistoryIdsDto,
+      );
+      return { data: plainToClass(FoulSanctionAssignationDoc, assignations, { excludeExtraneousValues: true }) };
+    }
+    const [assignations, count] = await this.sanctionsRepository.getAllSanctions(
+      pageDto,
+      foulSanctionAssignationFilterDto,
+    );
+    const pagination = getPagination(pageDto, count);
+    return {
+      data: plainToClass(FoulSanctionAssignationDoc, assignations, { excludeExtraneousValues: true }),
+      pagination,
+    };
+  }
+
+  async getSingleFoulSanctionAssignation(
+    foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
   ): Promise<FoulSanctionAssignationResponse> {
-    const { periodId, foulId, sanctionId, behavioralHistoryId } = createFoulSanctionAssignationDto;
+    await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(foulSanctionAssignationIdDto);
+    const sanction = await this.foulSanctionAssignationRepository.findByIdOrThrow(
+      foulSanctionAssignationIdDto.assignationId,
+    );
+    return { data: plainToClass(FoulSanctionAssignationDoc, sanction, { excludeExtraneousValues: true }) };
+  }
 
-    let periodIdAsignation;
-    let behavioralHistoryIdAssignation;
-    let sanctionIdAssignation;
-    let foulIdAssignation;
+  async createFoulSanctionAssignation(
+    createFoulSanctionAssignationDto: CreateFoulSanctionAssignationDto,
+    studentHistoryIdsDto: StudentHistoryIdsDto,
+  ): Promise<FoulSanctionAssignationResponse> {
+    await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(studentHistoryIdsDto);
+    const {
+      periodIdAssignation,
+      foulIdAssignation,
+      sanctionIdAssignation,
+      behavioralHistoryIdAssignation,
+    } = createFoulSanctionAssignationDto;
 
-    if (periodId) {
-      periodIdAsignation = await this.periodRepository.findOne(periodId);
+    let periodId;
+    let behavioralHistoryId;
+    let sanctionId;
+    let foulId;
+
+    if (periodIdAssignation) {
+      periodId = await this.periodRepository.findOneOrFail(periodIdAssignation);
     }
-    if (foulId) {
-      foulIdAssignation = await this.foulsRepository.findOne(foulId);
+    if (foulIdAssignation) {
+      foulId = await this.foulsRepository.findOneOrFail(foulIdAssignation);
     }
-    if (sanctionId) {
-      sanctionIdAssignation = await this.sanctionsRepository.findOne(sanctionId);
+    if (sanctionIdAssignation) {
+      sanctionId = await this.sanctionsRepository.findOneOrFail(sanctionIdAssignation);
     }
-    if (behavioralHistoryId) {
-      behavioralHistoryIdAssignation = await this.periodRepository.findOne(periodId);
+    if (behavioralHistoryIdAssignation) {
+      behavioralHistoryId = await this.behavioralHistoryRepository.findOneOrFail(behavioralHistoryIdAssignation);
     }
 
     return {
       data: plainToClass(
         FoulSanctionAssignationDoc,
         await this.foulSanctionAssignationRepository.save({
-          periodIdAsignation,
-          foulIdAssignation,
-          sanctionIdAssignation,
-          behavioralHistoryIdAssignation,
+          periodId,
+          foulId,
+          sanctionId,
+          behavioralHistoryId,
           createFoulSanctionAssignationDto,
         }),
         {
@@ -73,5 +120,58 @@ export class FoulSanctionAssignationService {
         },
       ),
     };
+  }
+
+  async updateFoulSanctionAssignation(
+    updateFoulSanctionAssignationDto: UpdateFoulSanctionAssignationDto,
+    foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto,
+  ): Promise<FoulSanctionAssignationResponse> {
+    await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(foulSanctionAssignationIdDto);
+    const currentAssignation = await this.foulSanctionAssignationRepository.findByIdOrThrow(
+      foulSanctionAssignationIdDto.assignationId,
+    );
+
+    const {
+      periodIdAssignation,
+      foulIdAssignation,
+      sanctionIdAssignation,
+      behavioralHistoryIdAssignation,
+    } = updateFoulSanctionAssignationDto;
+
+    if (periodIdAssignation) {
+      currentAssignation.periodId = await this.periodRepository.findOneOrFail(periodIdAssignation);
+    }
+    if (foulIdAssignation) {
+      currentAssignation.foulId = await this.foulsRepository.findOneOrFail(foulIdAssignation);
+    }
+    if (sanctionIdAssignation) {
+      currentAssignation.sanctionId = await this.sanctionsRepository.findOneOrFail(sanctionIdAssignation);
+    }
+    if (behavioralHistoryIdAssignation) {
+      currentAssignation.behavioralHistoryId = await this.behavioralHistoryRepository.findOneOrFail(
+        behavioralHistoryIdAssignation,
+      );
+    }
+
+    return {
+      data: plainToClass(
+        FoulSanctionAssignationDoc,
+        await this.foulSanctionAssignationRepository.save({
+          ...currentAssignation,
+        }),
+        {
+          excludeExtraneousValues: true,
+        },
+      ),
+    };
+  }
+
+  async deleteFoulSanctionAssignation(foulSanctionAssignationIdDto: FoulSanctionAssignationIdDto): Promise<void> {
+    await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(foulSanctionAssignationIdDto);
+    const assignation = await this.foulSanctionAssignationRepository.findByIdOrThrow(
+      foulSanctionAssignationIdDto.assignationId,
+    );
+    assignation.deletedAt = new Date();
+    await this.foulSanctionAssignationRepository.save(assignation);
   }
 }

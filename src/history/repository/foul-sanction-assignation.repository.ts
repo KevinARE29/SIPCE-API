@@ -1,5 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { StudentHistoryIdsDto } from '@history/dtos/student-history-ids.dto';
+import { NotFoundException } from '@nestjs/common';
+import { PageDto } from '@core/dtos/page.dto';
+import { FoulSanctionAssignationFilterDto, sortOptionsMap } from '@history/dtos/foul-sanction-assignation-filter.dto';
+import { getOrderBy } from '@core/utils/sort.util';
 import { FoulSanctionAssignation } from '../entities/foul-sanction-assignation.entity';
 @EntityRepository(FoulSanctionAssignation)
 export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAssignation> {
@@ -13,5 +17,71 @@ export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAs
       .andWhere(`behavioralHistoryId.id = ${historyId}`)
       .andWhere('foul_sanction_assignation.deletedAt is null');
     return query.getMany();
+  }
+
+  async findByIdOrThrow(id: number): Promise<FoulSanctionAssignation> {
+    const query = await this.findOne(id, { relations: ['behavioralHistoryId', 'periodId', 'sanctionId', 'foulId'] });
+    if (!query) {
+      throw new NotFoundException(`Asignación con id ${id} no encontrado`);
+    }
+    return query;
+  }
+
+  getAllFoulSantionAssignation(
+    pageDto: PageDto,
+    foulSanctionAssignationFilterDto: FoulSanctionAssignationFilterDto,
+    studentHistoryIdsDto: StudentHistoryIdsDto,
+  ): Promise<[FoulSanctionAssignation[], number]> {
+    const { page, perPage } = pageDto;
+    const {
+      sort,
+      issueDateStart,
+      issueDateEnd,
+      createdStart,
+      createdEnd,
+      peridoId,
+      paginate,
+    } = foulSanctionAssignationFilterDto;
+    const { historyId } = studentHistoryIdsDto;
+    const query = this.createQueryBuilder('foul_sanction_assignation')
+      .leftJoinAndSelect('foul_sanction_assignation.behavioralHistoryId', 'behavioralHistoryId')
+      .leftJoinAndSelect('foul_sanction_assignation.periodId', 'periodId')
+      .leftJoinAndSelect('foul_sanction_assignation.sanctionId', 'sanctionId')
+      .leftJoinAndSelect('foul_sanction_assignation.foulId', 'foulId')
+      .andWhere(`behavioralHistoryId.id = ${historyId}`)
+      .andWhere(`peridoId.id = ${peridoId}`)
+      .andWhere('foul_sanction_assignation.deletedAt is null');
+
+    if (paginate === 'false') {
+      query.orderBy({ 'foul_sanction_assignation.id': 'ASC' });
+      return query.getManyAndCount();
+    }
+
+    query.take(perPage);
+    query.skip((page - 1) * perPage);
+
+    if (sort) {
+      const order = getOrderBy(sort, sortOptionsMap);
+      query.orderBy(order);
+    } else {
+      query.orderBy({ 'foul_sanction_assignation.id': 'DESC' });
+    }
+
+    if (issueDateStart) {
+      query.andWhere(`foul_sanction_assignation.issueDate >= '${issueDateStart}'`);
+    }
+
+    if (issueDateEnd) {
+      query.andWhere(`foul_sanction_assignation.issueDate <= '${issueDateEnd}'`);
+    }
+    if (createdStart) {
+      query.andWhere(`foul_sanction_assignation.issueDate >= '${issueDateStart}'`);
+    }
+
+    if (createdEnd) {
+      query.andWhere(`foul_sanction_assignation.issueDate <= '${issueDateEnd}'`);
+    }
+
+    return query.getManyAndCount();
   }
 }
