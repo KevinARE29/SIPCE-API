@@ -9,6 +9,11 @@ import { Annotation } from '@history/docs/annotation.doc';
 import { AnnotationResponse } from '@history/docs/annotation-response.doc';
 import { HistoryAnnotationIdsDto } from '@history/dtos/history-annotation-ids.dto';
 import { UpdateAnnotationDto } from '@history/dtos/update-annotation.dto';
+import { getPagination } from '@core/utils/pagination.util';
+import { PageDto } from '@core/dtos/page.dto';
+import { AnnotationsFilterDto } from '@history/dtos/annotations-filter.dto';
+import { CompleteAnnotation } from '@history/docs/complete-annotation.doc';
+import { CompleteAnnotationResponse } from '@history/docs/complete-annotation-response.doc';
 
 @Injectable()
 export class ClassDiaryService {
@@ -97,5 +102,20 @@ export class ClassDiaryService {
     }
     annotation.deletedAt = new Date();
     this.classDiaryRepository.save(annotation);
+  }
+
+  async getClassDiaryAnnotation(
+    studentHistoryIdsDto: StudentHistoryIdsDto,
+    pageDto: PageDto,
+    annotationsFilterDto: AnnotationsFilterDto,
+  ): Promise<CompleteAnnotationResponse> {
+    const studentHistory = await this.behavioralHistoryRepository.findBehavioralHistoryOrFail(studentHistoryIdsDto);
+    const [annotations, count] = await this.classDiaryRepository.findAnnotations(
+      studentHistory.id,
+      pageDto,
+      annotationsFilterDto,
+    );
+    const pagination = getPagination(pageDto, count);
+    return { data: plainToClass(CompleteAnnotation, annotations, { excludeExtraneousValues: true }), pagination };
   }
 }
