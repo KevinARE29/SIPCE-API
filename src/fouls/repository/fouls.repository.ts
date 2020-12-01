@@ -7,7 +7,7 @@ import { EnumFoulsType } from '@fouls/constants/fouls.constants';
 @EntityRepository(Foul)
 export class FoulsRepository extends Repository<Foul> {
   async findByIdOrThrow(id: number): Promise<Foul> {
-    const foul = await this.findOne(id);
+    const foul = await this.findOne(id, { where: { deletedAt: null } });
     if (!foul) {
       throw new NotFoundException(`Falta con id ${id} no encontrada`);
     }

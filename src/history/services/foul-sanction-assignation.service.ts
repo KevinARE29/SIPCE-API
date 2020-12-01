@@ -18,6 +18,7 @@ import { FoulSanctionAssignationFilterDto } from '@history/dtos/foul-sanction-as
 import { getPagination } from '@core/utils/pagination.util';
 import { FoulSanctionAssignationIdDto } from '@history/dtos/foul-sanction-assignation-id.dto';
 import { ESchoolYearStatus } from '@academics/constants/academic.constants';
+import { FoulSanctionAssignation } from '@history/entities/foul-sanction-assignation.entity';
 
 @Injectable()
 export class FoulSanctionAssignationService {
@@ -77,35 +78,23 @@ export class FoulSanctionAssignationService {
     }
 
     const { periodIdAssignation, foulIdAssignation, sanctionIdAssignation } = createFoulSanctionAssignationDto;
+    const periodId = await this.periodRepository.getPeriodByIdOrThrow(periodIdAssignation);
+    const foulId = await this.foulsRepository.findByIdOrThrow(foulIdAssignation);
+    const assignationtoSave: Partial<FoulSanctionAssignation> = {
+      ...createFoulSanctionAssignationDto,
+      behavioralHistoryId: behavioralHistory,
+      periodId,
+      foulId,
+    };
 
-    let periodId;
-    let behavioralHistoryId;
-    let sanctionId;
-    let foulId;
-
-    if (periodIdAssignation) {
-      periodId = await this.periodRepository.findOneOrFail(periodIdAssignation);
-    }
-    if (foulIdAssignation) {
-      foulId = await this.foulsRepository.findOneOrFail(foulIdAssignation);
-    }
     if (sanctionIdAssignation) {
-      sanctionId = await this.sanctionsRepository.findOneOrFail(sanctionIdAssignation);
-    }
-    if (studentHistoryIdsDto.historyId) {
-      behavioralHistoryId = await this.behavioralHistoryRepository.findOneOrFail(studentHistoryIdsDto.historyId);
+      assignationtoSave.sanctionId = await this.sanctionsRepository.findByIdOrThrow(sanctionIdAssignation);
     }
 
     return {
       data: plainToClass(
         FoulSanctionAssignationDoc,
-        await this.foulSanctionAssignationRepository.save({
-          periodId,
-          foulId,
-          sanctionId,
-          behavioralHistoryId,
-          createFoulSanctionAssignationDto,
-        }),
+        await this.foulSanctionAssignationRepository.save(assignationtoSave),
         {
           excludeExtraneousValues: true,
         },
@@ -134,29 +123,29 @@ export class FoulSanctionAssignationService {
       foulSanctionAssignationIdDto.assignationId,
     );
 
+    const timeDiff = this.getTimeDiff(currentAssignation.createdAt);
+    if (timeDiff) {
+      throw new UnprocessableEntityException(
+        'No se puede eliminar esta asignación ya que han transcurrido más de 24 horas desde su registro',
+      );
+    }
+
     const { periodIdAssignation, foulIdAssignation, sanctionIdAssignation } = updateFoulSanctionAssignationDto;
 
     if (periodIdAssignation) {
-      currentAssignation.periodId = await this.periodRepository.findOneOrFail(periodIdAssignation);
+      currentAssignation.periodId = await this.periodRepository.getPeriodByIdOrThrow(periodIdAssignation);
     }
     if (foulIdAssignation) {
-      currentAssignation.foulId = await this.foulsRepository.findOneOrFail(foulIdAssignation);
+      currentAssignation.foulId = await this.foulsRepository.findByIdOrThrow(foulIdAssignation);
     }
     if (sanctionIdAssignation) {
-      currentAssignation.sanctionId = await this.sanctionsRepository.findOneOrFail(sanctionIdAssignation);
-    }
-    if (foulSanctionAssignationIdDto.historyId) {
-      currentAssignation.behavioralHistoryId = await this.behavioralHistoryRepository.findOneOrFail(
-        foulSanctionAssignationIdDto.historyId,
-      );
+      currentAssignation.sanctionId = await this.sanctionsRepository.findByIdOrThrow(sanctionIdAssignation);
     }
 
     return {
       data: plainToClass(
         FoulSanctionAssignationDoc,
-        await this.foulSanctionAssignationRepository.save({
-          ...currentAssignation,
-        }),
+        await this.foulSanctionAssignationRepository.save(currentAssignation),
         {
           excludeExtraneousValues: true,
         },

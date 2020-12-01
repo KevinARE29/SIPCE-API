@@ -33,7 +33,7 @@ export class SanctionsRepository extends Repository<Sanction> {
   }
 
   async findByIdOrThrow(id: number): Promise<Sanction> {
-    const sanction = await this.findOne(id);
+    const sanction = await this.findOne(id, { where: { deletedAt: null } });
     if (!sanction) {
       throw new NotFoundException(`Sanción con id ${id} no encontrada`);
     }
