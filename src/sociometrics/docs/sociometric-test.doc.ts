@@ -32,7 +32,10 @@ export class SociometricTest {
   status!: string;
 
   @Expose()
-  answersPerQuestion!: string;
+  answersPerQuestion!: number;
+
+  @Expose()
+  createdAt!: Date;
 
   @Expose()
   totalStudents!: number;
