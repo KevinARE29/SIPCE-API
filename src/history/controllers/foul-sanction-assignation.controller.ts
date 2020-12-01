@@ -56,7 +56,7 @@ export class FoulSanctionAssignationController {
   @ApiOperation({
     summary: 'Crear asignaciones de faltas y sanciones a un estudiante específico',
     description:
-      'Use este endpoint para crear una asignación de falta y sanción en historial académico conductual de un estudiante específico.',
+      'Use este endpoint para crear una asignación de falta y sanción en historial académico y conductual de un estudiante específico.',
   })
   @Auth('create_fouls_sanction_assignation')
   @Post('/assignations')
@@ -75,7 +75,7 @@ export class FoulSanctionAssignationController {
   @ApiOperation({
     summary: 'Actualizar una asignación específica',
     description:
-      'Use este endpoint para actualizar los datos de una asignación de falta y sanción específica presente en el historial académico conductual de un estudiante específico.',
+      'Use este endpoint para actualizar los datos de una asignación de falta y sanción específica presente en el historial académico y conductual de un estudiante específico.',
   })
   @Auth('update_fouls_sanction_assignation')
   @Put('/assignations/:assignationId')
@@ -94,7 +94,7 @@ export class FoulSanctionAssignationController {
   @ApiOperation({
     summary: 'Eliminar un asignación',
     description:
-      'Use este endpoint para eliminar una asignación específica en el historial académico conductual de un estudiante específico.',
+      'Use este endpoint para eliminar una asignación específica en el historial académico y conductual de un estudiante específico.',
   })
   @Auth('delete_fouls_sanction_assignation')
   @HttpCode(204)
