@@ -71,9 +71,9 @@ export class SociometricTestDetailService {
   async getSociometricTestDetail(sociometricTestId: number, studentId: number): Promise<SociometricTestDetailResponse> {
     const sociometricTestDetail = await this.sociometricTestDetailRepository.findOrCreate(sociometricTestId, studentId);
     const {
-      sectionDetail: {
-        section,
-        gradeDetail: { grade },
+      sectionDetail: { section, gradeDetail: { grade } } = {
+        section: undefined,
+        gradeDetail: { grade: undefined },
       },
       ...sociometricTest
     } = sociometricTestDetail.sociometricTest;
