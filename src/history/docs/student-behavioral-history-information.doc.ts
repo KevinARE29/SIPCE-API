@@ -12,6 +12,9 @@ export class StudentBehavioralHistoryInformation {
   createdAt!: Date;
 
   @Expose()
+  authorId!: number;
+
+  @Expose()
   author!: string;
 
   @Expose()
