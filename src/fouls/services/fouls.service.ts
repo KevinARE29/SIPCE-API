@@ -21,7 +21,7 @@ export class FoulsService {
     }
     const [fouls, count] = await this.foulsRepository.getAllFouls(pageDto, foulsFilterDto);
     const pagination = getPagination(pageDto, count);
-    const mappedFouls = fouls.map(foul => ({ ...foul, foulsType: EnumFoulsType[foul.foulsType] }));
+    const mappedFouls = fouls.map(foul => ({ ...foul }));
     return { data: plainToClass(FoulsDoc, mappedFouls, { excludeExtraneousValues: true }), pagination };
   }
 

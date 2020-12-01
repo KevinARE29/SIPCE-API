@@ -16,7 +16,7 @@ import { FoulsFilterDto } from '@fouls/dtos/fouls-filter.dto';
 export class FoulsController {
   constructor(private readonly foulsService: FoulsService) {}
 
-  @Auth('view_fouls')
+  // @Auth('view_fouls')
   @ApiOperation({
     summary: 'Buscar Faltas',
     description: 'Use este endpoint para buscar faltas.',

@@ -1,13 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, Validate, IsEnum, IsIn, IsString } from 'class-validator';
 import { SortOptionsValidator } from '@core/validators/sort-options.validator';
-import { getSortOptions, getSortOptionsMap } from '@core/utils/sort.util';
-import { EnumFoulsType, foulsKeys, TFouls } from '@fouls/constants/fouls.constants';
+import { getSortOptionsv2 } from '@core/utils/sort.util';
+import { EnumFoulsType, TFouls } from '@fouls/constants/fouls.constants';
 import { validator } from '@core/messages/validator.message';
 
-const sortOptions = getSortOptions('foul_type');
-export const sortOptionsMap = getSortOptionsMap('fouls', sortOptions);
-
+export const [sortOptions, sortOptionsMap] = getSortOptionsv2(['foulsType', 'numeral'], 'fouls');
 export class FoulsFilterDto {
   @ApiPropertyOptional({ enum: sortOptions })
   @IsOptional()
@@ -16,9 +14,7 @@ export class FoulsFilterDto {
 
   @ApiPropertyOptional({ type: String })
   @IsOptional()
-  @IsEnum(EnumFoulsType, {
-    message: `fouls_type: Debe ser uno de los siguientes valores: ${foulsKeys}`,
-  })
+  @IsEnum(EnumFoulsType)
   readonly foulsType?: TFouls;
 
   @IsOptional()
