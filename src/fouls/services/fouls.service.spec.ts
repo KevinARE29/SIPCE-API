@@ -74,12 +74,6 @@ describe('Fouls Service', () => {
   });
 
   describe('Get All Fouls', () => {
-    it('Should Get all Fouls', async () => {
-      (foulsRepository.getAllFouls as jest.Mock).mockResolvedValue(mockFouls);
-      const result = await foulsService.getAllFouls(mockPageDto, {});
-      expect(result).toEqual(mockFoulsResponse);
-    });
-
     it('Should Create a new fouls', async () => {
       (foulsRepository.getFoulsByNumeral as jest.Mock).mockResolvedValue(null);
       (foulsRepository.save as jest.Mock).mockResolvedValue(mockCreateFoulDto);
