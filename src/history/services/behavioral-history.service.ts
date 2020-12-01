@@ -101,6 +101,7 @@ export class BehavioralHistoryService {
     const studentBehavioralHistory = studentAcademicData.behavioralHistorys;
     const dataToReturn = studentBehavioralHistory.map(behavioralHistory => ({
       ...behavioralHistory,
+      authorId: behavioralHistory.sectionDetailId?.teacher.id,
       author: `${behavioralHistory.sectionDetailId?.teacher.firstname} ${behavioralHistory.sectionDetailId?.teacher.lastname}`,
       behavioralHistoryGrade: `${behavioralHistory.sectionDetailId?.gradeDetail.grade.name} (${behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.year})`,
       behavioralHistoryYear: behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.year,
