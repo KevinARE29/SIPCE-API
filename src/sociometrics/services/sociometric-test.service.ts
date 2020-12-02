@@ -195,7 +195,7 @@ export class SociometricTestService {
     }
     const currentDate = new Date();
     if (currentDate < startedAt || currentDate > endedAt) {
-      throw new UnprocessableEntityException('No puede acceder a este cuestionario, esta fuera de horario');
+      throw new UnprocessableEntityException('No puede acceder a este cuestionario, está fuera de horario');
     }
     return this.getSociometricTest(id);
   }

@@ -1,9 +1,9 @@
 import { validator } from '@core/messages/validator.message';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsEmail } from 'class-validator';
 
 export class StudentSociometricTestDto {
   @IsNotEmpty({ message: validator.isNotEmpty })
-  @IsString({ message: validator.isString })
+  @IsEmail({}, { message: validator.isEmail })
   readonly email!: string;
 
   @IsNotEmpty({ message: validator.isNotEmpty })
