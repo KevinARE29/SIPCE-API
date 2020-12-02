@@ -15,8 +15,9 @@ export class SociometricMatrixController {
 
   @Auth('manage_sociometric_tests')
   @ApiOperation({
-    summary: 'Obtener prueba sociométrica',
-    description: 'Use este endpoint para obtener una prueba sociométrica específica',
+    summary: 'Obtener matriz sociométrica, valores e índices sociométricos',
+    description:
+      'Use este endpoint para obtener la matriz sociométrica, valores e índices sociométricos de una prueba sociométrica para una pregunta específica',
   })
   @Get(':sociometricTestId/questions/:questionId')
   getSociometricMatrix(
