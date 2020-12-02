@@ -11,7 +11,20 @@ export class PresetRepository extends Repository<Preset> {
       where: { deletedAt: null, sociometricTest: { id: sociometricTestId } },
     });
     if (!preset) {
-      throw new NotFoundException('La programaciòn de la prueba no fue encontrada');
+      throw new NotFoundException('La programación de la prueba no fue encontrada');
+    }
+    return preset;
+  }
+
+  async findPresetByPasswordOrFail(password: string): Promise<Preset> {
+    const query = this.createQueryBuilder('preset')
+      .leftJoinAndSelect('preset.sociometricTest', 'sociometricTest')
+      .leftJoinAndSelect('sociometricTest.sectionDetail', 'sectionDetail')
+      .andWhere(`"preset"."password" = '${password}'`)
+      .andWhere('preset.deletedAt is null');
+    const preset = await query.getOne();
+    if (!preset) {
+      throw new NotFoundException('La programación de la prueba no fue encontrada');
     }
     return preset;
   }

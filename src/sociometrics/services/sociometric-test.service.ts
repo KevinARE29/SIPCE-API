@@ -11,6 +11,9 @@ import { SociometricTestDto } from '@sociometrics/dtos/sociometric-test.dto';
 import { SociometricTestResponse } from '@sociometrics/docs/sociometric-test-response.doc';
 import { QuestionBankRepository } from '@sociometrics/repositories/question-bank.repository';
 import { SectionDetailRepository } from '@academics/repositories';
+import { StudentRepository } from '@students/repositories';
+import { StudentSociometricTestDto } from '@sociometrics/dtos/student-sociometric-test.dto';
+import { PresetRepository } from '@sociometrics/repositories/preset.repository';
 
 @Injectable()
 export class SociometricTestService {
@@ -18,6 +21,8 @@ export class SociometricTestService {
     private readonly sociometricTestRepository: SociometricTestRepository,
     private readonly questionBankRepository: QuestionBankRepository,
     private readonly sectionDetailRepository: SectionDetailRepository,
+    private readonly studentRepository: StudentRepository,
+    private readonly presetRepository: PresetRepository,
   ) {}
 
   async getAllSociometricTests(
@@ -173,5 +178,25 @@ export class SociometricTestService {
 
     sociometricTest.deletedAt = new Date();
     await this.sociometricTestRepository.save(sociometricTest);
+  }
+
+  async getStudentSociometricTest(
+    studentSociometricTestDto: StudentSociometricTestDto,
+  ): Promise<SociometricTestResponse> {
+    const { email, password } = studentSociometricTestDto;
+    const { sectionDetails } = await this.studentRepository.findByEmailOrFail(email);
+    const {
+      startedAt,
+      endedAt,
+      sociometricTest: { id, sectionDetail },
+    } = await this.presetRepository.findPresetByPasswordOrFail(password);
+    if (sectionDetails[0].id !== sectionDetail.id) {
+      throw new UnprocessableEntityException('No tiene acceso a este cuestionario');
+    }
+    const currentDate = new Date();
+    if (currentDate < startedAt || currentDate > endedAt) {
+      throw new UnprocessableEntityException('No puede acceder a este cuestionario, esta fuera de horario');
+    }
+    return this.getSociometricTest(id);
   }
 }

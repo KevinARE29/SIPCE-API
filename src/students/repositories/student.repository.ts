@@ -29,6 +29,21 @@ export class StudentRepository extends Repository<Student> {
     });
   }
 
+  async findByEmailOrFail(email: string): Promise<Student> {
+    const query = this.createQueryBuilder('student')
+      .leftJoinAndSelect('student.currentGrade', 'currentGrade')
+      .leftJoinAndSelect('student.sectionDetails', 'sectionDetails')
+      .andWhere('student.deletedAt is null')
+      .andWhere(`"student"."email" = '${email}'`)
+      .andWhere(`"student"."status" IN (:...activeStatuses)`, { activeStatuses: [null, ...activeStatuses] })
+      .orderBy({ 'sectionDetails.createdAt': 'DESC' });
+    const student = await query.getOne();
+    if (!student) {
+      throw new NotFoundException(`Estudiante no encontrado`);
+    }
+    return student;
+  }
+
   findByCode(code: string): Promise<Student | undefined> {
     return this.findOne({
       where: {

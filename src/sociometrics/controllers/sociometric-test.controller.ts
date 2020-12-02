@@ -11,6 +11,7 @@ import { SociometricTestService } from '@sociometrics/services/sociometric-test.
 import { SociometricTestResponse } from '@sociometrics/docs/sociometric-test-response.doc';
 import { SociometricTestDto } from '@sociometrics/dtos/sociometric-test.dto';
 import { SociometricTestIdDto } from '@sociometrics/dtos/sociometric-test-id.dto';
+import { StudentSociometricTestDto } from '@sociometrics/dtos/student-sociometric-test.dto';
 
 @ApiTags('Sociometric Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -78,5 +79,16 @@ export class SociometricTestController {
   @Delete(':sociometricTestId')
   deleteSociometricTest(@Param() { sociometricTestId }: SociometricTestIdDto): Promise<void> {
     return this.sociometricTestService.deleteSociometricTest(sociometricTestId);
+  }
+
+  @ApiOperation({
+    summary: 'Obtener prueba sociométrica de un estudiante',
+    description: 'Use este endpoint para obtener prueba sociométrica de un estudiante',
+  })
+  @Post('/student-access')
+  getStudentSociometricTest(
+    @Body() studentSociometricTestDto: StudentSociometricTestDto,
+  ): Promise<SociometricTestResponse> {
+    return this.sociometricTestService.getStudentSociometricTest(studentSociometricTestDto);
   }
 }
