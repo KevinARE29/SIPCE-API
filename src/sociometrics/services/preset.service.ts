@@ -8,6 +8,8 @@ import * as generator from 'generate-password';
 import { plainToClass } from 'class-transformer';
 import { PresetResponse } from '@sociometrics/docs/preset-response.doc';
 import { Preset } from '@sociometrics/docs/preset.doc';
+import { UpdatePresetDto } from '@sociometrics/dtos/update-preset.dto';
+import { SociometricTestPresetIdDto } from '@sociometrics/dtos/sociometric-test-preset-ids.dto';
 
 @Injectable()
 export class PresetService {
@@ -49,5 +51,36 @@ export class PresetService {
     };
     const preset = await this.presetRepository.save(presetToSave);
     return { data: plainToClass(Preset, preset, { excludeExtraneousValues: true }) };
+  }
+
+  async updateSociometricTestPreset(
+    sociometricTestPresetIdDto: SociometricTestPresetIdDto,
+    updatePresetDto: UpdatePresetDto,
+  ): Promise<PresetResponse> {
+    const savedPreset = await this.presetRepository.findPresetOrFail(sociometricTestPresetIdDto);
+    const currentDate = new Date();
+    if (currentDate > savedPreset.endedAt) {
+      throw new UnprocessableEntityException(
+        'La prueba no puede actualizarse, ya que ha finalizado el periodo asignado inicialmente',
+      );
+    }
+    const presetToSave = {
+      ...savedPreset,
+      ...updatePresetDto,
+    };
+    const preset = await this.presetRepository.save(presetToSave);
+    return { data: plainToClass(Preset, preset, { excludeExtraneousValues: true }) };
+  }
+
+  async deleteSociometricTestPreset(sociometricTestPresetIdDto: SociometricTestPresetIdDto): Promise<void> {
+    const savedPreset = await this.presetRepository.findPresetOrFail(sociometricTestPresetIdDto);
+    const currentDate = new Date();
+    if (currentDate > savedPreset.endedAt) {
+      throw new UnprocessableEntityException(
+        'La prueba no puede eliminarse, ya que ha finalizado el periodo asignado inicialmente',
+      );
+    }
+    savedPreset.deletedAt = new Date();
+    this.presetRepository.save(savedPreset);
   }
 }
