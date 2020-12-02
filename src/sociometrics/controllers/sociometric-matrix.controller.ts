@@ -5,6 +5,7 @@ import { Auth } from '@auth/decorators/auth.decorator';
 import { SociometricTestIdDto } from '@sociometrics/dtos/sociometric-test-id.dto';
 import { QuestionIdDto } from '@sociometrics/dtos/question-id.dto';
 import { SociometricMatrixService } from '@sociometrics/services/sociometric-matrix.service';
+import { SociometricMatrixResponse } from '@sociometrics/docs/sociometric-matrix-response.doc';
 
 @ApiTags('Sociometric Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -21,7 +22,7 @@ export class SociometricMatrixController {
   getSociometricMatrix(
     @Param() { sociometricTestId }: SociometricTestIdDto,
     @Param() { questionId }: QuestionIdDto,
-  ): Promise<any> {
+  ): Promise<SociometricMatrixResponse> {
     return this.sociometricMatrixService.getSociometricMatrix(sociometricTestId, questionId);
   }
 }

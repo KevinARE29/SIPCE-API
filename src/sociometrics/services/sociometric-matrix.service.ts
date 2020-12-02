@@ -1,8 +1,12 @@
+/* eslint-disable no-console */
 import { SectionDetailRepository } from '@academics/repositories';
 import { Injectable } from '@nestjs/common';
+import { SociometricMatrix } from '@sociometrics/docs/sociometric-matrix-doc';
+import { SociometricMatrixResponse } from '@sociometrics/docs/sociometric-matrix-response.doc';
 import { AnswerRepository } from '@sociometrics/repositories/answer.repository';
 import { SociometricTestRepository } from '@sociometrics/repositories/sociometric-test.repository';
 import { generateSocioMatrix, getSociometrixValuesAndIndexes } from '@sociometrics/utils/sociometric-matrix.util';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class SociometricMatrixService {
@@ -12,7 +16,7 @@ export class SociometricMatrixService {
     private readonly sectionDetailRepository: SectionDetailRepository,
   ) {}
 
-  async getSociometricMatrix(sociometricTestId: number, questionId: number): Promise<any> {
+  async getSociometricMatrix(sociometricTestId: number, questionId: number): Promise<SociometricMatrixResponse> {
     const [sociometricTest, answers] = await Promise.all([
       this.sociometricTestRepository.findByIdOrThrow(sociometricTestId),
       this.answerRepository.getAnswers(sociometricTestId, questionId),
@@ -21,9 +25,16 @@ export class SociometricMatrixService {
     const { students } = await this.sectionDetailRepository.findByIdOrThrow(sociometricTest.sectionDetail.id);
 
     const { answersPerQuestion } = sociometricTest;
-    const socioMatrix = generateSocioMatrix(students, answers);
-    const socioValuesAndIndexes = getSociometrixValuesAndIndexes(socioMatrix, students, answersPerQuestion);
-    console.table(socioMatrix);
-    return socioValuesAndIndexes;
+    const sociomatrix = generateSocioMatrix(students, answers);
+    const socioValuesAndIndexes = getSociometrixValuesAndIndexes(sociomatrix, students, answersPerQuestion);
+    console.table(sociomatrix);
+
+    return {
+      data: plainToClass(
+        SociometricMatrix,
+        { participants: students, sociomatrix, ...socioValuesAndIndexes },
+        { excludeExtraneousValues: true },
+      ),
+    };
   }
 }

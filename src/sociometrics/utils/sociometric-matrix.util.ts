@@ -74,11 +74,11 @@ export function getSociometrixValuesAndIndexes(socioMatrix: number[][], students
 
     rpArray.push(rpCount);
     rnArray.push(rnCount);
-    const pop = (sp / (n - 1)).toFixed(2); // Popularidad
-    const ant = (sn / (n - 1)).toFixed(2); // Antipatía
-    const expP = (d / (n - 1)).toFixed(2); // Expansividad positiva
-    const expN = (d / (n - 1)).toFixed(2); // Expansividad negativa
-    const ca = (rpCount / sp || 0).toFixed(2); // Conexión afectiva
+    const pop = +(sp / (n - 1)).toFixed(2); // Popularidad
+    const ant = +(sn / (n - 1)).toFixed(2); // Antipatía
+    const expP = +(d / (n - 1)).toFixed(2); // Expansividad positiva
+    const expN = +(d / (n - 1)).toFixed(2); // Expansividad negativa
+    const ca = +(rpCount / sp || 0).toFixed(2); // Conexión afectiva
     individualIndexes.push({ student: students[i], pop, ant, expP, expN, ca });
   }
 
@@ -86,10 +86,10 @@ export function getSociometrixValuesAndIndexes(socioMatrix: number[][], students
   const snSum = sumArray(snArray);
   const rpSum = sumArray(rpArray);
   const rnSum = sumArray(rnArray);
-  const ia = (rpSum / (d * n)).toFixed(2); // Asociación
-  const id = (rnSum / (d * n)).toFixed(2); // Disociación
-  const ic = (rpSum / spSum).toFixed(2); // Coherencia
-  const is = (spSum + snSum / (n - 1)).toFixed(2); // Intensidad social
+  const ia = +(rpSum / (d * n)).toFixed(2); // Asociación
+  const id = +(rnSum / (d * n)).toFixed(2); // Disociación
+  const ic = +(rpSum / spSum).toFixed(2); // Coherencia
+  const is = +((spSum + snSum) / (n - 1)).toFixed(2); // Intensidad social
   const groupalIndexes = { ia, id, ic, is };
 
   return {
