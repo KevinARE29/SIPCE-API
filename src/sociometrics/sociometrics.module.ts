@@ -12,6 +12,9 @@ import { SociometricTestRepository } from './repositories/sociometric-test.repos
 import { QuestionBankService } from './services/question-bank.service';
 import { SociometricTestDetailService } from './services/sociometric-test-detail.service';
 import { SociometricTestService } from './services/sociometric-test.service';
+import { PresetRepository } from './repositories/preset.repository';
+import { PresetService } from './services/preset.service';
+import { PresetController } from './controllers/preset.controller';
 
 @Module({
   imports: [
@@ -21,10 +24,11 @@ import { SociometricTestService } from './services/sociometric-test.service';
       QuestionRepository,
       SociometricTestDetailRepository,
       AnswerRepository,
+      PresetRepository,
     ]),
     AcademicsModule,
   ],
-  controllers: [SociometricTestController, QuetionBankController, SociometricTestDetailController],
-  providers: [SociometricTestService, QuestionBankService, SociometricTestDetailService],
+  controllers: [SociometricTestController, QuetionBankController, SociometricTestDetailController, PresetController],
+  providers: [SociometricTestService, QuestionBankService, SociometricTestDetailService, PresetService],
 })
 export class SociometricsModule {}
