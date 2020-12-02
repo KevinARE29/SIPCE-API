@@ -89,7 +89,7 @@ export class SociometricTestRepository extends Repository<SociometricTest> {
       query.andWhere(`sociometricTest.status = '${status}'`);
     }
 
-    if (historical) {
+    if (historical === 'true') {
       query.andWhere(`schoolYear.status = '${ESchoolYearStatus['Histórico']}'`);
     }
 

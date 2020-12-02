@@ -8,6 +8,7 @@ import { QuestionRepository } from '@sociometrics/repositories/question.reposito
 import { SociometricTestDetailRepository } from '@sociometrics/repositories/sociometric-test-detail.repository';
 import { SociometricTestRepository } from '@sociometrics/repositories/sociometric-test.repository';
 import { plainToClass } from 'class-transformer';
+import { LessThan, MoreThan } from 'typeorm';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
@@ -53,7 +54,11 @@ export class SociometricTestDetailService {
       );
     }
 
-    await this.answerRepository.delete({ question, sociometricTestDetail });
+    await this.answerRepository.delete({
+      question,
+      sociometricTestDetail,
+      ponderation: connotation ? MoreThan(0) : LessThan(0),
+    });
 
     await Promise.all(
       studentIds.map(async (id, index) => {
@@ -71,9 +76,9 @@ export class SociometricTestDetailService {
   async getSociometricTestDetail(sociometricTestId: number, studentId: number): Promise<SociometricTestDetailResponse> {
     const sociometricTestDetail = await this.sociometricTestDetailRepository.findOrCreate(sociometricTestId, studentId);
     const {
-      sectionDetail: {
-        section,
-        gradeDetail: { grade },
+      sectionDetail: { section, gradeDetail: { grade } } = {
+        section: undefined,
+        gradeDetail: { grade: undefined },
       },
       ...sociometricTest
     } = sociometricTestDetail.sociometricTest;
