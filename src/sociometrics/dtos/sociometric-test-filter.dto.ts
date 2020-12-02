@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, Validate, IsEnum, IsBoolean } from 'class-validator';
+import { IsOptional, Validate, IsEnum, IsBooleanString } from 'class-validator';
 import { SortOptionsValidator } from '@core/validators/sort-options.validator';
 import { getSortOptionsv2 } from '@core/utils/sort.util';
 import { IsId } from '@core/decorators/id.decorator';
@@ -37,9 +37,8 @@ export class SociometricTestFilterDto {
   readonly section?: number;
 
   @IsOptional()
-  @IsBoolean()
-  @Type(() => Boolean)
-  readonly historical?: boolean = false;
+  @IsBooleanString()
+  readonly historical?: string;
 
   @ApiPropertyOptional({ enum: ESociometricTestStatus })
   @IsOptional()
