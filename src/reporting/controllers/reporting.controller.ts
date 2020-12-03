@@ -12,6 +12,9 @@ import { InterviewLogResponse } from '@reporting/docs/interview-log-response.doc
 import { PdfRequestDto } from '@reporting/dtos/pdf-request.dto';
 import { SimpleJwt } from '@reporting/guards/simple-jwt.guard';
 import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
+import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
+import { ExpedientService } from '@expedient/services/expedient.service';
+import { ExpedientReportResponse } from '@reporting/docs/expedient-report-response.doc';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -21,6 +24,7 @@ export class ReportingController {
     private readonly reportingService: ReportingService,
     private readonly studentService: StudentService,
     private readonly sessionService: SessionService,
+    private readonly expedientService: ExpedientService,
   ) {}
 
   @Post('')
@@ -61,6 +65,24 @@ export class ReportingController {
   @Auth('generate_sessions_reports')
   getSessions(@Query() sessionsReportDto: SessionsReportFilterDto): Promise<SessionsReportResponse> {
     return this.reportingService.getSessions(sessionsReportDto);
+  }
+
+  @ApiOperation({
+    summary: 'Exportar expediente psicológico de un estudiante',
+    description: 'Use este endpoint para exportar expediente psicológico de un estudiante',
+  })
+  @UseGuards(SimpleJwt)
+  @Get('students/:studentId/expedients/:expedientId')
+  async getStudentExpedient(
+    @Param() studentExpedientIdsDto: StudentExpedientIdsDto,
+    @Query() pdfRequestFilterDto: PdfRequestFilterDto,
+  ): Promise<ExpedientReportResponse> {
+    const [student, expedient] = await Promise.all([
+      this.studentService.getStudent(studentExpedientIdsDto.studentId),
+      this.expedientService.getStudentExpedient(studentExpedientIdsDto, pdfRequestFilterDto),
+    ]);
+
+    return { data: { student: student.data, expedient } };
   }
 
   @ApiOperation({
