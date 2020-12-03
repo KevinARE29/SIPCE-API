@@ -3,8 +3,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { SectionDetailService } from '@academics/services';
 import { Injectable } from '@nestjs/common';
+import { SociometricReportResponse } from '@reporting/docs/sociometric-test/sociometric-report-response.doc';
+import { SociometricReport } from '@reporting/docs/sociometric-test/sociometric-report.doc';
 import { SociometricMatrixService } from '@sociometrics/services/sociometric-matrix.service';
 import { SociometricTestService } from '@sociometrics/services/sociometric-test.service';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class ReportingSociometricService {
@@ -14,7 +17,10 @@ export class ReportingSociometricService {
     private readonly sectionDetailService: SectionDetailService,
   ) {}
 
-  async getSociometricTestReport(sociometricTestId: number, filter: string | undefined): Promise<any> {
+  async getSociometricTestReport(
+    sociometricTestId: number,
+    filter: string | undefined,
+  ): Promise<SociometricReportResponse> {
     const {
       data: { sectionDetailId, shift, grade, section, questionBank },
     } = await this.sociometricTestService.getSociometricTest(sociometricTestId);
@@ -77,6 +83,6 @@ export class ReportingSociometricService {
           : undefined,
     };
 
-    return mappedResponse;
+    return { data: plainToClass(SociometricReport, mappedResponse, { excludeExtraneousValues: true }) };
   }
 }

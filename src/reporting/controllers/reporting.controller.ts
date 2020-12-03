@@ -14,6 +14,7 @@ import { SimpleJwt } from '@reporting/guards/simple-jwt.guard';
 import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
 import { SociometricTestIdDto } from '@sociometrics/dtos/sociometric-test-id.dto';
 import { ReportingSociometricService } from '@reporting/services/reporting-sociometric.service';
+import { SociometricReportResponse } from '@reporting/docs/sociometric-test/sociometric-report-response.doc';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -92,7 +93,7 @@ export class ReportingController {
   async getSociometricTestReport(
     @Param() { sociometricTestId }: SociometricTestIdDto,
     @Query() { filter }: PdfRequestFilterDto,
-  ): Promise<any> {
+  ): Promise<SociometricReportResponse> {
     return this.reportingSociometricService.getSociometricTestReport(sociometricTestId, filter);
   }
 }
