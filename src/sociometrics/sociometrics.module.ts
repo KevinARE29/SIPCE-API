@@ -1,6 +1,7 @@
 import { AcademicsModule } from '@academics/academics.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { StudentRepository } from '@students/repositories';
 import { QuetionBankController } from './controllers/question-bank.controller';
 import { SociometricMatrixController } from './controllers/sociometric-matrix.controller';
 import { SociometricTestDetailController } from './controllers/sociometric-test-detail.controller';
@@ -27,6 +28,7 @@ import { PresetController } from './controllers/preset.controller';
       SociometricTestDetailRepository,
       AnswerRepository,
       PresetRepository,
+      StudentRepository,
     ]),
     AcademicsModule,
   ],
