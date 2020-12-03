@@ -15,6 +15,11 @@ import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
 import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
 import { ExpedientService } from '@expedient/services/expedient.service';
 import { ExpedientReportResponse } from '@reporting/docs/expedient-report-response.doc';
+import { StudentHistoryIdsDto } from '@history/dtos/student-history-ids.dto';
+import { BehavioralHistoryService } from '@history/services/behavioral-history.service';
+import { IAuthenticatedUser } from '@users/interfaces/users.interface';
+import { User } from '@users/decorators/user.decorator';
+import { BehavioralHistoryReportResponse } from '@reporting/docs/behavioral-history-report-response.doc';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -25,6 +30,7 @@ export class ReportingController {
     private readonly studentService: StudentService,
     private readonly sessionService: SessionService,
     private readonly expedientService: ExpedientService,
+    private readonly beavioralHistoryService: BehavioralHistoryService,
   ) {}
 
   @Post('')
@@ -100,5 +106,25 @@ export class ReportingController {
     ]);
 
     return { data: { student: student.data, session: session.data } };
+  }
+
+  @ApiOperation({
+    summary: 'Exportar el historial académico y conductual de un estudiante',
+    description: 'Use este endpoint para exportar el historial académico y conductual de un estudiante',
+  })
+  @UseGuards(SimpleJwt)
+  @Auth('generate_students_behavioral_history_report')
+  @Get('students/:studentId/histories/:historyId')
+  async getStudentBehavioralHistory(
+    @User() { id }: IAuthenticatedUser,
+    @Param() studentHistoryIdsDto: StudentHistoryIdsDto,
+    @Query() pdfRequestFilterDto: PdfRequestFilterDto,
+  ): Promise<BehavioralHistoryReportResponse> {
+    const [student, behavioralHistory] = await Promise.all([
+      this.studentService.getStudent(studentHistoryIdsDto.studentId),
+      this.beavioralHistoryService.getStudentBehavioralHistory(id, studentHistoryIdsDto, pdfRequestFilterDto),
+    ]);
+
+    return { data: { student: student.data, behavioralHistory } };
   }
 }

@@ -41,3 +41,13 @@ export function syncWithStudentExpedients(
   }));
   return depuredData;
 }
+
+export function includeFouls(filter: string | undefined): boolean {
+  return !!(
+    filter &&
+    (filter.split(',').includes('p1') ||
+      filter.split(',').includes('p2') ||
+      filter.split(',').includes('p3') ||
+      filter.split(',').includes('p4'))
+  );
+}

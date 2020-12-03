@@ -1,8 +1,8 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException, NotFoundException } from '@nestjs/common';
 import { BehavioralHistoryRepository } from '@history/repository/behavioral-history.repository';
 import { StudentHistoryIdsDto } from '@history/dtos/student-history-ids.dto';
 import { AddFinalCommentDto } from '@history/dtos/add-behavioral-history-final-comment.dto';
-import { ESchoolYearStatus } from '@academics/constants/academic.constants';
+import { ESchoolYearStatus, EPeriodCode, TPeriod } from '@academics/constants/academic.constants';
 import { BehavioralHistoryResponse } from '@history/docs/behavioral-history-response.doc';
 import { plainToClass } from 'class-transformer';
 import { BehavioralHistory } from '@history/docs/behavioral-history.doc';
@@ -11,6 +11,7 @@ import { PageDto } from '@core/dtos/page.dto';
 import {
   getStudentBehavioralHistoriesCounters,
   syncWithStudentExpedients,
+  includeFouls,
 } from '@history/utils/behavioral-history.util';
 import { StudentsBehabioralHistory } from '@history/docs/students-behavioral-history.doc';
 import { StudentsBehavioralHistoryResponse } from '@history/docs/students-behavioral-history-response.doc';
@@ -21,7 +22,13 @@ import { StudentBehavioralHistoryInformation } from '@history/docs/student-behav
 import { StudentBehavioralHistoryInformationResponse } from '@history/docs/student-behavioral-history-information-response.doc';
 import { StudentBehavioralHistoryInformationFiltersDto } from '@history/dtos/student-behavioral-history-information-filters.dto';
 import { StudentIdDto } from '@students/dtos/student-id.dto';
-import { getFoulsAlertState } from '@history/utils/foul-sanction-assignation.util';
+import { getFoulsAlertState, getFoulsCounter, getFoulsByPeriod } from '@history/utils/foul-sanction-assignation.util';
+import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
+import { ClassDiaryRepository } from '@history/repository/class-diary.repository';
+import { FoulSanctionAssignationRepository } from '@history/repository/foul-sanction-assignation.repository';
+import { PeriodRepository } from '@academics/repositories';
+import { StudentBehavioralHistoryInformationReport } from '@history/docs/student-behavioral-history-information-report.doc';
+import { CompleteBehavioralHistoryFouls } from '@history/docs/complete-behavioral-history-fouls.doc';
 
 @Injectable()
 export class BehavioralHistoryService {
@@ -29,6 +36,9 @@ export class BehavioralHistoryService {
     private readonly behavioralHistoryRepository: BehavioralHistoryRepository,
     private readonly studentRepository: StudentRepository,
     private readonly userService: UsersService,
+    private readonly classDiaryRepository: ClassDiaryRepository,
+    private readonly foulSanctionAssignationRepository: FoulSanctionAssignationRepository,
+    private readonly periodRepository: PeriodRepository,
   ) {}
 
   async addFinalComment(
@@ -120,5 +130,50 @@ export class BehavioralHistoryService {
     return {
       data: plainToClass(StudentBehavioralHistoryInformation, [dataToReturn[0]], { excludeExtraneousValues: true }),
     };
+  }
+
+  async getStudentBehavioralHistory(
+    userId: number,
+    studentHistoryIdsDto: StudentHistoryIdsDto,
+    pdfRequestFiltersDto: PdfRequestFilterDto,
+  ): Promise<StudentBehavioralHistoryInformationReport> {
+    const { filter } = pdfRequestFiltersDto;
+    const { data } = await this.getStudentBehavioralHistories(studentHistoryIdsDto, userId, {});
+    const behavioralHistory = data.filter(history => history.id === studentHistoryIdsDto.historyId)[0];
+    if (!behavioralHistory) {
+      throw new NotFoundException('El historial académico y conductual no fue encontrado');
+    }
+    const fouls = includeFouls(filter);
+    const behavioralHistoryfouls: CompleteBehavioralHistoryFouls[] = [];
+    if (fouls) {
+      const periods = await this.periodRepository.find();
+      const foulsAssignations = await this.foulSanctionAssignationRepository.findBehavioralHistoryFouls(
+        studentHistoryIdsDto,
+      );
+      periods.map(async period => {
+        const periodCode = period.name.split(' ')[0] as TPeriod;
+        if (filter && filter.split(',').includes(EPeriodCode[periodCode])) {
+          behavioralHistoryfouls.push({
+            period: period.name,
+            foulsCounter: getFoulsCounter(foulsAssignations, period.id),
+            fouls: getFoulsByPeriod(foulsAssignations, period.id),
+          });
+        }
+      });
+    }
+    const behavioralHistoryToReturn = {
+      ...behavioralHistory,
+      finalConclusion:
+        filter && filter.split(',').includes('finalConclusion') ? behavioralHistory.finalConclusion : null,
+      expedients: filter && filter.split(',').includes('expedients') ? behavioralHistory.expedients : [],
+      annotations:
+        filter && filter.split(',').includes('annotations')
+          ? await this.classDiaryRepository.getAllHistoryAnnotations(studentHistoryIdsDto)
+          : [],
+      behavioralHistoryfouls,
+    };
+    return plainToClass(StudentBehavioralHistoryInformationReport, behavioralHistoryToReturn, {
+      excludeExtraneousValues: true,
+    });
   }
 }

@@ -37,3 +37,7 @@ export function getFoulsAlertState(foulSanctionAssignation: FoulSanctionAssignat
   );
   return minorFouls.length >= 3 || seriousFouls.length >= 1 || verySeriousFouls.length >= 1;
 }
+
+export function getFoulsByPeriod(foulSanctionAssignation: FoulSanctionAssignation[], periodId: number): any[] {
+  return foulSanctionAssignation.filter(foulAssignation => foulAssignation.periodId.id === periodId);
+}
