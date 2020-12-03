@@ -98,7 +98,7 @@ export function getSociometrixValuesAndIndexes(
   const rnSum = typeof rnArray[0] === 'number' ? sumArray(rnArray) : 'n.a.';
   const ia = +(rpSum / (d * n)).toFixed(2); // Asociación
   const id = typeof rnSum === 'number' ? +(rnSum / (d * n)).toFixed(2) : 'n.a.'; // Disociación
-  const ic = +(rpSum / spSum).toFixed(2); // Coherencia
+  const ic = +(rpSum / spSum || 0).toFixed(2); // Coherencia
   const is = typeof snSum === 'number' ? +((spSum + snSum) / (n - 1)).toFixed(2) : 'n.a.'; // Intensidad social
   const groupalIndexes = { ia, id, ic, is };
 
