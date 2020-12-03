@@ -45,10 +45,10 @@ import { HistoryModule } from '@history/history.module';
         JWT_SECRET_PASSWORD_RESET: Joi.string().required(),
         JWT_SECRET_CONFIRMATION_TOKEN: Joi.string().required(),
         JWT_SECRET_REPORT: Joi.string().required(),
-        ACCESS_TOKEN_EXPIRATION: Joi.number().default(1200000), // 20 min
-        REFRESH_TOKEN_EXPIRATION: Joi.number().default(7200000), // 2 hours
-        PASSWORD_RESET_EXPIRATION: Joi.number().default(86400000), // 24 hours
-        TOKEN_CONFIRMATION_EXPIRATION: Joi.number().default(86400000), // 24 hours
+        ACCESS_TOKEN_EXPIRATION: Joi.number().default(1200), // 20 min
+        REFRESH_TOKEN_EXPIRATION: Joi.number().default(7200), // 2 hours
+        PASSWORD_RESET_EXPIRATION: Joi.number().default(86400), // 24 hours
+        TOKEN_CONFIRMATION_EXPIRATION: Joi.number().default(86400), // 24 hours
         TYPEORM_CONNECTION: Joi.string().default('postgres'),
         TYPEORM_HOST: Joi.string().default('localhost'),
         TYPEORM_USERNAME: Joi.string().required(),
