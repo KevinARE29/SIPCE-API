@@ -11,6 +11,7 @@ import { StudentService } from '@students/services';
 import { InterviewLogResponse } from '@reporting/docs/interview-log-response.doc';
 import { PdfRequestDto } from '@reporting/dtos/pdf-request.dto';
 import { SimpleJwt } from '@reporting/guards/simple-jwt.guard';
+import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -23,8 +24,12 @@ export class ReportingController {
   ) {}
 
   @Post('')
-  async generatePdf(@Res() res: Response, @Body() pdfRequestDto: PdfRequestDto): Promise<any> {
-    const buffer = await this.reportingService.generatePdf(pdfRequestDto);
+  async generatePdf(
+    @Res() res: Response,
+    @Body() pdfRequestDto: PdfRequestDto,
+    @Query() pdfRequestFilterDto: PdfRequestFilterDto,
+  ): Promise<any> {
+    const buffer = await this.reportingService.generatePdf(pdfRequestDto, pdfRequestFilterDto);
     res.set({
       // pdf
       'Content-Type': 'application/pdf',

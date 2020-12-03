@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { JOBS_QUEUE, PDF_JOB } from '@reporting/constants/reporting.constant';
 import { PdfRequestDto } from '@reporting/dtos/pdf-request.dto';
 import { sign } from 'jsonwebtoken';
+import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
 
 @Processor(JOBS_QUEUE)
 export class PdfProcessor {
@@ -18,11 +19,20 @@ export class PdfProcessor {
   }
 
   @Process(PDF_JOB)
-  async generatePdf(job: Job<PdfRequestDto>): Promise<Buffer> {
-    this.logger.debug(`Generate Report ${job.data.reportName} PDF`);
+  async generatePdf(
+    job: Job<{ pdfRequestDto: PdfRequestDto; pdfRequestFilterDto: PdfRequestFilterDto }>,
+  ): Promise<Buffer> {
+    const {
+      pdfRequestDto: { reportPath, reportName },
+      pdfRequestFilterDto: { filter },
+    } = job.data;
+    this.logger.debug(`Generate Report ${reportName} PDF`);
 
     const token = sign({}, this.configService.get<string>('JWT_SECRET_REPORT', ''), { expiresIn: '1min' });
-    const reportUrl = `https://${this.frontendUrl}/${job.data.reportPath}?token=${token}`;
+    let reportUrl = `https://${this.frontendUrl}/${reportPath}?token=${token}`;
+    if (filter) {
+      reportUrl += `&filter=${filter}`;
+    }
 
     try {
       const startMeasurement = new Date().getTime();
