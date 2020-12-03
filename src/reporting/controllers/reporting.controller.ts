@@ -12,6 +12,8 @@ import { InterviewLogResponse } from '@reporting/docs/interview-log-response.doc
 import { PdfRequestDto } from '@reporting/dtos/pdf-request.dto';
 import { SimpleJwt } from '@reporting/guards/simple-jwt.guard';
 import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
+import { SociometricTestIdDto } from '@sociometrics/dtos/sociometric-test-id.dto';
+import { ReportingSociometricService } from '@reporting/services/reporting-sociometric.service';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -19,6 +21,7 @@ import { ReportingService } from '../services/reporting.service';
 export class ReportingController {
   constructor(
     private readonly reportingService: ReportingService,
+    private readonly reportingSociometricService: ReportingSociometricService,
     private readonly studentService: StudentService,
     private readonly sessionService: SessionService,
   ) {}
@@ -78,5 +81,18 @@ export class ReportingController {
     ]);
 
     return { data: { student: student.data, session: session.data } };
+  }
+
+  @ApiOperation({
+    summary: 'Generar reporte de pruebas sociométricas',
+    description: 'Use este endpoint para generar reporte de pruebas sociométricas',
+  })
+  @UseGuards(SimpleJwt)
+  @Get('tests/:sociometricTestId')
+  async getSociometricTestReport(
+    @Param() { sociometricTestId }: SociometricTestIdDto,
+    @Query() { filter }: PdfRequestFilterDto,
+  ): Promise<any> {
+    return this.reportingSociometricService.getSociometricTestReport(sociometricTestId, filter);
   }
 }
