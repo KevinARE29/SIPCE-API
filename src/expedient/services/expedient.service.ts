@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { ExpedientRepository } from '@expedient/repositories/expedient.repository';
 import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
@@ -21,6 +22,9 @@ import { CreateExpedientDto } from '@expedient/dtos/create-expedient.dto';
 import { StudentRepository } from '@students/repositories';
 import { StudentExpedientResponse } from '@expedient/docs/student-expedient-response.doc';
 import { UpdateExpedientDto } from '@expedient/dtos/update-expedient.dto';
+import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
+import { CompleteReportingExpedient } from '@expedient/docs/complete-reporting-expedient.doc';
+import { SessionService } from './session.service';
 
 @Injectable()
 export class ExpedientService {
@@ -28,6 +32,7 @@ export class ExpedientService {
     private readonly sessionRepository: SessionRepository,
     private readonly expedientRepository: ExpedientRepository,
     private readonly studentRepository: StudentRepository,
+    private readonly sessionService: SessionService,
   ) {}
 
   async findExpedientSessions(
@@ -136,5 +141,60 @@ export class ExpedientService {
       expedientGrade: `${expedient.gradeDetail.grade.name} (${expedient.gradeDetail.cycleDetail.schoolYear.year})`,
     };
     return { data: plainToClass(CompleteExpedient, expedientToReturn, { excludeExtraneousValues: true }) };
+  }
+
+  async getStudentExpedient(
+    studentExpedientIdsDto: StudentExpedientIdsDto,
+    pdfRequestFilterDto: PdfRequestFilterDto,
+  ): Promise<CompleteReportingExpedient> {
+    const { filter } = pdfRequestFilterDto;
+    const splitedFilters = filter?.split(',');
+    const expedient = await this.expedientRepository.findStudentExpedientById(studentExpedientIdsDto);
+    if (!expedient) {
+      throw new NotFoundException('El expediente no pertenece al estudiante especificado');
+    }
+    if (!splitedFilters?.includes('references')) {
+      delete expedient.referrerName;
+    }
+    if (!splitedFilters?.includes('externalPsychologicalTreatments')) {
+      delete expedient.externalPsychologicalTreatments;
+    }
+    if (!splitedFilters?.includes('diagnosticImpression')) {
+      delete expedient.diagnosticImpression;
+      delete expedient.diagnosticImpressionCategories;
+    }
+    if (!splitedFilters?.includes('actionPlan')) {
+      delete expedient.actionPlan;
+    }
+    if (!splitedFilters?.includes('evaluations')) {
+      expedient.sessions = expedient.sessions.map(session => ({ ...session, evaluations: [] }));
+    }
+    await Promise.all(
+      expedient.sessions.map(async session => {
+        if (session.sessionResponsibleAssistence && session.sessionResponsibleAssistence.responsible1) {
+          session.sessionResponsibleAssistence.responsible1 = await this.sessionService.concatResponsibleRelationship(
+            session.sessionResponsibleAssistence.responsible1,
+            expedient.student.id,
+          );
+        }
+        if (session.sessionResponsibleAssistence && session.sessionResponsibleAssistence.responsible2) {
+          session.sessionResponsibleAssistence.responsible2 = await this.sessionService.concatResponsibleRelationship(
+            session.sessionResponsibleAssistence.responsible2,
+            expedient.student.id,
+          );
+        }
+        session.evaluations = session.evaluations.filter(evaluation => !evaluation.deletedAt);
+      }),
+    );
+    const expedientToReturn = {
+      ...expedient,
+      expedientCounselor: expedient.gradeDetail.counselor,
+      activeInterventionPrograms: getExpedientInterventionPrograms(
+        await this.sessionRepository.findSessionsInterventionPrograms(expedient.id),
+      ),
+      expedientGrade: `${expedient.gradeDetail.grade.name} (${expedient.gradeDetail.cycleDetail.schoolYear.year})`,
+    };
+
+    return plainToClass(CompleteReportingExpedient, expedientToReturn, { excludeExtraneousValues: true });
   }
 }
