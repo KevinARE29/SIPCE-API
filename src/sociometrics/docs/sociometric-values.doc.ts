@@ -2,26 +2,26 @@ import { Expose } from 'class-transformer';
 
 export class SociometricValues {
   @Expose()
-  spArray!: number;
+  spArray!: number[];
 
   @Expose()
-  snArray!: string;
+  snArray!: number[] | string[];
 
   @Expose()
-  spValArray!: string;
+  spValArray!: number[];
 
   @Expose()
-  snValArray!: number[];
+  snValArray!: number[] | string[];
 
   @Expose()
   epArray!: number[];
 
   @Expose()
-  enArray!: number[];
+  enArray!: number[] | string[];
 
   @Expose()
   rpArray!: number[];
 
   @Expose()
-  rnArray!: number[];
+  rnArray!: number[] | string[];
 }

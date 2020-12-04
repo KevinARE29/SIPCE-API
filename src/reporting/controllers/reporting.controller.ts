@@ -12,7 +12,9 @@ import { InterviewLogResponse } from '@reporting/docs/interview-log-response.doc
 import { PdfRequestDto } from '@reporting/dtos/pdf-request.dto';
 import { SimpleJwt } from '@reporting/guards/simple-jwt.guard';
 import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
-import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
+import { SociometricTestIdDto } from '@sociometrics/dtos/sociometric-test-id.dto';
+import { ReportingSociometricService } from '@reporting/services/reporting-sociometric.service';
+import { SociometricReportResponse } from '@reporting/docs/sociometric-test/sociometric-report-response.doc';
 import { ExpedientService } from '@expedient/services/expedient.service';
 import { ExpedientReportResponse } from '@reporting/docs/expedient-report-response.doc';
 import { StudentHistoryIdsDto } from '@history/dtos/student-history-ids.dto';
@@ -20,6 +22,7 @@ import { BehavioralHistoryService } from '@history/services/behavioral-history.s
 import { IAuthenticatedUser } from '@users/interfaces/users.interface';
 import { User } from '@users/decorators/user.decorator';
 import { BehavioralHistoryReportResponse } from '@reporting/docs/behavioral-history-report-response.doc';
+import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -27,6 +30,7 @@ import { ReportingService } from '../services/reporting.service';
 export class ReportingController {
   constructor(
     private readonly reportingService: ReportingService,
+    private readonly reportingSociometricService: ReportingSociometricService,
     private readonly studentService: StudentService,
     private readonly sessionService: SessionService,
     private readonly expedientService: ExpedientService,
@@ -125,6 +129,19 @@ export class ReportingController {
       this.beavioralHistoryService.getStudentBehavioralHistory(id, studentHistoryIdsDto, pdfRequestFilterDto),
     ]);
 
-    return { data: { student: student.data, behavioralHistory } };
+    return { data: { student: student.data, behavioralHistory } };   
+  }
+
+  @ApiOperation({
+    summary: 'Generar reporte de pruebas sociométricas',
+    description: 'Use este endpoint para generar reporte de pruebas sociométricas',
+  })
+  @UseGuards(SimpleJwt)
+  @Get('tests/:sociometricTestId')
+  async getSociometricTestReport(
+    @Param() { sociometricTestId }: SociometricTestIdDto,
+    @Query() { filter }: PdfRequestFilterDto,
+  ): Promise<SociometricReportResponse> {
+    return this.reportingSociometricService.getSociometricTestReport(sociometricTestId, filter);
   }
 }
