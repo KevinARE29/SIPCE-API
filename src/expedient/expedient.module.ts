@@ -40,6 +40,6 @@ import { ResponsibleService } from '@students/services';
     ResponsibleService,
   ],
   controllers: [ExpedientController, SessionController, InterventionProgramController],
-  exports: [TypeOrmModule, SessionService],
+  exports: [TypeOrmModule, SessionService, ExpedientService],
 })
 export class ExpedientModule {}

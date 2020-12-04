@@ -37,8 +37,14 @@ import { PresetController } from './controllers/preset.controller';
     QuetionBankController,
     SociometricTestDetailController,
     SociometricMatrixController,
-    PresetController
+    PresetController,
   ],
-  providers: [SociometricTestService, QuestionBankService, SociometricTestDetailService, SociometricMatrixService, PresetService],
+  providers: [
+    SociometricTestService,
+    QuestionBankService,
+    SociometricTestDetailService,
+    SociometricMatrixService,
+    PresetService,
+  ],
 })
 export class SociometricsModule {}
