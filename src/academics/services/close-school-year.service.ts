@@ -97,7 +97,7 @@ export class CloseSchoolYearService {
           currentAssignation.cycleDetails[shiftId][indexCycle].gradeDetails[indexGrade].closed = closedGrade;
         });
       });
-      const shiftPercentage = closedGrades ? (closedGrades / totalGrades) * 100 : 0;
+      const shiftPercentage = totalGrades ? (closedGrades / totalGrades) * 100 : 0;
       const closedShift = shiftPercentage >= 100;
 
       if (closedShift) closedShifts += 1;
