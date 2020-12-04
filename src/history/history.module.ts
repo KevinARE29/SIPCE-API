@@ -35,5 +35,6 @@ import { MeBehavioralHistoryController } from './controllers/me-behavioral-histo
     MeBehavioralHistoryController,
   ],
   providers: [FoulSanctionAssignationService, ClassDiaryService, BehavioralHistoryService],
+  exports: [BehavioralHistoryService],
 })
 export class HistoryModule {}

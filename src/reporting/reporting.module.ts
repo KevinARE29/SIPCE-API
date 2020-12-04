@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SociometricsModule } from '@sociometrics/sociometrics.module';
 import { StudentModule } from '@students/students.module';
+import { HistoryModule } from '@history/history.module';
 import { JOBS_QUEUE } from './constants/reporting.constant';
 import { ReportingController } from './controllers/reporting.controller';
 import { Dashboard } from './entities/dashboard.view.entity';
@@ -20,6 +21,7 @@ import { ReportingService } from './services/reporting.service';
     TypeOrmModule.forFeature([Dashboard]),
     ExpedientModule,
     StudentModule,
+    HistoryModule,
     SociometricsModule,
     AcademicsModule,
   ],

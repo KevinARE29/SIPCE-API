@@ -5,6 +5,7 @@ import { NotFoundException } from '@nestjs/common';
 import { PageDto } from '@core/dtos/page.dto';
 import { AnnotationsFilterDto, sortOptionsMap } from '@history/dtos/annotations-filter.dto';
 import { getOrderBy } from '@core/utils/sort.util';
+import { StudentHistoryIdsDto } from '@history/dtos/student-history-ids.dto';
 @EntityRepository(ClassDiary)
 export class ClassDiaryRepository extends Repository<ClassDiary> {
   async findAnnotationOrFail(historyAnnotationIdsDto: HistoryAnnotationIdsDto): Promise<ClassDiary> {
@@ -58,5 +59,13 @@ export class ClassDiaryRepository extends Repository<ClassDiary> {
     }
 
     return query.getManyAndCount();
+  }
+
+  getAllHistoryAnnotations(studentHistoryIdsDto: StudentHistoryIdsDto): Promise<ClassDiary[]> {
+    const { historyId } = studentHistoryIdsDto;
+    return this.find({
+      where: { deletedAt: null, behavioralHistoryId: { id: historyId } },
+      relations: ['reporterId'],
+    });
   }
 }
