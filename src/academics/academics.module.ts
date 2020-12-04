@@ -70,6 +70,6 @@ import {
     CloseSchoolYearService,
     SectionDetailService,
   ],
-  exports: [TypeOrmModule, AssignationService],
+  exports: [TypeOrmModule, AssignationService, SectionDetailService],
 })
 export class AcademicsModule {}
