@@ -17,6 +17,7 @@ import { ReportingSociometricService } from '@reporting/services/reporting-socio
 import { SociometricReportResponse } from '@reporting/docs/sociometric-test/sociometric-report-response.doc';
 import { ExpedientService } from '@expedient/services/expedient.service';
 import { ExpedientReportResponse } from '@reporting/docs/expedient-report-response.doc';
+import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
