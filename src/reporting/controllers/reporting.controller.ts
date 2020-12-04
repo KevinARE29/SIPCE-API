@@ -129,7 +129,7 @@ export class ReportingController {
       this.beavioralHistoryService.getStudentBehavioralHistory(id, studentHistoryIdsDto, pdfRequestFilterDto),
     ]);
 
-    return { data: { student: student.data, behavioralHistory } };   
+    return { data: { student: student.data, behavioralHistory } };
   }
 
   @ApiOperation({
