@@ -17,4 +17,7 @@ export class SectionDetail {
   @Expose()
   @Type(() => BaseUser)
   teacher!: BaseUser;
+
+  @Expose()
+  closed!: boolean;
 }

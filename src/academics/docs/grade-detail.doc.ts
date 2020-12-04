@@ -18,4 +18,10 @@ export class GradeDetail {
   @Expose()
   @Type(() => SectionDetail)
   sectionDetails!: SectionDetail[];
+
+  @Expose()
+  closed?: boolean;
+
+  @Expose()
+  gradePercentage?: number;
 }
