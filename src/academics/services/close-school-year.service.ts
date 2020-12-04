@@ -46,7 +46,7 @@ export class CloseSchoolYearService {
         const { finishedYear } = await this.getCloseSchoolYearStatus();
         if (!finishedYear) {
           throw new UnprocessableEntityException(
-            'Por favor asegúrese de cerrar los grados de todos los turnos antes de cerrar el año escolar completo',
+            'Por favor asegúrese de cerrar los grados de todos los turnos antes de cerrar el año escolar',
           );
         }
       }
