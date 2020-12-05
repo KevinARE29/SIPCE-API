@@ -28,7 +28,6 @@ export class SociometricTestRepository extends Repository<SociometricTest> {
       .leftJoinAndSelect(`gradeDetail.grade`, `grade`)
       .leftJoinAndSelect(`cycleDetail.shift`, `shift`)
       .andWhere(`sociometricTest.id = ${id}`)
-      .andWhere('sociometricTest.deletedAt is null')
       .getOne();
 
     if (!questionBank) {

@@ -179,8 +179,7 @@ export class SociometricTestService {
       );
     }
 
-    sociometricTest.deletedAt = new Date();
-    await this.sociometricTestRepository.save(sociometricTest);
+    await this.sociometricTestRepository.remove(sociometricTest);
   }
 
   async getStudentSociometricTest(
