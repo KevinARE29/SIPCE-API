@@ -44,6 +44,7 @@ export class FoulsRepository extends Repository<Foul> {
   getFoulsByNumeral(numeral: string): Promise<Foul | undefined> {
     return this.createQueryBuilder('fouls')
       .where('LOWER(fouls.numeral) = LOWER(:numeral)', { numeral })
+      .andWhere('fouls.deletedAt is null')
       .getOne();
   }
 }
