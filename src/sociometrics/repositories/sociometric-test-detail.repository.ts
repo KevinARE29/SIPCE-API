@@ -11,6 +11,8 @@ export class SociometricTestDetailRepository extends Repository<SociometricTestD
       .leftJoinAndSelect('answer.question', 'question')
       .leftJoinAndSelect('answer.student', 'selectedStudent')
       .leftJoinAndSelect('sociometricTest.sectionDetail', 'sectionDetail')
+      .leftJoinAndSelect('sociometricTest.questionBank', 'questionBank')
+      .leftJoinAndSelect('questionBank.questions', 'question2')
       .leftJoinAndSelect('sectionDetail.section', 'section')
       .leftJoinAndSelect('sectionDetail.gradeDetail', 'gradeDetail')
       .leftJoinAndSelect('gradeDetail.grade', 'grade')

@@ -112,7 +112,9 @@ export class SociometricTestService {
 
     const mappedSociometricTest = { ...test, presets: filteredPresets, shift, grade, section };
     const mappedStudents = students.map(student => {
-      const completedStudent = sociometricTestDetails.find(testDetail => testDetail.student.id === student.id);
+      const completedStudent = sociometricTestDetails.find(
+        testDetail => testDetail.student.id === student.id && testDetail.finished,
+      );
       return { ...student, completed: !!completedStudent };
     });
 
