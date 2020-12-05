@@ -7,6 +7,7 @@ import {
   ResponsibleController,
   StudentImageController,
   StudentAssignationController,
+  StudentYearResumeController,
 } from './controllers';
 import {
   StudentService,
@@ -14,6 +15,7 @@ import {
   ResponsibleService,
   StudentImageService,
   StudentAssignationService,
+  StudentYearResumeService,
 } from './services';
 import {
   StudentRepository,
@@ -34,6 +36,7 @@ import { ImageSubscriber } from './subscribers/image.subscriber';
     ResponsibleController,
     StudentImageController,
     StudentAssignationController,
+    StudentYearResumeController,
   ],
   providers: [
     StudentService,
@@ -42,6 +45,7 @@ import { ImageSubscriber } from './subscribers/image.subscriber';
     StudentImageService,
     StudentAssignationService,
     ImageSubscriber,
+    StudentYearResumeService,
   ],
   exports: [TypeOrmModule, StudentService],
 })
