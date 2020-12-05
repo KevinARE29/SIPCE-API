@@ -104,10 +104,13 @@ export class SociometricTestService {
         },
       },
       sociometricTestDetails,
+      presets,
       ...test
     } = sociometricTest;
 
-    const mappedSociometricTest = { ...test, shift, grade, section };
+    const filteredPresets = presets.filter(preset => !preset.deletedAt);
+
+    const mappedSociometricTest = { ...test, presets: filteredPresets, shift, grade, section };
     const mappedStudents = students.map(student => {
       const completedStudent = sociometricTestDetails.find(testDetail => testDetail.student.id === student.id);
       return { ...student, completed: !!completedStudent };
