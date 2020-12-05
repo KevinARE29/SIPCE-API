@@ -27,6 +27,7 @@ export class SociometricTestRepository extends Repository<SociometricTest> {
       .leftJoinAndSelect(`gradeDetail.counselor`, `counselor`)
       .leftJoinAndSelect(`gradeDetail.grade`, `grade`)
       .leftJoinAndSelect(`cycleDetail.shift`, `shift`)
+      .leftJoinAndSelect(`cycleDetail.schoolYear`, `schoolYear`)
       .andWhere(`sociometricTest.id = ${id}`)
       .getOne();
 

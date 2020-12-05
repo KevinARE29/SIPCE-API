@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-console */
 import { SectionDetailRepository } from '@academics/repositories';
 import { Injectable } from '@nestjs/common';
@@ -19,7 +20,7 @@ export class SociometricMatrixService {
   ) {}
 
   async getSociometricMatrix(sociometricTestId: number, questionId: number): Promise<SociometricMatrixResponse> {
-    const [sociometricTest, answers, { type }] = await Promise.all([
+    const [sociometricTest, answers, question] = await Promise.all([
       this.sociometricTestRepository.findByIdOrThrow(sociometricTestId),
       this.answerRepository.getAnswers(sociometricTestId, questionId),
       this.questionRepository.findByIdOrThrow(questionId),
@@ -28,14 +29,62 @@ export class SociometricMatrixService {
     const { students } = await this.sectionDetailRepository.findByIdOrThrow(sociometricTest.sectionDetail.id);
 
     const { answersPerQuestion } = sociometricTest;
-    const sociomatrix = generateSocioMatrix(students, answers, type);
-    const socioValuesAndIndexes = getSociometrixValuesAndIndexes(sociomatrix, students, answersPerQuestion, type);
+    const sociomatrix = generateSocioMatrix(students, answers, question.type);
+    const socioValuesAndIndexes = getSociometrixValuesAndIndexes(
+      sociomatrix,
+      students,
+      answersPerQuestion,
+      question.type,
+    );
+
+    const answersPerStudent = [];
+    for (const student of students) {
+      const myAnswersP = answers
+        .filter(answer => answer.sociometricTestDetail.student.id === student.id && answer.ponderation > 0)
+        .map(answer => answer.student);
+      const myAnswersN = answers
+        .filter(answer => answer.sociometricTestDetail.student.id === student.id && answer.ponderation < 0)
+        .map(answer => answer.student);
+      const studentsAnswersP = answers
+        .filter(answer => answer.student.id === student.id && answer.ponderation > 0)
+        .map(answer => answer.student);
+      const studentsAnswersN = answers
+        .filter(answer => answer.student.id === student.id && answer.ponderation < 0)
+        .map(answer => answer.student);
+      answersPerStudent.push({
+        myAnswers: { answersP: myAnswersP, answersN: myAnswersN },
+        studentsAnswers: { answersP: studentsAnswersP, answersN: studentsAnswersN },
+      });
+    }
+
+    const {
+      sectionDetail: {
+        section: { name: section },
+        gradeDetail: {
+          grade: { name: grade },
+          cycleDetail: {
+            shift: { name: shift },
+            schoolYear: { year },
+          },
+        },
+      },
+    } = sociometricTest;
     console.table(sociomatrix);
 
     return {
       data: plainToClass(
         SociometricMatrix,
-        { participants: students, sociomatrix, ...socioValuesAndIndexes },
+        {
+          question,
+          participants: students,
+          sociomatrix,
+          ...socioValuesAndIndexes,
+          answersPerStudent,
+          year,
+          shift,
+          grade,
+          section,
+        },
         { excludeExtraneousValues: true },
       ),
     };
