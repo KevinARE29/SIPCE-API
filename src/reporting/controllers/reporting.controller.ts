@@ -117,7 +117,6 @@ export class ReportingController {
     description: 'Use este endpoint para exportar el historial académico y conductual de un estudiante',
   })
   @UseGuards(SimpleJwt)
-  @Auth('generate_students_behavioral_history_report')
   @Get('students/:studentId/histories/:historyId')
   async getStudentBehavioralHistory(
     @User() { id }: IAuthenticatedUser,
