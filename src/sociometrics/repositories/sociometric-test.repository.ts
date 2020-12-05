@@ -90,6 +90,8 @@ export class SociometricTestRepository extends Repository<SociometricTest> {
 
     if (historical === 'true') {
       query.andWhere(`schoolYear.status = '${ESchoolYearStatus['Histórico']}'`);
+    } else {
+      query.andWhere(`schoolYear.status not in ('${ESchoolYearStatus['Histórico']}')`);
     }
 
     return query.getManyAndCount();
