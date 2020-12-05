@@ -68,6 +68,7 @@ export class SessionRepository extends Repository<Session> {
         'sessionResponsibleAssistence.responsible2',
         'expedient',
         'expedient.student',
+        'expedient.gradeDetail',
       ],
     });
   }

@@ -4,6 +4,7 @@ import { Session } from './session.doc';
 import { Evaluation } from './evaluation.doc';
 import { SessionResponsibleAssistence } from './session-responsible-assistence.doc';
 import { InterventionProgram } from './intervention-program.doc';
+import { Expedient } from './expedient.doc';
 
 export class CompleteSession extends Session {
   @Expose()
@@ -21,4 +22,8 @@ export class CompleteSession extends Session {
   @Type(() => InterventionProgram)
   @Expose()
   interventionProgram?: InterventionProgram;
+
+  @Type(() => Expedient)
+  @Expose()
+  expedient?: Expedient;
 }

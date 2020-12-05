@@ -1,4 +1,5 @@
-import { Expose } from 'class-transformer';
+import { GradeDetail } from '@academics/docs/grade-detail.doc';
+import { Expose, Type } from 'class-transformer';
 
 export class Expedient {
   @Expose()
@@ -27,4 +28,8 @@ export class Expedient {
 
   @Expose()
   finalConclusion!: string;
+
+  @Type(() => GradeDetail)
+  @Expose()
+  gradeDetail?: GradeDetail;
 }
