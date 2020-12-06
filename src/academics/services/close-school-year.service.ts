@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException, ForbiddenException } from '@nestjs/common';
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
 import { SchoolYear } from '@academics/docs/school-year.doc';
 import { ESchoolYearStatus, activeSchoolYearStatus } from '@academics/constants/academic.constants';
@@ -7,6 +7,9 @@ import { UpdateSchoolYearStatusDto } from '@academics/dtos/school-year/update-sc
 import { plainToClass } from 'class-transformer';
 import { EStudentStatus, nextYearStatuses } from '@students/constants/student.constant';
 import { CycleDetail } from '@academics/docs/cycle-detail.doc';
+import { BehavioralHistoryRepository } from '@history/repository/behavioral-history.repository';
+import { SectionDetailIdDto } from '@academics/dtos/section-detail-id.dto';
+import { SectionDetailRepository } from '@academics/repositories';
 import { SchoolYearService } from './school-year.service';
 
 @Injectable()
@@ -15,6 +18,8 @@ export class CloseSchoolYearService {
     private readonly schoolYearRepository: SchoolYearRepository,
     private readonly schoolYearService: SchoolYearService,
     private connection: Connection,
+    private readonly behavioralHistoryRepository: BehavioralHistoryRepository,
+    private readonly sectionDetailRepository: SectionDetailRepository,
   ) {}
 
   async updateSchoolYearStatus(updateSchoolYearStatusDto: UpdateSchoolYearStatusDto): Promise<SchoolYear> {
@@ -111,5 +116,24 @@ export class CloseSchoolYearService {
 
     const finishedYear = totalShifts === closedShifts;
     return { ...currentAssignation, finishedYear };
+  }
+
+  async closeSectionById(sectionDetailIdDto: SectionDetailIdDto, teacherId: number): Promise<void> {
+    const { sectionDetailId } = sectionDetailIdDto;
+    const behavioralHistories = await this.behavioralHistoryRepository.findBehavioralHistoriesBySectionDetailId(
+      sectionDetailId,
+    );
+    const notFinishedHistories = behavioralHistories.filter(history => !history.finalConclusion);
+    if (notFinishedHistories.length) {
+      throw new UnprocessableEntityException(
+        'No se puede cerrar el año ya que aún existen historiales académicos y conductuales sin comentario final',
+      );
+    }
+    const sectionDetail = await this.sectionDetailRepository.findByIdOrThrow(sectionDetailId);
+    if (teacherId !== sectionDetail.teacher.id) {
+      throw new ForbiddenException('No tienes los permisos para realizar esta acción');
+    }
+    sectionDetail.closed = true;
+    this.sectionDetailRepository.save(sectionDetail);
   }
 }

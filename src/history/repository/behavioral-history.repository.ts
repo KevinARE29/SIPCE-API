@@ -22,4 +22,13 @@ export class BehavioralHistoryRepository extends Repository<BehavioralHistory> {
     }
     return behavioralHistory;
   }
+
+  async findBehavioralHistoriesBySectionDetailId(sectionDetailId: number): Promise<BehavioralHistory[]> {
+    const query = this.createQueryBuilder('behavioral_history')
+      .leftJoinAndSelect('behavioral_history.sectionDetailId', 'sectionDetailId')
+      .andWhere(`sectionDetailId.id = ${sectionDetailId}`)
+      .andWhere('behavioral_history.deletedAt is null');
+
+    return query.getMany();
+  }
 }
