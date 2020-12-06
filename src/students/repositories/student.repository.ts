@@ -19,6 +19,10 @@ import {
   StudentsBehavioralHistoryFilterDto,
   sortOptionsMap as studentsBehavioralHistorySortOptionsMap,
 } from '@history/dtos/students-behavioral-history-filter.dto';
+import {
+  StudentYearResumeFilterDto,
+  sortOptionsMap as studentYearResumeSortOptionsMap,
+} from '@students/dtos/student-year-resume-filter.dto';
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> {
@@ -322,5 +326,37 @@ export class StudentRepository extends Repository<Student> {
       throw new NotFoundException('El estudiante especificado no fue encontrado');
     }
     return student;
+  }
+
+  getStudentsBehavioralHistoryInformation(
+    counselorId: number,
+    studentYearResumeFilterDto: StudentYearResumeFilterDto,
+  ): Promise<Student[]> {
+    const { sort, currentGrade } = studentYearResumeFilterDto;
+    const query = this.createQueryBuilder('student')
+      .leftJoinAndSelect('student.currentShift', 'currentShift')
+      .leftJoinAndSelect('student.currentGrade', 'currentGrade')
+      .leftJoinAndSelect('student.behavioralHistorys', 'behavioralHistorys')
+      .leftJoin('student.sectionDetails', 'sectionDetails')
+      .leftJoin('sectionDetails.teacher', 'teacher')
+      .leftJoin('sectionDetails.gradeDetail', 'gradeDetail')
+      .leftJoin('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoin('cycleDetail.schoolYear', 'schoolYear')
+      .andWhere(`"schoolYear"."status" = '${ESchoolYearStatus['En curso']}'`)
+      .andWhere('student.deletedAt is null')
+      .andWhere(`"teacher"."id" = ${counselorId}`);
+
+    if (sort) {
+      const order = getOrderBy(sort, studentYearResumeSortOptionsMap);
+      query.orderBy(order);
+    } else {
+      query.orderBy({ 'student.id': 'DESC' });
+    }
+
+    if (currentGrade) {
+      query.andWhere(`"currentGrade"."id" = ${currentGrade}`);
+    }
+
+    return query.getMany();
   }
 }
