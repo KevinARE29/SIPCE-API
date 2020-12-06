@@ -37,6 +37,11 @@ export class ReportingController {
     private readonly beavioralHistoryService: BehavioralHistoryService,
   ) {}
 
+  @ApiOperation({
+    summary: 'Solicitar generación de reporte pdf',
+    description: 'Use este endpoint para solicitar la generación de un reporte pdf',
+  })
+  @Auth()
   @Post('')
   async generatePdf(
     @Res() res: Response,
@@ -153,6 +158,7 @@ export class ReportingController {
     summary: 'Generar reporte de evolución en pruebas sociométricas',
     description: 'Use este endpoint para generar reporte de evolución en pruebas sociométricas',
   })
+  @Auth('generate_sociometric_tests_reports')
   @Get('students/:studentId')
   async getStudentEvolution(@Param() { studentId }: StudentIdDto): Promise<any> {
     return this.reportingSociometricService.getStudentEvolution(studentId);
