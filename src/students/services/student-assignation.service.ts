@@ -6,12 +6,13 @@ import { GradeRepository } from '@academics/repositories/grade.repository';
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
 import { plainToClass } from 'class-transformer';
 import { StudentsAssignation } from '@students/docs/students-assignation.doc';
-import { ConfigService } from '@nestjs/config';
 import { EStudentStatus } from '@students/constants/student.constant';
 import { PatchStudentAssignationDto } from '@students/dtos/patch-student-assignation.dto';
 import { SchoolYear } from '@academics/entities/school-year.entity';
 import { SectionDetailRepository } from '@academics/repositories/section-detail.repository';
 import { Student } from '@students/entities/student.entity';
+import { BehavioralHistoryRepository } from '@history/repository/behavioral-history.repository';
+import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 @Injectable()
 export class StudentAssignationService {
@@ -21,7 +22,7 @@ export class StudentAssignationService {
     private readonly gradeRepository: GradeRepository,
     private readonly schoolYearRepository: SchoolYearRepository,
     private readonly sectionDetailRepository: SectionDetailRepository,
-    private readonly configService: ConfigService,
+    private readonly behavioralHistoryRepository: BehavioralHistoryRepository,
   ) {}
 
   async validateTeacherAssignation(shiftId: number, gradeId: number, teacherId: number): Promise<SchoolYear> {
@@ -73,6 +74,7 @@ export class StudentAssignationService {
     };
   }
 
+  @Transactional()
   async patchStudentsAssignation(
     userId: number,
     { currentGradeId, currentShiftId }: StudentAssignationFilterDto,
@@ -100,6 +102,14 @@ export class StudentAssignationService {
       const students = studentsWithoutAssignation.filter(student => studentIds.includes(student.id));
       sectionDetail.students = [...sectionDetail.students, ...students];
       await this.sectionDetailRepository.save(sectionDetail);
+
+      const activeBehavioralHistories = await this.behavioralHistoryRepository.getActiveBehavioralHistories(studentIds);
+      const mappedBehavioralHistories = activeBehavioralHistories.map(bHistory => ({
+        ...bHistory,
+        sectionDetailId: sectionDetail,
+      }));
+
+      await this.behavioralHistoryRepository.save(mappedBehavioralHistories);
     } else {
       const studentsIdsToRemove = studentIds.join();
       await this.studentRepository.query(
