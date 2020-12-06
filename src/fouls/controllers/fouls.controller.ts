@@ -10,6 +10,7 @@ import { FoulsIdDto } from '@fouls/dtos/fouls-id.dto';
 import { FoulsResponse } from '@fouls/docs/fouls-response.doc';
 import { PageDto } from '@core/dtos/page.dto';
 import { FoulsFilterDto } from '@fouls/dtos/fouls-filter.dto';
+import { SchoolYear } from '@academics/decorators/school-year.decorator';
 @ApiTags('Fouls Endpoints')
 @UseGuards(ContentTypeGuard)
 @Controller('fouls')
@@ -42,6 +43,7 @@ export class FoulsController {
     description: 'Use este endpoint para crear nuevas faltas en el sistema informático.',
   })
   @Post('')
+  @SchoolYear(false)
   async createFouls(@Body() createFoulsDto: CreateFoulsDto): Promise<FoulResponse> {
     return this.foulsService.createFouls(createFoulsDto);
   }
@@ -52,6 +54,7 @@ export class FoulsController {
     description: 'Use este endpoint para actualizar los datos de una falta específica.',
   })
   @Put(':foulsId')
+  @SchoolYear(false)
   async updateEvent(@Param() foulsIdDto: FoulsIdDto, @Body() updateFoulsDto: UpdateFoulsDto): Promise<FoulResponse> {
     return this.foulsService.updateFouls(foulsIdDto.foulsId, updateFoulsDto);
   }
@@ -63,6 +66,7 @@ export class FoulsController {
   })
   @HttpCode(204)
   @Delete(':foulsId')
+  @SchoolYear(false)
   async deleteFouls(@Param() idDto: FoulsIdDto): Promise<void> {
     return this.foulsService.deleteFouls(idDto.foulsId);
   }
