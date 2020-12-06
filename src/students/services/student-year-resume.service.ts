@@ -36,7 +36,9 @@ export class StudentYearResumeService {
         behavioralHistory: student.behavioralHistorys[0],
       }))
       .filter(student => student.behavioralHistory);
-    const progress = Math.round((completedBehavioralHistories / formattedStudents.length) * 100) || 0;
+    const progress = formattedStudents.length
+      ? Math.round((completedBehavioralHistories / formattedStudents.length) * 100)
+      : 0;
     return {
       data: {
         students: plainToClass(StudentBehavioralHistory, formattedStudents, { excludeExtraneousValues: true }),
