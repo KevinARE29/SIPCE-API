@@ -4,16 +4,16 @@ export class AlterFoulsSanctionMigration1607159225571 implements MigrationInterf
   name = 'alterFoulsSanctionMigration1607159225571';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "public"."foul" DROP CONSTRAINT "UQ_951c82a4c5b6d315d0731cd62db"`);
-    await queryRunner.query(`ALTER TABLE "public"."sanction" DROP CONSTRAINT "UQ_b661c88988ae4e7535786ab34b2"`);
+    await queryRunner.query(`ALTER TABLE "public"."foul" DROP CONSTRAINT "UQ_393f0e25f8b8a987f2bd4fe58a2"`);
+    await queryRunner.query(`ALTER TABLE "public"."sanction" DROP CONSTRAINT "UQ_c49943418cbf72748bddf4cf279"`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "public"."sanction" ADD CONSTRAINT "UQ_b661c88988ae4e7535786ab34b2" UNIQUE ("name")`,
+      `ALTER TABLE "public"."sanction" ADD CONSTRAINT "UQ_c49943418cbf72748bddf4cf279" UNIQUE ("name")`,
     );
     await queryRunner.query(
-      `ALTER TABLE "public"."foul" ADD CONSTRAINT "UQ_951c82a4c5b6d315d0731cd62db" UNIQUE ("numeral")`,
+      `ALTER TABLE "public"."foul" ADD CONSTRAINT "UQ_393f0e25f8b8a987f2bd4fe58a2" UNIQUE ("numeral")`,
     );
   }
 }
