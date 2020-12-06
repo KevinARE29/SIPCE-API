@@ -13,7 +13,7 @@ export class Foul {
   @Column('varchar', { length: 256 })
   description!: string;
 
-  @Column('varchar', { length: 16, unique: true })
+  @Column('varchar', { length: 16 })
   numeral!: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })

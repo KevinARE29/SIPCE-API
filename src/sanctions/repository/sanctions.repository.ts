@@ -43,6 +43,7 @@ export class SanctionsRepository extends Repository<Sanction> {
   getSanctionByName(name: string): Promise<Sanction | undefined> {
     return this.createQueryBuilder('sanction')
       .where('LOWER(sanction.name) = LOWER(:name)', { name })
+      .andWhere('sanction.deletedAt is null')
       .getOne();
   }
 }
