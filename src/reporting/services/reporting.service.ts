@@ -14,6 +14,7 @@ import { SessionsReport } from '@reporting/docs/sessions-report.doc';
 import { SessionsReportResponse } from '@reporting/docs/sessions-report-response.doc';
 import { PdfRequestDto } from '@reporting/dtos/pdf-request.dto';
 import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
+import { UserQueryDto } from '@reporting/dtos/user-id-query.dto';
 
 @Injectable()
 export class ReportingService {
@@ -24,8 +25,12 @@ export class ReportingService {
     private readonly sessionRepository: SessionRepository,
   ) {}
 
-  async generatePdf(pdfRequestDto: PdfRequestDto, pdfRequestFilterDto: PdfRequestFilterDto): Promise<Buffer> {
-    const job = await this.jobsQueue.add(PDF_JOB, { pdfRequestDto, pdfRequestFilterDto });
+  async generatePdf(
+    pdfRequestDto: PdfRequestDto,
+    pdfRequestFilterDto: PdfRequestFilterDto,
+    userQueryDto: UserQueryDto,
+  ): Promise<Buffer> {
+    const job = await this.jobsQueue.add(PDF_JOB, { pdfRequestDto, pdfRequestFilterDto, userQueryDto });
     const pdfObjectBuffer = await job.finished();
     return Buffer.from(pdfObjectBuffer);
   }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DashboardResponse } from '@reporting/docs/dashboard/dashboard-response.doc';
@@ -19,10 +19,9 @@ import { ExpedientService } from '@expedient/services/expedient.service';
 import { ExpedientReportResponse } from '@reporting/docs/expedient-report-response.doc';
 import { StudentHistoryIdsDto } from '@history/dtos/student-history-ids.dto';
 import { BehavioralHistoryService } from '@history/services/behavioral-history.service';
-import { IAuthenticatedUser } from '@users/interfaces/users.interface';
-import { User } from '@users/decorators/user.decorator';
 import { BehavioralHistoryReportResponse } from '@reporting/docs/behavioral-history-report-response.doc';
 import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
+import { UserQueryDto } from '@reporting/dtos/user-id-query.dto';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -42,8 +41,9 @@ export class ReportingController {
     @Res() res: Response,
     @Body() pdfRequestDto: PdfRequestDto,
     @Query() pdfRequestFilterDto: PdfRequestFilterDto,
+    @Query() userQueryDto: UserQueryDto,
   ): Promise<any> {
-    const buffer = await this.reportingService.generatePdf(pdfRequestDto, pdfRequestFilterDto);
+    const buffer = await this.reportingService.generatePdf(pdfRequestDto, pdfRequestFilterDto, userQueryDto);
     res.set({
       // pdf
       'Content-Type': 'application/pdf',
@@ -119,13 +119,17 @@ export class ReportingController {
   @UseGuards(SimpleJwt)
   @Get('students/:studentId/histories/:historyId')
   async getStudentBehavioralHistory(
-    @User() { id }: IAuthenticatedUser,
     @Param() studentHistoryIdsDto: StudentHistoryIdsDto,
     @Query() pdfRequestFilterDto: PdfRequestFilterDto,
+    @Query() { userId }: UserQueryDto,
   ): Promise<BehavioralHistoryReportResponse> {
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
     const [student, behavioralHistory] = await Promise.all([
       this.studentService.getStudent(studentHistoryIdsDto.studentId),
-      this.beavioralHistoryService.getStudentBehavioralHistory(id, studentHistoryIdsDto, pdfRequestFilterDto),
+      this.beavioralHistoryService.getStudentBehavioralHistory(+userId, studentHistoryIdsDto, pdfRequestFilterDto),
     ]);
 
     return { data: { student: student.data, behavioralHistory } };

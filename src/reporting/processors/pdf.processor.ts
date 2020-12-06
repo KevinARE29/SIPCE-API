@@ -7,6 +7,7 @@ import { JOBS_QUEUE, PDF_JOB } from '@reporting/constants/reporting.constant';
 import { PdfRequestDto } from '@reporting/dtos/pdf-request.dto';
 import { sign } from 'jsonwebtoken';
 import { PdfRequestFilterDto } from '@reporting/dtos/pdf-request-filter.dto';
+import { UserQueryDto } from '@reporting/dtos/user-id-query.dto';
 
 @Processor(JOBS_QUEUE)
 export class PdfProcessor {
@@ -20,18 +21,24 @@ export class PdfProcessor {
 
   @Process(PDF_JOB)
   async generatePdf(
-    job: Job<{ pdfRequestDto: PdfRequestDto; pdfRequestFilterDto: PdfRequestFilterDto }>,
+    job: Job<{ pdfRequestDto: PdfRequestDto; pdfRequestFilterDto: PdfRequestFilterDto; userQueryDto: UserQueryDto }>,
   ): Promise<Buffer> {
     const {
       pdfRequestDto: { reportPath, reportName },
       pdfRequestFilterDto: { filter },
+      userQueryDto: { userId },
     } = job.data;
     this.logger.debug(`Generate Report ${reportName} PDF`);
 
     const token = sign({}, this.configService.get<string>('JWT_SECRET_REPORT', ''), { expiresIn: '1min' });
     let reportUrl = `https://${this.frontendUrl}/${reportPath}?token=${token}`;
+
     if (filter) {
       reportUrl += `&filter=${filter}`;
+    }
+
+    if (userId) {
+      reportUrl += `&userId=${userId}`;
     }
 
     try {
