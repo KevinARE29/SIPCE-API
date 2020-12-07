@@ -16,6 +16,7 @@ import { StudentSociometricTestDto } from '@sociometrics/dtos/student-sociometri
 import { PresetRepository } from '@sociometrics/repositories/preset.repository';
 import { firstBy } from 'thenby';
 import { SociometricTestDetailResponse } from '@sociometrics/docs/sociometric-test-detail-response.doc';
+import { EStudentStatus } from '@students/constants/student.constant';
 import { SociometricTestDetailService } from './sociometric-test-detail.service';
 
 @Injectable()
@@ -212,6 +213,12 @@ export class SociometricTestService {
     if (currentDate < startedAt || currentDate > endedAt) {
       throw new UnprocessableEntityException('No puede acceder a este cuestionario, está fuera de horario');
     }
-    return this.sociometricTestDetailService.getSociometricTestDetail(id, studentId);
+    const { data } = await this.sociometricTestDetailService.getSociometricTestDetail(id, studentId);
+    return {
+      data: {
+        ...data,
+        students: sectionDetail.students.map(student => ({ ...student, status: EStudentStatus[student.status] })),
+      },
+    };
   }
 }

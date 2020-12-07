@@ -21,4 +21,8 @@ export class SociometricTestDetail {
   @Expose()
   @Type(() => Answer)
   answers!: Answer[];
+
+  @Expose()
+  @Type(() => Students)
+  students?: Students[];
 }
