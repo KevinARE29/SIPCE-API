@@ -24,7 +24,7 @@ export class AddInterventionProgramDocMigration1607260128923 implements Migratio
       undefined,
     );
     await queryRunner.query(
-      `comment on column "intervention_program".type is 'Tipo de programa: Individual académico. Individual conductual. Individual emocional. Individual mixto. Grupales. ';`,
+      `comment on column "intervention_program".type is 'Tipo de programa: Individual académico, Individual conductual, Individual emocional, Individual mixto, Grupales. ';`,
       undefined,
     );
     await queryRunner.query(
