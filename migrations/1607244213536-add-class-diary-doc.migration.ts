@@ -19,7 +19,7 @@ export class AddClassDiaryDocMigration1607244213536 implements MigrationInterfac
       undefined,
     );
     await queryRunner.query(
-      `comment on column "class_diary".annotation_date is 'Fecha en que se realizo la anotación en el diario de clases;`,
+      `comment on column "class_diary".annotation_date is 'Fecha en que se realizo la anotación en el diario de clases';`,
       undefined,
     );
     await queryRunner.query(
