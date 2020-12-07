@@ -5,9 +5,6 @@ export class AddPsychologicalExpedientModuleTablesAndRelations1605072232068 impl
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "public"."external_psychological_treatment" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, CONSTRAINT "PK_6b35830f81259f21b16f6c0829a" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
       `CREATE TABLE "public"."evaluation" ("id" SERIAL NOT NULL, "description" character varying NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "session_id" integer NOT NULL, CONSTRAINT "PK_6e3b6deb5620e890adeff907cd0" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
@@ -37,15 +34,6 @@ export class AddPsychologicalExpedientModuleTablesAndRelations1605072232068 impl
     await queryRunner.query(`CREATE INDEX "IDX_49738c0b0f2b2d75c25d35e300" ON "public"."session_user" ("session_id") `);
     await queryRunner.query(
       `CREATE INDEX "IDX_5d93a65ffaf0e104e651d1c37a" ON "public"."session_user" ("counselor_id") `,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "public"."expedient_external_psychological_treatment" ("expedient_id" integer NOT NULL, "external_psychological_treatment_id" integer NOT NULL, CONSTRAINT "PK_a9a072a32369ef04954400b225e" PRIMARY KEY ("expedient_id", "external_psychological_treatment_id"))`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_25e3e046fcab17c67ecbfaf287" ON "public"."expedient_external_psychological_treatment" ("expedient_id") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_98d6ea9c5703c6e2c2c30daff1" ON "public"."expedient_external_psychological_treatment" ("external_psychological_treatment_id") `,
     );
     await queryRunner.query(
       `ALTER TABLE "public"."evaluation" ADD CONSTRAINT "FK_75d9cc62d091d8aea6b16b46dc0" FOREIGN KEY ("session_id") REFERENCES "public"."session"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -80,21 +68,9 @@ export class AddPsychologicalExpedientModuleTablesAndRelations1605072232068 impl
     await queryRunner.query(
       `ALTER TABLE "public"."session_user" ADD CONSTRAINT "FK_5d93a65ffaf0e104e651d1c37a2" FOREIGN KEY ("counselor_id") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "public"."expedient_external_psychological_treatment" ADD CONSTRAINT "FK_25e3e046fcab17c67ecbfaf2874" FOREIGN KEY ("expedient_id") REFERENCES "public"."expedient"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "public"."expedient_external_psychological_treatment" ADD CONSTRAINT "FK_98d6ea9c5703c6e2c2c30daff14" FOREIGN KEY ("external_psychological_treatment_id") REFERENCES "public"."external_psychological_treatment"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `ALTER TABLE "public"."expedient_external_psychological_treatment" DROP CONSTRAINT "FK_98d6ea9c5703c6e2c2c30daff14"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "public"."expedient_external_psychological_treatment" DROP CONSTRAINT "FK_25e3e046fcab17c67ecbfaf2874"`,
-    );
     await queryRunner.query(`ALTER TABLE "public"."session_user" DROP CONSTRAINT "FK_5d93a65ffaf0e104e651d1c37a2"`);
     await queryRunner.query(`ALTER TABLE "public"."session_user" DROP CONSTRAINT "FK_49738c0b0f2b2d75c25d35e3006"`);
     await queryRunner.query(`ALTER TABLE "public"."expedient" DROP CONSTRAINT "FK_023026384a5ea602684afc805ca"`);
@@ -114,9 +90,6 @@ export class AddPsychologicalExpedientModuleTablesAndRelations1605072232068 impl
       `ALTER TABLE "public"."intervention_program" DROP CONSTRAINT "FK_3a1e7673b7a207ea93aee0ce6ab"`,
     );
     await queryRunner.query(`ALTER TABLE "public"."evaluation" DROP CONSTRAINT "FK_75d9cc62d091d8aea6b16b46dc0"`);
-    await queryRunner.query(`DROP INDEX "public"."IDX_98d6ea9c5703c6e2c2c30daff1"`);
-    await queryRunner.query(`DROP INDEX "public"."IDX_25e3e046fcab17c67ecbfaf287"`);
-    await queryRunner.query(`DROP TABLE "public"."expedient_external_psychological_treatment"`);
     await queryRunner.query(`DROP INDEX "public"."IDX_5d93a65ffaf0e104e651d1c37a"`);
     await queryRunner.query(`DROP INDEX "public"."IDX_49738c0b0f2b2d75c25d35e300"`);
     await queryRunner.query(`DROP TABLE "public"."session_user"`);
@@ -128,6 +101,5 @@ export class AddPsychologicalExpedientModuleTablesAndRelations1605072232068 impl
     await queryRunner.query(`DROP TABLE "public"."intervention_program"`);
     await queryRunner.query(`DROP TYPE "intervention_program_enum"`);
     await queryRunner.query(`DROP TABLE "public"."evaluation"`);
-    await queryRunner.query(`DROP TABLE "public"."external_psychological_treatment"`);
   }
 }

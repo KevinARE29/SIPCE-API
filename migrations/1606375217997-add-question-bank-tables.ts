@@ -6,7 +6,7 @@ export class AddQuestionBankTables1606375217997 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`CREATE TYPE "question_type_enum" AS ENUM('Aceptación/Rechazo', 'Liderazgo')`);
     await queryRunner.query(
-      `CREATE TABLE "public"."question" ("id" SERIAL NOT NULL, "quetion_q" character varying(256) NOT NULL, "quetion_n" character varying(256), "type" "question_type_enum" NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "question_bank_id" integer NOT NULL, CONSTRAINT "PK_4862ab95d7239a36a56f67bac6e" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "public"."question" ("id" SERIAL NOT NULL, "question_q" character varying(256) NOT NULL, "question_n" character varying(256), "type" "question_type_enum" NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "question_bank_id" integer NOT NULL, CONSTRAINT "PK_4862ab95d7239a36a56f67bac6e" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "public"."question_bank" ("id" SERIAL NOT NULL, "name" character varying(128) NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "counselor_id" integer NOT NULL, CONSTRAINT "PK_5943afe686acd05227492d24527" PRIMARY KEY ("id"))`,
