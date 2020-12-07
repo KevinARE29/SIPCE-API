@@ -77,8 +77,8 @@ export class SectionDetailRepository extends Repository<SectionDetail> {
       .leftJoinAndSelect('student.images', 'image')
       .leftJoinAndSelect('image.grade', 'grade')
       .andWhere(`sectionDetail.id = ${sectionDetailId}`)
-      .orderBy(`student.lastname`, 'ASC')
-      .orderBy(`student.firstname`, 'ASC')
+      .addOrderBy(`student.lastname`, 'ASC')
+      .addOrderBy(`student.firstname`, 'ASC')
       .getOne();
 
     if (!sectionDetail) {
