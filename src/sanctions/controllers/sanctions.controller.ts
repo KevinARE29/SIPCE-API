@@ -10,6 +10,7 @@ import { CreateSanctionsDto } from '@sanctions/dtos/create-sanction.dto';
 import { SanctionResponse } from '@sanctions/docs/sanction-response.doc';
 import { UpdateSanctionsDto } from '@sanctions/dtos/update-sanctions.dto';
 import { SanctionsIdDto } from '@sanctions/dtos/sanctions-id.dto';
+import { SchoolYear } from '@academics/decorators/school-year.decorator';
 @ApiTags('Sanctions Endpoints')
 @UseGuards(ContentTypeGuard)
 @Controller('sanctions')
@@ -45,6 +46,7 @@ export class SanctionsController {
     description: 'Use este endpoint para crear una sanción en el sistema informático.',
   })
   @Post('')
+  @SchoolYear(false)
   async createFouls(@Body() createSanctionsDto: CreateSanctionsDto): Promise<SanctionResponse> {
     return this.sanctionsService.createSanctions(createSanctionsDto);
   }
@@ -55,6 +57,7 @@ export class SanctionsController {
     description: 'Use este endpoint para actualizar los datos de una sanción específica.',
   })
   @Put(':sanctionsId')
+  @SchoolYear(false)
   async updateEvent(
     @Param() sanctionsIdDto: SanctionsIdDto,
     @Body() updateSanctionsDto: UpdateSanctionsDto,
@@ -69,6 +72,7 @@ export class SanctionsController {
   })
   @HttpCode(204)
   @Delete(':sanctionsId')
+  @SchoolYear(false)
   async deleteFouls(@Param() idDto: SanctionsIdDto): Promise<void> {
     return this.sanctionsService.deleteSanctions(idDto.sanctionsId);
   }

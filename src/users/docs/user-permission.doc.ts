@@ -6,4 +6,7 @@ export class UserPermission {
 
   @Expose()
   name!: string;
+
+  @Expose()
+  codename!: string;
 }

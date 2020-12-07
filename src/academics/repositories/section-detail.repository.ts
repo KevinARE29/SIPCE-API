@@ -73,11 +73,12 @@ export class SectionDetailRepository extends Repository<SectionDetail> {
     const sectionDetail = await this.createQueryBuilder('sectionDetail')
       .leftJoinAndSelect('sectionDetail.students', 'student')
       .leftJoinAndSelect('sectionDetail.section', 'section')
+      .leftJoinAndSelect('sectionDetail.teacher', 'teacher')
       .leftJoinAndSelect('student.images', 'image')
       .leftJoinAndSelect('image.grade', 'grade')
       .andWhere(`sectionDetail.id = ${sectionDetailId}`)
-      .orderBy(`student.lastname`, 'ASC')
-      .orderBy(`student.firstname`, 'ASC')
+      .addOrderBy(`student.lastname`, 'ASC')
+      .addOrderBy(`student.firstname`, 'ASC')
       .getOne();
 
     if (!sectionDetail) {

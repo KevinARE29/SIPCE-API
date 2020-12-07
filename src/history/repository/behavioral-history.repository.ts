@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { BehavioralHistory } from '@history/entities/behavioral-history.entity';
 import { StudentHistoryIdsDto } from '@history/dtos/student-history-ids.dto';
 import { NotFoundException } from '@nestjs/common';
+import { ESchoolYearStatus } from '@academics/constants/academic.constants';
 @EntityRepository(BehavioralHistory)
 export class BehavioralHistoryRepository extends Repository<BehavioralHistory> {
   async findBehavioralHistoryOrFail(studentHistoryIdsDto: StudentHistoryIdsDto): Promise<BehavioralHistory> {
@@ -21,5 +22,26 @@ export class BehavioralHistoryRepository extends Repository<BehavioralHistory> {
       throw new NotFoundException('El historial académico y conductual no fue encontrado');
     }
     return behavioralHistory;
+  }
+
+  async findBehavioralHistoriesBySectionDetailId(sectionDetailId: number): Promise<BehavioralHistory[]> {
+    const query = this.createQueryBuilder('behavioral_history')
+      .leftJoinAndSelect('behavioral_history.sectionDetailId', 'sectionDetailId')
+      .andWhere(`sectionDetailId.id = ${sectionDetailId}`)
+      .andWhere('behavioral_history.deletedAt is null');
+
+    return query.getMany();
+  }
+
+  async getActiveBehavioralHistories(studentIds: number[]): Promise<BehavioralHistory[]> {
+    return this.createQueryBuilder('behavioralHistory')
+      .leftJoinAndSelect('behavioralHistory.studentId', 'student')
+      .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
+      .leftJoinAndSelect('sectionDetail.gradeDetail', 'gradeDetail')
+      .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoinAndSelect('cycleDetail.schoolYear', 'schoolYear')
+      .andWhere(`schoolYear.status = '${ESchoolYearStatus['En curso']}'`)
+      .andWhere('student.id IN (:...studentIds)', { studentIds: [null, ...studentIds] })
+      .getMany();
   }
 }

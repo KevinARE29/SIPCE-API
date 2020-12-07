@@ -46,6 +46,6 @@ import { PresetController } from './controllers/preset.controller';
     SociometricMatrixService,
     PresetService,
   ],
-  exports: [SociometricTestService, SociometricMatrixService],
+  exports: [SociometricTestService, SociometricMatrixService, TypeOrmModule],
 })
 export class SociometricsModule {}

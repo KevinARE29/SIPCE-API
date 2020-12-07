@@ -20,6 +20,7 @@ export class PresetRepository extends Repository<Preset> {
     const query = this.createQueryBuilder('preset')
       .leftJoinAndSelect('preset.sociometricTest', 'sociometricTest')
       .leftJoinAndSelect('sociometricTest.sectionDetail', 'sectionDetail')
+      .leftJoinAndSelect('sectionDetail.students', 'student')
       .andWhere(`"preset"."password" = '${password}'`)
       .andWhere('preset.deletedAt is null');
     const preset = await query.getOne();

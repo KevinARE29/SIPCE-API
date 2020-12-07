@@ -6,7 +6,7 @@ export class Sanction {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar', { length: 128, unique: true })
+  @Column('varchar', { length: 128 })
   name!: string;
 
   @Column('varchar', { length: 256 })

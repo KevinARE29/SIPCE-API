@@ -1,6 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StudentModule } from '@students/students.module';
+import { BehavioralHistoryRepository } from '@history/repository/behavioral-history.repository';
 import {
   SectionController,
   CycleController,
@@ -46,6 +47,7 @@ import {
       SectionRepository,
       PeriodRepository,
       SchoolYearRepository,
+      BehavioralHistoryRepository,
     ]),
     forwardRef(() => StudentModule),
   ],
