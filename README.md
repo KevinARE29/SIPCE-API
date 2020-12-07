@@ -84,6 +84,12 @@ API para el Sistema Informático para el control y seguimiento del historial con
 2. Execute the test coverage script:
    > \$ npm run test:cov
 
+## Seeder
+
+1. Execute all seeders:
+
+   > \$ npm run seed:run
+
 ## API Documentation
 
 Swagger Documentation: Available through the /docs path.
