@@ -35,6 +35,8 @@ export class CloseSchoolYearService {
       }
 
       if (updateSchoolYearStatusDto.status === 'En curso') {
+        await queryRunner.query('CALL behavioral_history_init_sp()');
+
         const upgradeApprovedStudentsQuery =
           `UPDATE "student" SET "current_grade_id" = "current_grade_id" + 1 ` +
           `WHERE "status" = '${EStudentStatus.Aprobado}';`;
