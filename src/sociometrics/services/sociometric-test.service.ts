@@ -15,11 +15,14 @@ import { StudentRepository } from '@students/repositories';
 import { StudentSociometricTestDto } from '@sociometrics/dtos/student-sociometric-test.dto';
 import { PresetRepository } from '@sociometrics/repositories/preset.repository';
 import { firstBy } from 'thenby';
+import { SociometricTestDetailResponse } from '@sociometrics/docs/sociometric-test-detail-response.doc';
+import { SociometricTestDetailService } from './sociometric-test-detail.service';
 
 @Injectable()
 export class SociometricTestService {
   constructor(
     private readonly sociometricTestRepository: SociometricTestRepository,
+    private readonly sociometricTestDetailService: SociometricTestDetailService,
     private readonly questionBankRepository: QuestionBankRepository,
     private readonly sectionDetailRepository: SectionDetailRepository,
     private readonly studentRepository: StudentRepository,
@@ -194,9 +197,9 @@ export class SociometricTestService {
 
   async getStudentSociometricTest(
     studentSociometricTestDto: StudentSociometricTestDto,
-  ): Promise<SociometricTestResponse> {
+  ): Promise<SociometricTestDetailResponse> {
     const { email, password } = studentSociometricTestDto;
-    const { sectionDetails } = await this.studentRepository.findByEmailOrFail(email);
+    const { sectionDetails, id: studentId } = await this.studentRepository.findByEmailOrFail(email);
     const {
       startedAt,
       endedAt,
@@ -209,6 +212,6 @@ export class SociometricTestService {
     if (currentDate < startedAt || currentDate > endedAt) {
       throw new UnprocessableEntityException('No puede acceder a este cuestionario, está fuera de horario');
     }
-    return this.getSociometricTest(id);
+    return this.sociometricTestDetailService.getSociometricTestDetail(id, studentId);
   }
 }

@@ -12,6 +12,7 @@ import { SociometricTestResponse } from '@sociometrics/docs/sociometric-test-res
 import { SociometricTestDto } from '@sociometrics/dtos/sociometric-test.dto';
 import { SociometricTestIdDto } from '@sociometrics/dtos/sociometric-test-id.dto';
 import { StudentSociometricTestDto } from '@sociometrics/dtos/student-sociometric-test.dto';
+import { SociometricTestDetailResponse } from '@sociometrics/docs/sociometric-test-detail-response.doc';
 
 @ApiTags('Sociometric Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -88,7 +89,7 @@ export class SociometricTestController {
   @Post('/student-access')
   getStudentSociometricTest(
     @Body() studentSociometricTestDto: StudentSociometricTestDto,
-  ): Promise<SociometricTestResponse> {
+  ): Promise<SociometricTestDetailResponse> {
     return this.sociometricTestService.getStudentSociometricTest(studentSociometricTestDto);
   }
 }
