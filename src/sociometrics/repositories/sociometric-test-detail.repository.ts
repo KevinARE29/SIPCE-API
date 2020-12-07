@@ -21,7 +21,8 @@ export class SociometricTestDetailRepository extends Repository<SociometricTestD
       .getOne();
 
     if (!sociometricTestDetail) {
-      return this.save({ student: { id: studentId }, sociometricTest: { id: sociometricTestId } });
+      await this.save({ student: { id: studentId }, sociometricTest: { id: sociometricTestId } });
+      return this.findOrCreate(sociometricTestId, studentId);
     }
     return sociometricTestDetail;
   }
