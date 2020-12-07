@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -5,6 +6,8 @@ import { SectionDetailService } from '@academics/services';
 import { Injectable } from '@nestjs/common';
 import { SociometricReportResponse } from '@reporting/docs/sociometric-test/sociometric-report-response.doc';
 import { SociometricReport } from '@reporting/docs/sociometric-test/sociometric-report.doc';
+import { EQuestionType } from '@sociometrics/constants/sociometric.constant';
+import { SociometricTestDetailRepository } from '@sociometrics/repositories/sociometric-test-detail.repository';
 import { SociometricMatrixService } from '@sociometrics/services/sociometric-matrix.service';
 import { SociometricTestService } from '@sociometrics/services/sociometric-test.service';
 import { plainToClass } from 'class-transformer';
@@ -13,6 +16,7 @@ import { plainToClass } from 'class-transformer';
 export class ReportingSociometricService {
   constructor(
     private readonly sociometricTestService: SociometricTestService,
+    private readonly sociometricTestDetailRepository: SociometricTestDetailRepository,
     private readonly sociometricMatrixService: SociometricMatrixService,
     private readonly sectionDetailService: SectionDetailService,
   ) {}
@@ -84,5 +88,26 @@ export class ReportingSociometricService {
     };
 
     return { data: plainToClass(SociometricReport, mappedResponse, { excludeExtraneousValues: true }) };
+  }
+
+  async getStudentEvolution(studentId: number): Promise<any> {
+    const studentEvolution = await this.sociometricTestDetailRepository.getStudentEvolution(studentId);
+    const mappedEvolution = studentEvolution.reduce((accum, evolution: any) => {
+      const { year, type, possitive, negative } = evolution;
+      if (!accum[year]) {
+        accum[year] = {
+          acceptance: 0,
+          rejection: 0,
+          leadership: 0,
+        };
+      }
+      if (type === EQuestionType['ACEPTACIÓN/RECHAZO']) {
+        accum[year] = { ...accum[year], acceptance: +possitive, rejection: +negative };
+      } else {
+        accum[year] = { ...accum[year], leadership: +possitive };
+      }
+      return accum;
+    }, {} as any);
+    return mappedEvolution;
   }
 }

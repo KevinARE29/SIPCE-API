@@ -22,6 +22,7 @@ import { BehavioralHistoryService } from '@history/services/behavioral-history.s
 import { BehavioralHistoryReportResponse } from '@reporting/docs/behavioral-history-report-response.doc';
 import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
 import { UserQueryDto } from '@reporting/dtos/user-id-query.dto';
+import { StudentIdDto } from '@students/dtos/student-id.dto';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -36,6 +37,11 @@ export class ReportingController {
     private readonly beavioralHistoryService: BehavioralHistoryService,
   ) {}
 
+  @ApiOperation({
+    summary: 'Solicitar generación de reporte pdf',
+    description: 'Use este endpoint para solicitar la generación de un reporte pdf',
+  })
+  @Auth()
   @Post('')
   async generatePdf(
     @Res() res: Response,
@@ -146,5 +152,15 @@ export class ReportingController {
     @Query() { filter }: PdfRequestFilterDto,
   ): Promise<SociometricReportResponse> {
     return this.reportingSociometricService.getSociometricTestReport(sociometricTestId, filter);
+  }
+
+  @ApiOperation({
+    summary: 'Generar reporte de evolución en pruebas sociométricas',
+    description: 'Use este endpoint para generar reporte de evolución en pruebas sociométricas',
+  })
+  @Auth('generate_sociometric_tests_reports')
+  @Get('students/:studentId')
+  async getStudentEvolution(@Param() { studentId }: StudentIdDto): Promise<any> {
+    return this.reportingSociometricService.getStudentEvolution(studentId);
   }
 }
