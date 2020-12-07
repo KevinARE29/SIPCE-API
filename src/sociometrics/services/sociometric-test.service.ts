@@ -14,6 +14,7 @@ import { SectionDetailRepository } from '@academics/repositories';
 import { StudentRepository } from '@students/repositories';
 import { StudentSociometricTestDto } from '@sociometrics/dtos/student-sociometric-test.dto';
 import { PresetRepository } from '@sociometrics/repositories/preset.repository';
+import { firstBy } from 'thenby';
 
 @Injectable()
 export class SociometricTestService {
@@ -118,10 +119,17 @@ export class SociometricTestService {
       return { ...student, completed: !!completedStudent };
     });
 
+    const orderedStudents = mappedStudents.sort(
+      firstBy('lastname', { ignoreCase: true, direction: 'asc' }).thenBy('firstname', {
+        ignoreCase: true,
+        direction: 'asc',
+      }),
+    );
+
     return {
       data: plainToClass(
         SociometricTest,
-        { ...mappedSociometricTest, students: mappedStudents, sectionDetailId },
+        { ...mappedSociometricTest, students: orderedStudents, sectionDetailId },
         {
           excludeExtraneousValues: true,
         },
