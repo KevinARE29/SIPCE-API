@@ -47,10 +47,11 @@ export class SociometricMatrixService {
         .map(answer => answer.student);
       const studentsAnswersP = answers
         .filter(answer => answer.student.id === student.id && answer.ponderation > 0)
-        .map(answer => answer.student);
+        .map(answer => answer.sociometricTestDetail.student);
       const studentsAnswersN = answers
         .filter(answer => answer.student.id === student.id && answer.ponderation < 0)
-        .map(answer => answer.student);
+        .map(answer => answer.sociometricTestDetail.student);
+
       answersPerStudent.push({
         myAnswers: { answersP: myAnswersP, answersN: myAnswersN },
         studentsAnswers: { answersP: studentsAnswersP, answersN: studentsAnswersN },
