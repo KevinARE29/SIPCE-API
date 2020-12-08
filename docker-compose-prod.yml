@@ -13,7 +13,7 @@ services:
     container_name: redis
     ports:
       - '6380:6379'
-  sipce-api:
+  siapce-api:
     build: .
     command: npm run start:dev
     volumes:
@@ -23,3 +23,10 @@ services:
     depends_on:
       - db
       - redis
+  siapce-web:
+    build:
+      context: ../SIPCE-WEB
+    depends_on:
+      - siapce-api
+    ports:
+      - '80:80'
