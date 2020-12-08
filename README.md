@@ -50,6 +50,7 @@ API para el Sistema Informático para el control y seguimiento del historial con
 | TYPEORM_MIGRATIONS_DIR        | migrations                                                                   |
 | TYPEORM_MIGRATIONS_RUN        | true                                                                         |
 | TYPEORM_LOGGING               | error                                                                        |
+| TYPEORM_SEEDING_SEEDS         | dist/db/seeds/\*.js                                                          |
 | REDIS_HOST                    | [Redis host]                                                                 |
 | REDIS_PORT                    | [Redis port]                                                                 |
 | REDIS_PASSWORD                | [Redis password]                                                             |
@@ -82,6 +83,12 @@ API para el Sistema Informático para el control y seguimiento del historial con
 
 2. Execute the test coverage script:
    > \$ npm run test:cov
+
+## Seeder
+
+1. Execute all seeders:
+
+   > \$ npm run seed:run
 
 ## API Documentation
 
