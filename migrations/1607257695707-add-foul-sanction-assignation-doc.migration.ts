@@ -7,24 +7,24 @@ export class AddFoulSanctionAssignationDocMigration1607257695707 implements Migr
       undefined,
     );
     await queryRunner.query(
-      `comment on column "foul_sanction_assignation".id is 'Id la asignación de falta y sanción';`,
+      `comment on column "foul_sanction_assignation".id is 'Id de la asignación de falta y sanción';`,
       undefined,
     );
     await queryRunner.query(
-      `comment on column "foul_sanction_assignation".issue_date is 'Fecha que se reporto la asignación de la falta y sanción';`,
+      `comment on column "foul_sanction_assignation".issue_date is 'Fecha que se reportó la asignación de la falta y sanción';`,
       undefined,
     );
     await queryRunner.query(
-      `comment on column "foul_sanction_assignation".behavioral_history_id is 'Id del historial conductual al que se le asigno la falta y sanción';`,
+      `comment on column "foul_sanction_assignation".behavioral_history_id is 'Id del historial conductual al que se le asignó la falta y sanción';`,
       undefined,
     );
 
     await queryRunner.query(
-      `comment on column "foul_sanction_assignation".period_id is 'Id del período en que se asigno la falta y sanción';`,
+      `comment on column "foul_sanction_assignation".period_id is 'Id del período en que se asignó la falta y sanción';`,
       undefined,
     );
     await queryRunner.query(
-      `comment on column "foul_sanction_assignation".sanction_id is 'Id de la sación asignada';`,
+      `comment on column "foul_sanction_assignation".sanction_id is 'Id de la sanción asignada';`,
       undefined,
     );
     await queryRunner.query(
@@ -33,7 +33,7 @@ export class AddFoulSanctionAssignationDocMigration1607257695707 implements Migr
     );
 
     await queryRunner.query(
-      `comment on column "foul_sanction_assignation".created_at is 'Fecha de creación de asignación de falta y sanción en el SI';`,
+      `comment on column "foul_sanction_assignation".created_at is 'Fecha de creación de la asignación de falta y sanción en el SI';`,
       undefined,
     );
     await queryRunner.query(
@@ -41,7 +41,7 @@ export class AddFoulSanctionAssignationDocMigration1607257695707 implements Migr
       undefined,
     );
     await queryRunner.query(
-      `comment on column "foul_sanction_assignation".deleted_at is 'Fecha de eliminación de la asignacion de falta y sanción';`,
+      `comment on column "foul_sanction_assignation".deleted_at is 'Fecha de eliminación de la asignación de falta y sanción';`,
       undefined,
     );
   }

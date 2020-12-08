@@ -6,10 +6,10 @@ export class AddEvaluationDocMigration1607260204157 implements MigrationInterfac
       `comment on table "evaluation" is 'Tabla que contiene las evaluaciones realizadas a los estudiantes en las sesiones de consejería';`,
       undefined,
     );
-    await queryRunner.query(`comment on column "evaluation".id is 'Id la evaluación';`, undefined);
+    await queryRunner.query(`comment on column "evaluation".id is 'Id de la evaluación';`, undefined);
     await queryRunner.query(`comment on column "evaluation".description is 'Descripción de la evaluación';`, undefined);
     await queryRunner.query(
-      `comment on column "evaluation".session_id is 'Id de la sesión en la que se realizo la evaluación';`,
+      `comment on column "evaluation".session_id is 'Id de la sesión en la que se realizó la evaluación';`,
       undefined,
     );
     await queryRunner.query(

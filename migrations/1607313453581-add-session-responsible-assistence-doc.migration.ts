@@ -23,19 +23,19 @@ export class AddSessionResponsibleAssistenceDocMigration1607313453581 implements
       undefined,
     );
     await queryRunner.query(
-      `comment on column "session_responsible_assistence".other_responsible_relationship is 'Relación de otro responsable del estudiante';`,
+      `comment on column "session_responsible_assistence".other_responsible_relationship is 'Parentezco del otro responsable del estudiante';`,
       undefined,
     );
     await queryRunner.query(
-      `comment on column "session_responsible_assistence".session_id is 'Id de la sesión asociada al registro';`,
+      `comment on column "session_responsible_assistence".session_id is 'Id de la sesión asociada al registró';`,
       undefined,
     );
     await queryRunner.query(
-      `comment on column "session_responsible_assistence".responsible1_id is 'Id de primer responsable que asiste a la sesión';`,
+      `comment on column "session_responsible_assistence".responsible1_id is 'Id del primer responsable que asiste a la sesión';`,
       undefined,
     );
     await queryRunner.query(
-      `comment on column "session_responsible_assistence".responsible2_id is 'Id de segundo responsable que asiste a la sesión';`,
+      `comment on column "session_responsible_assistence".responsible2_id is 'Id del segundo responsable que asiste a la sesión';`,
       undefined,
     );
   }

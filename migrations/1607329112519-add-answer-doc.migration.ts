@@ -7,7 +7,7 @@ export class AddAnswerDocMigration1607329112519 implements MigrationInterface {
       undefined,
     );
     await queryRunner.query(`comment on column "answer".id is 'Id de la respuesta';`, undefined);
-    await queryRunner.query(`comment on column "answer".ponderation is 'ponderación de la respuesta';`, undefined);
+    await queryRunner.query(`comment on column "answer".ponderation is 'Ponderación de la respuesta';`, undefined);
     await queryRunner.query(
       `comment on column "answer".sociometric_test_detail_id is 'Id del detalle de la prueba sociométrica asociada';`,
       undefined,

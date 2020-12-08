@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class AddQuestionDocMigration1607319064603 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `comment on table "question" is 'Tabla que las preguntas a mostrar en una prueba sociométrica';`,
+      `comment on table "question" is 'Tabla que contiene las preguntas a mostrar en una prueba sociométrica';`,
       undefined,
     );
     await queryRunner.query(`comment on column "question".id is 'Id de la pregunta';`, undefined);
@@ -12,7 +12,7 @@ export class AddQuestionDocMigration1607319064603 implements MigrationInterface 
       undefined,
     );
     await queryRunner.query(
-      `comment on column "question".question_q is 'Redacción de la pregunta en connotación positiva';`,
+      `comment on column "question".question_p is 'Redacción de la pregunta en connotación positiva';`,
       undefined,
     );
     await queryRunner.query(
@@ -33,7 +33,7 @@ export class AddQuestionDocMigration1607319064603 implements MigrationInterface 
     await queryRunner.query(`comment on table "question" is '';`, undefined);
     await queryRunner.query(`comment on column "question".id is '';`, undefined);
     await queryRunner.query(`comment on column "question".question_n is '';`, undefined);
-    await queryRunner.query(`comment on column "question".question_q is '';`, undefined);
+    await queryRunner.query(`comment on column "question".question_p is '';`, undefined);
     await queryRunner.query(`comment on column "question".type is '';`, undefined);
     await queryRunner.query(`comment on column "question".question_bank_id is '';`, undefined);
     await queryRunner.query(`comment on column "question".created_at is '';`, undefined);

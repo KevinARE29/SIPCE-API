@@ -21,10 +21,7 @@ export class AddSessionDocMigration1607303907079 implements MigrationInterface {
       undefined,
     );
     await queryRunner.query(`comment on column "session".comments is 'Comentarios de la sesión';`, undefined);
-    await queryRunner.query(
-      `comment on column "session".treated_topics is 'Puntos  tratados en la sesión';`,
-      undefined,
-    );
+    await queryRunner.query(`comment on column "session".treated_topics is 'Puntos tratados en la sesión';`, undefined);
     await queryRunner.query(
       `comment on column "session".draft is 'Indica que la sesión es un borrador si su valor es verdadero.';`,
       undefined,

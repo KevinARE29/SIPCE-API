@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class AddBehavioralHistoryDocMigration1607245604184 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `comment on table "class_diary" is 'Tabla que contiene el historial conductual de los estudiantes para cada año escolar';`,
+      `comment on table "behavioral_history" is 'Tabla que contiene el historial conductual de los estudiantes para cada año escolar';`,
       undefined,
     );
     await queryRunner.query(

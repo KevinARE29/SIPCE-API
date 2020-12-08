@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class AddSociometricTestDetailDocMigration1607320758667 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `comment on table "sociometric_test_detail" is 'Tabla que el detalle de las pruebas sociométricas realizadas a los estudiantes por año escolar';`,
+      `comment on table "sociometric_test_detail" is 'Tabla que contiene  el detalle de las pruebas sociométricas realizadas a los estudiantes por año escolar';`,
       undefined,
     );
     await queryRunner.query(

@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class AddSessionUserDocMigration1607313606303 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `comment on table "session_user" is 'Tabla intermedia con registro de sesiones asociadas a un usuario por año escolar';`,
+      `comment on table "session_user" is 'Tabla intermedia que contiene las sesiones asociadas a un usuario por año escolar';`,
       undefined,
     );
     await queryRunner.query(

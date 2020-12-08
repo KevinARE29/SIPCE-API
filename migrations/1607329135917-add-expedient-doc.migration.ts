@@ -20,11 +20,11 @@ export class AddExpedientDocMigration1607329135917 implements MigrationInterface
       undefined,
     );
     await queryRunner.query(
-      `comment on column "expedient".diagnostic_impression is 'Impresión diagnostica que se realizo al estudiante';`,
+      `comment on column "expedient".diagnostic_impression is 'Impresión diagnostica que se realizó al estudiante';`,
       undefined,
     );
     await queryRunner.query(
-      `comment on column "expedient".diagnostic_impression_categories is 'Listado de categorías de la impresión diagnostica que se realizo al estudiante';`,
+      `comment on column "expedient".diagnostic_impression_categories is 'Listado de categorías de la impresión diagnostica que se realizó al estudiante';`,
       undefined,
     );
     await queryRunner.query(
@@ -36,7 +36,7 @@ export class AddExpedientDocMigration1607329135917 implements MigrationInterface
       undefined,
     );
     await queryRunner.query(
-      `comment on column "expedient".external_psychological_treatments is 'Listado de tratamientos psicologicos externos que posee un estudiante';`,
+      `comment on column "expedient".external_psychological_treatments is 'Listado de tratamientos psicológicos externos que posee un estudiante';`,
       undefined,
     );
     await queryRunner.query(

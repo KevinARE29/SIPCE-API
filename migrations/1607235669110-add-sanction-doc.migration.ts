@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class AddSanctionDocMigration1607235669110 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`comment on table "sanction" is 'Tabla con los catálogos de sanciones';`, undefined);
-    await queryRunner.query(`comment on column "sanction".id is 'Id la sanción';`, undefined);
+    await queryRunner.query(`comment on column "sanction".id is 'Id de la sanción';`, undefined);
     await queryRunner.query(`comment on column "sanction".name is 'Nombre de la sanción';`, undefined);
     await queryRunner.query(`comment on column "sanction".description is 'Descripción de la sanción';`, undefined);
     await queryRunner.query(`comment on column "sanction".created_at is 'Fecha de creación de la sanción';`, undefined);

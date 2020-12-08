@@ -15,11 +15,11 @@ export class AddPresetDocMigration1607325457834 implements MigrationInterface {
       undefined,
     );
     await queryRunner.query(
-      `comment on column "preset".started_at is 'Fecha de inicio en la cual se ha programado la prueba sociométricas ';`,
+      `comment on column "preset".started_at is 'Fecha de inicio en la cual se ha programado la prueba sociométrica';`,
       undefined,
     );
     await queryRunner.query(
-      `comment on column "preset".ended_at is 'Fecha  de fin en la cual se ha programado la prueba sociométrica';`,
+      `comment on column "preset".ended_at is 'Fecha de fin en la cual se ha programado la prueba sociométrica';`,
       undefined,
     );
     await queryRunner.query(

@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class AddFoulDocMigration1607234216027 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`comment on table "foul" is 'Tabla con los catálogos de faltas';`, undefined);
-    await queryRunner.query(`comment on column "foul".id is 'Id la falta';`, undefined);
+    await queryRunner.query(`comment on column "foul".id is 'Id de la falta';`, undefined);
     await queryRunner.query(
       `comment on column "foul".fouls_type is 'Tipo del falta. 1: Leves. 2: Graves. 3: Muy Graves.';`,
       undefined,

@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class AddInterventionProgramDocMigration1607260128923 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `comment on table "intervention_program" is 'Tabla que contiene los programas de intervención aplicados a los estudiantes';`,
+      `comment on table "intervention_program" is 'Tabla que contiene los programas de intervención en los que participan los estudiantes';`,
       undefined,
     );
     await queryRunner.query(
