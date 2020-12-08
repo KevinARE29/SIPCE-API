@@ -12,7 +12,7 @@ const permissionsToInsert = [
   { id: 7, name: 'Ver Rol', codename: 'view_role' },
   { id: 8, name: 'Actualizar Rol', codename: 'update_role' },
   { id: 9, name: 'Eliminar Rol', codename: 'delete_role' },
-  { id: 10, name: 'Listar Bitacoras', codename: 'retrieve_logs' },
+  { id: 10, name: 'Listar Bitácoras', codename: 'retrieve_logs' },
   { id: 11, name: 'Listar Usuarios', codename: 'retrieve_users' },
   { id: 12, name: 'Generar Credenciales de Usuarios', codename: 'generate_user_credentials' },
   { id: 13, name: 'Gestionar Catálogos Académicos', codename: 'manage_academics_catalogues' },
