@@ -89,10 +89,10 @@ export class PdfProcessor {
       displayHeaderFooter: true,
       printBackground: true,
       format: 'Letter',
-      headerTemplate: '',
+      headerTemplate: '<span></span>',
       footerTemplate:
         '<div style="text-align: right;width: 297mm;font-size: 8px;"><span style="margin-right: 1cm">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span></div>',
-      margin: { top: '50px', right: '20px', bottom: '50px', left: '20px' },
+      margin: { top: '75px', right: '20px', bottom: '50px', left: '20px' },
     });
     await browser.close();
     return pdfBuffer;
