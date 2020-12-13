@@ -74,7 +74,7 @@ export class Session {
     { nullable: true },
   )
   @JoinColumn({ name: 'intervention_program_id' })
-  interventionProgram!: InterventionProgram;
+  interventionProgram!: InterventionProgram | null;
 
   @OneToOne(
     () => SessionResponsibleAssistence,
