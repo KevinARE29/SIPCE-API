@@ -23,6 +23,9 @@ import { BehavioralHistoryReportResponse } from '@reporting/docs/behavioral-hist
 import { StudentExpedientIdsDto } from '@expedient/dtos/student-expedient-ids.dto';
 import { UserQueryDto } from '@reporting/dtos/user-id-query.dto';
 import { StudentIdDto } from '@students/dtos/student-id.dto';
+import { UsersService } from '@users/services';
+import { plainToClass } from 'class-transformer';
+import { SimpleUser } from '@users/docs/simple-user.doc';
 import { ReportingService } from '../services/reporting.service';
 
 @ApiTags('Reporting Endpoints')
@@ -35,6 +38,7 @@ export class ReportingController {
     private readonly sessionService: SessionService,
     private readonly expedientService: ExpedientService,
     private readonly beavioralHistoryService: BehavioralHistoryService,
+    private readonly userService: UsersService,
   ) {}
 
   @ApiOperation({
@@ -133,12 +137,19 @@ export class ReportingController {
       throw new UnauthorizedException();
     }
 
-    const [student, behavioralHistory] = await Promise.all([
+    const [student, behavioralHistory, { data: user }] = await Promise.all([
       this.studentService.getStudent(studentHistoryIdsDto.studentId),
       this.beavioralHistoryService.getStudentBehavioralHistory(+userId, studentHistoryIdsDto, pdfRequestFilterDto),
+      this.userService.getSingleUser(+userId),
     ]);
 
-    return { data: { student: student.data, behavioralHistory } };
+    return {
+      data: {
+        student: student.data,
+        behavioralHistory,
+        user: plainToClass(SimpleUser, user, { excludeExtraneousValues: true }),
+      },
+    };
   }
 
   @ApiOperation({
