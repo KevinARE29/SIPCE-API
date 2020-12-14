@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
 import { Injectable, UnprocessableEntityException, ForbiddenException } from '@nestjs/common';
 import { SchoolYearRepository } from '@academics/repositories/school-year.repository';
 import { SchoolYear } from '@academics/docs/school-year.doc';
@@ -10,6 +12,7 @@ import { CycleDetail } from '@academics/docs/cycle-detail.doc';
 import { BehavioralHistoryRepository } from '@history/repository/behavioral-history.repository';
 import { SectionDetailIdDto } from '@academics/dtos/section-detail-id.dto';
 import { SectionDetailRepository } from '@academics/repositories';
+import { SessionRepository } from '@expedient/repositories/session.repository';
 import { SchoolYearService } from './school-year.service';
 
 @Injectable()
@@ -20,6 +23,7 @@ export class CloseSchoolYearService {
     private connection: Connection,
     private readonly behavioralHistoryRepository: BehavioralHistoryRepository,
     private readonly sectionDetailRepository: SectionDetailRepository,
+    private readonly sessionRepository: SessionRepository,
   ) {}
 
   async updateSchoolYearStatus(updateSchoolYearStatusDto: UpdateSchoolYearStatusDto): Promise<SchoolYear> {
@@ -55,6 +59,16 @@ export class CloseSchoolYearService {
           throw new UnprocessableEntityException(
             'Por favor asegúrese de cerrar los grados de todos los turnos antes de cerrar el año escolar',
           );
+        }
+
+        // Saving draft sessions
+        const sessions = await this.sessionRepository.find({ where: { draft: true }, relations: ['expedient'] });
+        for (const session of sessions) {
+          const identifier = await this.sessionRepository.assignSessionIdentifier(
+            session.sessionType,
+            session.expedient.id,
+          );
+          await this.sessionRepository.save({ ...session, identifier, draft: false });
         }
       }
 
