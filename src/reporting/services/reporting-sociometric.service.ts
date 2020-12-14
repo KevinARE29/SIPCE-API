@@ -76,7 +76,7 @@ export class ReportingSociometricService {
       grade,
       section,
       students: !filter || filter?.split(',').includes('participants') ? students : undefined,
-      questionBank: !filter || filter?.split(',').includes('questionBank') ? questionBank : undefined,
+      questionBank,
       generalReports:
         !filter || filter?.split(',').includes('sociomatrix') || filter?.split(',').includes('groupalIndexes')
           ? generalReports
