@@ -33,6 +33,11 @@ export class StudentService {
   ) {}
 
   async getAllStudents(pageDto: PageDto, studentFilterDto: StudentFilterDto): Promise<StudentsResponse> {
+    if (studentFilterDto.paginate === 'false') {
+      const [students] = await this.studentRepository.getAllStudents(pageDto, studentFilterDto);
+      const mappedStudents = students.map(student => ({ ...student, status: EStudentStatus[student.status] }));
+      return { data: plainToClass(Students, mappedStudents, { excludeExtraneousValues: true }) };
+    }
     const [students, count] = await this.studentRepository.getAllStudents(pageDto, studentFilterDto);
     const pagination = getPagination(pageDto, count);
     const mappedStudents = students.map(student => ({ ...student, status: EStudentStatus[student.status] }));

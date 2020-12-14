@@ -42,6 +42,11 @@ export class StudentFilterDto {
   @Type(() => Number)
   readonly currentShift?: number;
 
+  @IsOptional()
+  @IsId()
+  @Type(() => Number)
+  readonly currentSection?: number;
+
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @IsEnum(EStudentStatus, {
@@ -53,4 +58,8 @@ export class StudentFilterDto {
   @IsOptional()
   @IsIn(['true', 'false'], { message: validator.isIn })
   readonly active?: string;
+
+  @IsOptional()
+  @IsIn(['false'], { message: validator.isIn })
+  readonly paginate?: string;
 }
