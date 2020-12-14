@@ -60,17 +60,27 @@ export class SociometricTestDetailService {
       ponderation: connotation ? MoreThan(0) : LessThan(0),
     });
 
-    await Promise.all(
-      studentIds.map(async (id, index) => {
-        const ponderation = answersPerQuestion - index;
-        await this.answerRepository.save({
-          question,
-          student: { id },
-          sociometricTestDetail,
-          ponderation: connotation ? ponderation : -ponderation,
-        });
-      }),
-    );
+    try {
+      await Promise.all(
+        studentIds.map(async (id, index) => {
+          const ponderation = answersPerQuestion - index;
+          await this.answerRepository.save({
+            question,
+            student: { id },
+            sociometricTestDetail,
+            ponderation: connotation ? ponderation : -ponderation,
+          });
+        }),
+      );
+    } catch (err) {
+      if (err?.constraint === 'UQ_439edbe89e7d69d3085b6580e5c') {
+        throw new UnprocessableEntityException(
+          'No es posible aceptar y rechazar a un mismo estudiante para una mismo par de preguntas de Aceptación/Rechazo',
+        );
+      }
+
+      throw err;
+    }
   }
 
   async getSociometricTestDetail(sociometricTestId: number, studentId: number): Promise<SociometricTestDetailResponse> {
