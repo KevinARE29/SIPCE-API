@@ -47,7 +47,7 @@ export class ClassDiaryRepository extends Repository<ClassDiary> {
     }
 
     if (reporter) {
-      query.andWhere(`"reporterId"."firstname" ILIKE '%${reporter}%'`);
+      query.andWhere(`"reporterId"."id" = ${reporter}`);
     }
 
     if (startedAt) {
