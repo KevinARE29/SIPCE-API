@@ -67,13 +67,33 @@ export class StudentRepository extends Repository<Student> {
 
   getAllStudents(pageDto: PageDto, studentFilterDto: StudentFilterDto): Promise<[Student[], number]> {
     const { page, perPage } = pageDto;
-    const { sort, code, firstname, lastname, email, currentGrade, currentShift, status, active } = studentFilterDto;
+    const {
+      sort,
+      code,
+      firstname,
+      lastname,
+      email,
+      currentShift,
+      currentGrade,
+      currentSection,
+      status,
+      active,
+      paginate,
+    } = studentFilterDto;
     const query = this.createQueryBuilder('student')
       .leftJoinAndSelect('student.currentGrade', 'currentGrade')
       .leftJoinAndSelect('student.currentShift', 'currentShift')
-      .andWhere('student.deletedAt is null')
-      .take(perPage)
-      .skip((page - 1) * perPage);
+      .leftJoinAndSelect('student.sectionDetails', 'sectionDetail')
+      .leftJoinAndSelect('sectionDetail.section', 'section')
+      .leftJoinAndSelect('sectionDetail.gradeDetail', 'gradeDetail')
+      .leftJoinAndSelect('gradeDetail.cycleDetail', 'cycleDetail')
+      .leftJoinAndSelect('cycleDetail.schoolYear', 'schoolYear')
+      .andWhere('student.deletedAt is null');
+
+    if (paginate !== 'false') {
+      query.take(perPage);
+      query.skip((page - 1) * perPage);
+    }
 
     if (sort) {
       const order = sort.split(',').reduce((acum, sortItem) => {
@@ -107,6 +127,11 @@ export class StudentRepository extends Repository<Student> {
 
     if (currentShift) {
       query.andWhere(`"currentShift"."id" = ${currentShift}`);
+    }
+
+    if (currentSection) {
+      query.andWhere(`schoolYear.status = '${ESchoolYearStatus['En curso']}'`);
+      query.andWhere(`section.id = ${currentSection}`);
     }
 
     if (status) {
