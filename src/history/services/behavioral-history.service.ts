@@ -109,6 +109,7 @@ export class BehavioralHistoryService {
       roles.map(role => role.name).includes('Orientador');
     const studentAcademicData = await this.studentRepository.getStudentAcademicInformation(studentId);
     const studentBehavioralHistory = studentAcademicData.behavioralHistorys;
+    const currentYear = new Date().getFullYear();
     const dataToReturn = studentBehavioralHistory.map(behavioralHistory => ({
       ...behavioralHistory,
       authorId: behavioralHistory.sectionDetailId?.teacher.id,
@@ -116,6 +117,7 @@ export class BehavioralHistoryService {
       behavioralHistoryGrade: `${behavioralHistory.sectionDetailId?.gradeDetail.grade.name} (${behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.year})`,
       behavioralHistoryYear: behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.year,
       foulsAlert: getFoulsAlertState(behavioralHistory.foulSanctionAssignations),
+      editable: behavioralHistory.sectionDetailId?.gradeDetail.cycleDetail.schoolYear.year === currentYear,
       expedients: syncWithStudentExpedients(
         studentAcademicData.expedients,
         behavioralHistory.sectionDetailId?.gradeDetail.grade.name,
