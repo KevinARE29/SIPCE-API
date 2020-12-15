@@ -19,4 +19,7 @@ export class CompleteExpedient extends Expedient {
 
   @Expose()
   expedientGrade!: string;
+
+  @Expose()
+  editable!: boolean;
 }

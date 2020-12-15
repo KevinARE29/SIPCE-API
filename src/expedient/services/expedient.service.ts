@@ -57,6 +57,7 @@ export class ExpedientService {
   async findStudentExpedients(studentIdDto: StudentIdDto): Promise<StudentExpedientsResponse> {
     const { studentId } = studentIdDto;
     const studentExpedients = await this.expedientRepository.findStudentExpedients(studentId);
+    const currentYear = new Date().getFullYear();
     const expedientsToReturn = await Promise.all(
       studentExpedients.map(async expedient => ({
         ...expedient,
@@ -66,9 +67,9 @@ export class ExpedientService {
         ),
         evaluations: getExpedientEvaluations(expedient.sessions.filter(session => !session.deletedAt)),
         expedientGrade: `${expedient.gradeDetail.grade.name} (${expedient.gradeDetail.cycleDetail.schoolYear.year})`,
+        editable: expedient.gradeDetail.cycleDetail.schoolYear.year === currentYear && !expedient.finalConclusion,
       })),
     );
-    const currentYear = new Date().getFullYear();
     const initialExpedient: any = initialStudentExpedient;
     if (expedientsToReturn[0]) {
       if (
