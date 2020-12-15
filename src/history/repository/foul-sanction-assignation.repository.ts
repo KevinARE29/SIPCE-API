@@ -72,11 +72,11 @@ export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAs
       query.andWhere(`foul_sanction_assignation.issueDate <= '${issueDateEnd}'`);
     }
     if (createdStart) {
-      query.andWhere(`foul_sanction_assignation.issueDate >= '${issueDateStart}'`);
+      query.andWhere(`foul_sanction_assignation.createdAt >= '${createdStart}'`);
     }
 
     if (createdEnd) {
-      query.andWhere(`foul_sanction_assignation.issueDate <= '${issueDateEnd}'`);
+      query.andWhere(`foul_sanction_assignation.createdAt <= '${createdEnd}'`);
     }
 
     if (peridoId) {

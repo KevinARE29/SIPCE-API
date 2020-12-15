@@ -3,6 +3,8 @@ import { IsOptional, Validate, IsString, IsDateString } from 'class-validator';
 import { SortOptionsValidator } from '@core/validators/sort-options.validator';
 import { validator } from '@core/messages/validator.message';
 import { getSortOptionsv2 } from '@core/utils/sort.util';
+import { IsId } from '@core/decorators/id.decorator';
+import { Type } from 'class-transformer';
 
 export const [sortOptions, sortOptionsMap] = getSortOptionsv2(['annotationDate', 'title', 'reporterId'], 'class_diary');
 
@@ -25,6 +27,7 @@ export class AnnotationsFilterDto {
   readonly title?: string;
 
   @IsOptional()
-  @IsString({ message: validator.isString })
-  readonly reporter?: string;
+  @IsId()
+  @Type(() => Number)
+  readonly reporter?: number;
 }

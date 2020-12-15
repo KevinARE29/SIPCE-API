@@ -123,22 +123,14 @@ export class SessionService {
   }
 
   getSessionTypeValidation(createSessionDto: CreateSessionDto): boolean {
-    const {
-      sessionType,
-      participants,
-      treatedTopics,
-      agreements,
-      responsibles,
-      startHour,
-      interventionProgramId,
-    } = createSessionDto;
+    const { sessionType, participants, treatedTopics, agreements, responsibles, startHour } = createSessionDto;
     switch (sessionType) {
       case EnumSessionType.ENTREVISTA_DOCENTE:
         return !!participants?.length;
       case EnumSessionType.ENTREVISTA_PADRES_DE_FAMILIA:
         return !!(startHour && treatedTopics && agreements && responsibles?.length);
       default:
-        return !!interventionProgramId;
+        return true;
     }
   }
 
@@ -229,6 +221,8 @@ export class SessionService {
         interventionProgramId,
       );
       sessionToSave.interventionProgram = interventionProgram;
+    } else if (interventionProgramId === null) {
+      sessionToSave.interventionProgram = null;
     }
     const savedSession = await this.sessionRepository.save(sessionToSave);
     if (savedSession.sessionResponsibleAssistence && savedSession.sessionResponsibleAssistence.responsible1) {

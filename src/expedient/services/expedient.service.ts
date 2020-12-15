@@ -186,6 +186,7 @@ export class ExpedientService {
         session.evaluations = session.evaluations.filter(evaluation => !evaluation.deletedAt);
       }),
     );
+    expedient.sessions = expedient.sessions.filter(session => !session.draft);
     const expedientToReturn = {
       ...expedient,
       expedientCounselor: expedient.gradeDetail.counselor,

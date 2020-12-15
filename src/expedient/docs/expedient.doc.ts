@@ -32,4 +32,7 @@ export class Expedient {
   @Type(() => GradeDetail)
   @Expose()
   gradeDetail?: GradeDetail;
+
+  @Expose()
+  createdAt!: Date;
 }
