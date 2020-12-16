@@ -27,6 +27,9 @@ export class StudentBehavioralHistoryInformation {
   foulsAlert!: boolean;
 
   @Expose()
+  editable!: boolean;
+
+  @Expose()
   @Type(() => MinimalSyncedExpedientData)
   expedients!: MinimalSyncedExpedientData[];
 }
