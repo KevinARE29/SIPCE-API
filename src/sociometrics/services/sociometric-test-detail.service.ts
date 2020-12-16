@@ -29,7 +29,7 @@ export class SociometricTestDetailService {
     const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(sociometricTestId);
     if (sociometricTest.completed) {
       throw new UnprocessableEntityException(
-        'La prueba sociométrica especificada ha sido finalizada y no se puede actualizar sus respuestas',
+        'La prueba sociométrica especificada ha sido finalizada y no es posible actualizar sus respuestas',
       );
     }
     const { answersPerQuestion } = sociometricTest;
