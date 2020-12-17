@@ -5,6 +5,7 @@ import { EStudentStatus } from '@students/constants/student.constant';
 import { StudentSchoolYearProgressResponse } from '@students/docs/student-school-year-progress-response.doc';
 import { plainToClass } from 'class-transformer';
 import { StudentBehavioralHistory } from '@students/docs/student-behavioral-history.doc';
+import { expedientFinalConclusionAlert } from '@expedient/utils/expedient.util';
 
 @Injectable()
 export class StudentYearResumeService {
@@ -30,12 +31,17 @@ export class StudentYearResumeService {
       }
     });
     const formattedStudents = students
+      .filter(student => student.behavioralHistorys.length)
       .map(student => ({
         ...student,
         status: EStudentStatus[student.status],
         behavioralHistory: student.behavioralHistorys[0],
-      }))
-      .filter(student => student.behavioralHistory);
+        expedientAlert: expedientFinalConclusionAlert(
+          student.expedients,
+          student.behavioralHistorys[0].sectionDetailId?.gradeDetail.grade.name,
+          student.behavioralHistorys[0].sectionDetailId?.gradeDetail.cycleDetail.schoolYear.year,
+        ),
+      }));
     const progress = formattedStudents.length
       ? Math.round((completedBehavioralHistories / formattedStudents.length) * 100)
       : 0;
