@@ -1,10 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, Validate, IsDateString, IsString } from 'class-validator';
+import { IsOptional, Validate, IsDateString, IsString, IsEnum } from 'class-validator';
 import { SortOptionsValidator } from '@core/validators/sort-options.validator';
 import { getSortOptionsv2 } from '@core/utils/sort.util';
 import { validator } from '@core/messages/validator.message';
 import { IsId } from '@core/decorators/id.decorator';
 import { Type } from 'class-transformer';
+import { EnumFoulsType, foulsKeys } from '@fouls/constants/fouls.constants';
 
 export const [sortOptions, sortOptionsMap] = getSortOptionsv2(
   ['issueDate', 'createdAt', 'foulId.numeral', 'sanctionId.name'],
@@ -46,4 +47,8 @@ export class FoulSanctionAssignationFilterDto {
   @IsOptional()
   @IsString()
   readonly foulNumeral?: string;
+
+  @IsOptional()
+  @IsEnum(EnumFoulsType, { message: `foulType: Debe ser uno de los siguientes valores: ${foulsKeys}` })
+  readonly foulType?: EnumFoulsType;
 }
