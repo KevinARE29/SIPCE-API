@@ -13,5 +13,5 @@ export function expedientFinalConclusionAlert(
     .sort((a, b) => {
       return b.createdAt.getTime() - a.createdAt.getTime();
     });
-  return !filteredExpedients[0].finalConclusion;
+  return filteredExpedients.length ? !filteredExpedients[0].finalConclusion : false;
 }
