@@ -126,7 +126,7 @@ export class FoulSanctionAssignationService {
     const timeDiff = this.getTimeDiff(currentAssignation.createdAt);
     if (timeDiff) {
       throw new UnprocessableEntityException(
-        'No se puede eliminar esta asignación ya que han transcurrido más de 24 horas desde su registro',
+        'No se puede modificar esta asignación ya que han transcurrido más de 24 horas desde su registro',
       );
     }
 
@@ -140,12 +140,19 @@ export class FoulSanctionAssignationService {
     }
     if (sanctionIdAssignation) {
       currentAssignation.sanctionId = await this.sanctionsRepository.findByIdOrThrow(sanctionIdAssignation);
+    } else if (sanctionIdAssignation === null) {
+      currentAssignation.sanctionId = null;
     }
+
+    const newAssignation = {
+      ...currentAssignation,
+      ...updateFoulSanctionAssignationDto,
+    };
 
     return {
       data: plainToClass(
         FoulSanctionAssignationDoc,
-        await this.foulSanctionAssignationRepository.save(currentAssignation),
+        await this.foulSanctionAssignationRepository.save(newAssignation),
         {
           excludeExtraneousValues: true,
         },

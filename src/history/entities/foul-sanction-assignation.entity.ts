@@ -49,7 +49,7 @@ export class FoulSanctionAssignation {
     { nullable: true },
   )
   @JoinColumn({ name: 'sanction_id' })
-  sanctionId?: Sanction;
+  sanctionId?: Sanction | null;
 
   @ManyToOne(
     () => Foul,
