@@ -10,6 +10,7 @@ import { PresetResponse } from '@sociometrics/docs/preset-response.doc';
 import { Preset } from '@sociometrics/docs/preset.doc';
 import { UpdatePresetDto } from '@sociometrics/dtos/update-preset.dto';
 import { SociometricTestPresetIdDto } from '@sociometrics/dtos/sociometric-test-preset-ids.dto';
+import { ESociometricTestStatus } from '@sociometrics/constants/sociometric.constant';
 
 @Injectable()
 export class PresetService {
@@ -48,7 +49,10 @@ export class PresetService {
       sociometricTest,
       password,
     };
-    const preset = await this.presetRepository.save(presetToSave);
+    const [preset] = await Promise.all([
+      this.presetRepository.save(presetToSave),
+      this.sociometricTestRepository.save({ ...sociometricTest, status: ESociometricTestStatus.PROGRAMADA }),
+    ]);
     return { data: plainToClass(Preset, preset, { excludeExtraneousValues: true }) };
   }
 

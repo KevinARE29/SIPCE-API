@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { EQuestionType } from '@sociometrics/constants/sociometric.constant';
+import { EQuestionType, ESociometricTestStatus } from '@sociometrics/constants/sociometric.constant';
 import { SociometricTestDetailResponse } from '@sociometrics/docs/sociometric-test-detail-response.doc';
 import { SociometricTestDetail } from '@sociometrics/docs/sociometric-test-detail.doc';
 import { AnswerDto } from '@sociometrics/dtos/answer.dto';
@@ -27,6 +27,11 @@ export class SociometricTestDetailService {
     { questionId, studentIds, connotation }: AnswerDto,
   ): Promise<void> {
     const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(sociometricTestId);
+    if (sociometricTest.completed) {
+      throw new UnprocessableEntityException(
+        'La prueba sociométrica especificada ha sido finalizada y no es posible actualizar sus respuestas',
+      );
+    }
     const { answersPerQuestion } = sociometricTest;
     if (answersPerQuestion !== studentIds.length) {
       throw new BadRequestException(
@@ -92,6 +97,17 @@ export class SociometricTestDetailService {
       },
       ...sociometricTest
     } = sociometricTestDetail.sociometricTest;
+
+    if (
+      sociometricTest.status === ESociometricTestStatus.CREADA ||
+      sociometricTest.status === ESociometricTestStatus.PROGRAMADA
+    ) {
+      await this.sociometricTestRepository.save({
+        ...sociometricTestDetail.sociometricTest,
+        status: ESociometricTestStatus['EN CURSO'],
+      });
+    }
+
     return {
       data: plainToClass(
         SociometricTestDetail,
@@ -121,5 +137,16 @@ export class SociometricTestDetailService {
       );
     }
     await this.sociometricTestDetailRepository.save({ ...sociometricTestDetail, finished: true });
+
+    const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(sociometricTestId);
+    const totalStudents = sociometricTest.sectionDetail.students.length;
+    const finishedStudents = sociometricTest.sociometricTestDetails.filter(sDetail => sDetail.finished).length;
+    if (sociometricTest.status !== ESociometricTestStatus.FINALIZADA && finishedStudents >= totalStudents) {
+      await this.sociometricTestRepository.save({
+        ...sociometricTest,
+        completed: true,
+        status: ESociometricTestStatus.FINALIZADA,
+      });
+    }
   }
 }
