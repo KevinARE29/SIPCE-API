@@ -6,4 +6,7 @@ export class StudentBehavioralHistory extends Student {
   @Expose()
   @Type(() => BehavioralHistory)
   behavioralHistory!: BehavioralHistory;
+
+  @Expose()
+  expedientAlert!: boolean;
 }

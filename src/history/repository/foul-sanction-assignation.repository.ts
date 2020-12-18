@@ -4,6 +4,7 @@ import { NotFoundException } from '@nestjs/common';
 import { PageDto } from '@core/dtos/page.dto';
 import { FoulSanctionAssignationFilterDto, sortOptionsMap } from '@history/dtos/foul-sanction-assignation-filter.dto';
 import { getOrderBy } from '@core/utils/sort.util';
+import { EnumFoulsType } from '@fouls/constants/fouls.constants';
 import { FoulSanctionAssignation } from '../entities/foul-sanction-assignation.entity';
 @EntityRepository(FoulSanctionAssignation)
 export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAssignation> {
@@ -45,6 +46,7 @@ export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAs
       peridoId,
       foulId,
       foulNumeral,
+      foulType,
     } = foulSanctionAssignationFilterDto;
     const { historyId } = studentHistoryIdsDto;
     const query = this.createQueryBuilder('foul_sanction_assignation')
@@ -89,6 +91,10 @@ export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAs
 
     if (foulNumeral) {
       query.andWhere(`foulId.numeral ILIKE '%${foulNumeral}%'`);
+    }
+
+    if (foulType) {
+      query.andWhere(`foulId.foulsType = '${EnumFoulsType[foulType]}'`);
     }
 
     return query.getManyAndCount();
