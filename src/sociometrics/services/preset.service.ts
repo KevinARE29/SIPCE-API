@@ -77,13 +77,20 @@ export class PresetService {
 
   async deleteSociometricTestPreset(sociometricTestPresetIdDto: SociometricTestPresetIdDto): Promise<void> {
     const savedPreset = await this.presetRepository.findPresetOrFail(sociometricTestPresetIdDto);
+    const sociometricTest = await this.sociometricTestRepository.findByIdOrThrow(
+      sociometricTestPresetIdDto.sociometricTestId,
+    );
     const currentDate = new Date();
     if (currentDate > savedPreset.endedAt) {
       throw new UnprocessableEntityException(
         'La prueba no puede eliminarse, ya que ha finalizado el periodo asignado inicialmente',
       );
     }
+    const activePresets = sociometricTest.presets.filter(preset => !preset.deletedAt);
     savedPreset.deletedAt = new Date();
     this.presetRepository.save(savedPreset);
+    if (activePresets.length === 1) {
+      this.sociometricTestRepository.save({ ...sociometricTest, status: ESociometricTestStatus.CREADA });
+    }
   }
 }
