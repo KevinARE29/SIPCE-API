@@ -6,6 +6,9 @@ export class StudentSchoolYearProgress {
   progress!: number;
 
   @Expose()
+  closedSection!: boolean | undefined;
+
+  @Expose()
   @Type(() => StudentBehavioralHistory)
   students!: StudentBehavioralHistory[];
 }

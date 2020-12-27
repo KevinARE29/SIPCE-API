@@ -45,10 +45,15 @@ export class StudentYearResumeService {
     const progress = formattedStudents.length
       ? Math.round((completedBehavioralHistories / formattedStudents.length) * 100)
       : 0;
+    let closedSection;
+    if (studentYearResumeFilterDto.currentGrade && formattedStudents.length) {
+      closedSection = formattedStudents[0].behavioralHistorys[0].sectionDetailId?.closed;
+    }
     return {
       data: {
         students: plainToClass(StudentBehavioralHistory, formattedStudents, { excludeExtraneousValues: true }),
         progress,
+        closedSection,
       },
     };
   }
