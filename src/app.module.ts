@@ -64,6 +64,7 @@ import { HistoryModule } from '@history/history.module';
         TYPEORM_MIGRATIONS_DIR: Joi.string().default('migrations'),
         TYPEORM_MIGRATIONS_RUN: Joi.boolean().default(true),
         TYPEORM_LOGGING: Joi.string().default('error'),
+        TYPEORM_SEEDING_SEEDS: Joi.string().default('dist/db/seeds/*.js'),
         REDIS_HOST: Joi.string().default('localhost'),
         REDIS_PORT: Joi.number().default(6379),
         EMAIL_USER: Joi.string().required(),
