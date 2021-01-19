@@ -21,6 +21,8 @@ export class PresetRepository extends Repository<Preset> {
       .leftJoinAndSelect('preset.sociometricTest', 'sociometricTest')
       .leftJoinAndSelect('sociometricTest.sectionDetail', 'sectionDetail')
       .leftJoinAndSelect('sectionDetail.students', 'student')
+      .leftJoinAndSelect('student.images', 'image')
+      .leftJoinAndSelect('image.grade', 'grade')
       .andWhere(`"preset"."password" = '${password}'`)
       .andWhere('preset.deletedAt is null');
     const preset = await query.getOne();
