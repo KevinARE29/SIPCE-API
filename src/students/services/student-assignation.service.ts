@@ -53,13 +53,13 @@ export class StudentAssignationService {
       const mappedStudent: StudentsAssignation = {
         ...student,
         status: EStudentStatus[student.status],
-        section: student.sectionDetails[0]?.section,
+        section: student.sectionDetails.slice(-1)[0]?.section,
       };
 
-      const studentSchoolYearAssignation = student.sectionDetails[0]?.gradeDetail.cycleDetail.schoolYear;
+      const studentSchoolYearAssignation = student.sectionDetails.slice(-1)[0]?.gradeDetail.cycleDetail.schoolYear;
       if (!student.sectionDetails.length || studentSchoolYearAssignation?.id !== currentAssignation.id) {
         studentsWithoutAssignation.push(mappedStudent);
-      } else if (student.sectionDetails[0].teacher.id !== userId) {
+      } else if (student.sectionDetails.slice(-1)[0].teacher?.id !== userId) {
         assignedStudents.push(mappedStudent);
       } else {
         myStudents.push(mappedStudent);
