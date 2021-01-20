@@ -2,6 +2,7 @@ export enum EnumInterventionProgramType {
   INDIVIDUAL_ACADEMICO = 'Individual académico',
   INDIVIDUAL_CONDUCTUAL = 'Individual conductual',
   INDIVIDUAL_EMOCIONAL = 'Individual emocional',
+  VOCACIONAL = 'Individual vocacional',
   INDIVIDUAL_MIXTO = 'Individual mixto',
   GRUPALES = 'Grupales',
 }
