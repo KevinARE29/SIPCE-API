@@ -46,7 +46,7 @@ export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAs
       peridoId,
       foulId,
       foulNumeral,
-      foulType,
+      foulsType,
     } = foulSanctionAssignationFilterDto;
     const { historyId } = studentHistoryIdsDto;
     const query = this.createQueryBuilder('foul_sanction_assignation')
@@ -93,8 +93,8 @@ export class FoulSanctionAssignationRepository extends Repository<FoulSanctionAs
       query.andWhere(`foulId.numeral ILIKE '%${foulNumeral}%'`);
     }
 
-    if (foulType) {
-      query.andWhere(`foulId.foulsType = '${EnumFoulsType[foulType]}'`);
+    if (foulsType) {
+      query.andWhere(`foulId.foulsType = '${EnumFoulsType[foulsType]}'`);
     }
 
     return query.getManyAndCount();
