@@ -49,6 +49,6 @@ export class FoulSanctionAssignationFilterDto {
   readonly foulNumeral?: string;
 
   @IsOptional()
-  @IsEnum(EnumFoulsType, { message: `foulType: Debe ser uno de los siguientes valores: ${foulsKeys}` })
-  readonly foulType?: EnumFoulsType;
+  @IsEnum(EnumFoulsType, { message: `foulsType: Debe ser uno de los siguientes valores: ${foulsKeys}` })
+  readonly foulsType?: EnumFoulsType;
 }
