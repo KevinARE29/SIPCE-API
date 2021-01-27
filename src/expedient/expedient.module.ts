@@ -16,6 +16,7 @@ import { InterventionProgramController } from '@expedient/controllers/interventi
 import { InterventionProgramService } from '@expedient/services/intervention-program.service';
 import { UserRepository } from '@users/repositories/users.repository';
 import { ResponsibleService } from '@students/services';
+import { SchoolYearRepository } from '@academics/repositories';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ResponsibleService } from '@students/services';
       InterventionProgramRepository,
       UserRepository,
       ResponsibleStudentRepository,
+      SchoolYearRepository,
     ]),
   ],
   providers: [
