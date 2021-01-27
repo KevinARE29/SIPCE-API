@@ -11,6 +11,7 @@ import { BehavioralHistoryResponse } from '@history/docs/behavioral-history-resp
 import { StudentIdDto } from '@students/dtos/student-id.dto';
 import { StudentBehavioralHistoryInformationFiltersDto } from '@history/dtos/student-behavioral-history-information-filters.dto';
 import { StudentBehavioralHistoryInformationResponse } from '@history/docs/student-behavioral-history-information-response.doc';
+import { SchoolYear } from '@academics/decorators/school-year.decorator';
 
 @ApiTags('Behavioral History Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -23,6 +24,7 @@ export class BehavioralHistoryController {
     description: 'Use este endpoint para obtener los historiales académicos y conductuales de un estudiante',
   })
   @Auth('retrieve_students_behavioral_history')
+  @SchoolYear(true)
   @Get()
   getStudentBehavioralHistories(
     @Param() studentIdDto: StudentIdDto,

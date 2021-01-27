@@ -17,6 +17,7 @@ import { StudentExpedientsResponse } from '@expedient/docs/student-expedients-re
 import { CreateExpedientDto } from '@expedient/dtos/create-expedient.dto';
 import { StudentExpedientResponse } from '@expedient/docs/student-expedient-response.doc';
 import { UpdateExpedientDto } from '@expedient/dtos/update-expedient.dto';
+import { SchoolYear } from '@academics/decorators/school-year.decorator';
 
 @ApiTags('Expedients Endpoints')
 @UseGuards(ContentTypeGuard)
@@ -29,6 +30,7 @@ export class ExpedientController {
     description: 'Use este endpoint para consultar los expedientes de un estudiante',
   })
   @Auth('manage_expedient')
+  @SchoolYear(true)
   @Get(':studentId/expedients')
   getStudentExpedients(@Param() studentIdDto: StudentIdDto): Promise<StudentExpedientsResponse> {
     return this.expedientService.findStudentExpedients(studentIdDto);
