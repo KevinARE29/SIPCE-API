@@ -9,6 +9,7 @@ import { Image } from '@core/docs/image.doc';
 import { StudentRepository } from '@students/repositories/student.repository';
 import { GradeRepository } from '@academics/repositories/grade.repository';
 import { ImageRepository } from '@students/repositories/image.repository';
+import { plainToClass } from 'class-transformer';
 
 const streamifier = require('streamifier');
 
@@ -84,7 +85,7 @@ export class StudentImageService {
           grade,
           path: uploadedImagePath,
         });
-    return this.getImage(image.path);
+    return plainToClass(Image, image, { excludeExtraneousValues: true });
   }
 
   async uploadImage(filePath: string, imageFile: Express.Multer.File): Promise<string> {
@@ -96,34 +97,8 @@ export class StudentImageService {
     return this.saveImageOnLocalFolder(filePath, imageFile);
   }
 
-  getImageBase64(imagePath: string): string {
-    const ext = imagePath.split('.').slice(-1)[0];
-    const imageAsBase64 = fs.readFileSync(imagePath, 'base64');
-    const image = `data:image/${ext};base64, ${imageAsBase64}`;
-    return image;
-  }
-
-  getImage(imagePath: string): Image {
-    const cloudinaryEnvs = this.configService.get('CLOUDINARY_ENVS').split(',');
-    const env = this.configService.get<string>('NODE_ENV');
-    if (cloudinaryEnvs.includes(env)) {
-      return { path: imagePath };
-    }
-    return { path: this.getImageBase64(imagePath) };
-  }
-
   async getStudentImages(studentId: number): Promise<Image[]> {
     const student = await this.studentRepository.findByIdOrFail(studentId);
-    const images = await this.imageRepository.find({ where: { student } });
-    const cloudinaryEnvs = this.configService.get('CLOUDINARY_ENVS').split(',');
-    const env = this.configService.get<string>('NODE_ENV');
-    if (cloudinaryEnvs.includes(env)) {
-      return images;
-    }
-
-    return images.map(image => ({
-      ...image,
-      path: this.getImageBase64(image.path),
-    }));
+    return this.imageRepository.find({ where: { student } });
   }
 }

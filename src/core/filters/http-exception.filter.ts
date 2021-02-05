@@ -17,7 +17,7 @@ import { IExceptionResponse, ITypeOrmQueryFailed } from '../interfaces/exception
 export class AllExceptionsFilter implements ExceptionFilter {
   constructor(private readonly logService: LogService) {}
 
-  catch(exception: any, host: ArgumentsHost): void {
+  async catch(exception: any, host: ArgumentsHost): Promise<void> {
     const context = host.switchToHttp();
     const res = context.getResponse();
     const req = context.getRequest<Request>();
@@ -56,8 +56,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       error = 'Internal Server Error';
     }
 
-    this.logService.logAccess(context, statusCode);
-    this.logService.logAction(context, statusCode);
+    await Promise.all([this.logService.logAccess(context, statusCode), this.logService.logAction(context, statusCode)]);
 
     res.status(statusCode).json({ statusCode, error, message });
   }

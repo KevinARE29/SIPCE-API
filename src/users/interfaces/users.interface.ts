@@ -1,6 +1,6 @@
 export interface IAuthenticatedUser {
   id: number;
-  username: string;
+  sub: string;
   email: string;
   permissions: number[];
 }

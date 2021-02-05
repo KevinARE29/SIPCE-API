@@ -1,6 +1,8 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StudentModule } from '@students/students.module';
+import { BehavioralHistoryRepository } from '@history/repository/behavioral-history.repository';
+import { SessionRepository } from '@expedient/repositories/session.repository';
 import {
   SectionController,
   CycleController,
@@ -9,6 +11,7 @@ import {
   ShiftController,
   SchoolYearController,
   CloseSchoolYearController,
+  SectionDetailController,
 } from './controllers';
 import {
   ShiftRepository,
@@ -29,6 +32,8 @@ import {
   ShiftService,
   SchoolYearService,
   CloseSchoolYearService,
+  AssignationService,
+  SectionDetailService,
 } from './services';
 
 @Module({
@@ -43,6 +48,8 @@ import {
       SectionRepository,
       PeriodRepository,
       SchoolYearRepository,
+      BehavioralHistoryRepository,
+      SessionRepository,
     ]),
     forwardRef(() => StudentModule),
   ],
@@ -54,8 +61,10 @@ import {
     ShiftController,
     SchoolYearController,
     CloseSchoolYearController,
+    SectionDetailController,
   ],
   providers: [
+    AssignationService,
     SectionService,
     CycleService,
     GradeService,
@@ -63,7 +72,8 @@ import {
     ShiftService,
     SchoolYearService,
     CloseSchoolYearService,
+    SectionDetailService,
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, AssignationService, SectionDetailService],
 })
 export class AcademicsModule {}

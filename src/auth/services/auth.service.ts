@@ -51,7 +51,7 @@ export class AuthService {
       const permissions = [...new Set(permissionIds)];
       const authenticatedUser = {
         id: user.id,
-        username: user.username,
+        sub: user.username,
         email: user.email,
         permissions,
       };
@@ -61,7 +61,7 @@ export class AuthService {
   }
 
   async login(user: IAuthenticatedUser): Promise<TokenResponse> {
-    const payload = { id: user.id, sub: user.username, email: user.email, permissions: user.permissions };
+    const payload = { id: user.id, sub: user.sub, email: user.email, permissions: user.permissions };
     const tokens = this.tokensService.getTokens(payload);
     const { accessToken, refreshToken, exp } = tokens.data;
     await this.tokenRepository.save({ user: { id: user.id }, accessToken, refreshToken, exp });
@@ -110,12 +110,7 @@ export class AuthService {
   }
 
   async forgotPsw(email: string): Promise<void> {
-    const from = this.configService.get<string>('EMAIL_USER');
-    const templateId = this.configService.get<string>('RESET_PSW_SENDGRID_TEMPLATE_ID');
     const frontUrl = this.configService.get<string>('FRONT_URL');
-    if (!(from && templateId && frontUrl)) {
-      throw new InternalServerErrorException('Error en la configuración de Emails');
-    }
 
     const user = await this.usersService.findByEmail(email);
     if (!user) {
@@ -125,10 +120,10 @@ export class AuthService {
     await this.userRepository.save({ ...user, resetPasswordToken });
 
     const emailToSend = {
-      from,
       to: email,
-      templateId,
-      dynamicTemplateData: {
+      template: 'reset-password',
+      subject: 'Solicitud de restablecimiento de contraseña',
+      context: {
         name: `${user.firstname} ${user.lastname}`,
         url: `${frontUrl}/reset-psw?resetPasswordToken=${resetPasswordToken}`,
       },

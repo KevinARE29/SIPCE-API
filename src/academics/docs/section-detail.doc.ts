@@ -12,5 +12,12 @@ export class SectionDetail {
 
   @Expose()
   @Type(() => BaseUser)
+  auxTeachers!: BaseUser[];
+
+  @Expose()
+  @Type(() => BaseUser)
   teacher!: BaseUser;
+
+  @Expose()
+  closed!: boolean;
 }

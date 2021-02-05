@@ -6,11 +6,19 @@ import { ActionLogInterceptor } from '@logs/interceptors/action-log.interceptor'
 import { ConfigService } from '@nestjs/config';
 import { LogService } from '@logs/services/log.service';
 import { urlencoded, json } from 'express';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import {
+  initializeTransactionalContext,
+  patchTypeORMRepositoryWithBaseRepository,
+} from 'typeorm-transactional-cls-hooked';
 import { AllExceptionsFilter } from './core/filters/http-exception.filter';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  initializeTransactionalContext();
+  patchTypeORMRepositoryWithBaseRepository();
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(helmet());
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
@@ -28,6 +36,7 @@ async function bootstrap() {
   const apiPrefix = configService.get('API_PREFIX') || 'api/v1';
 
   const logService = app.get(LogService);
+  app.useStaticAssets(join(__dirname, '..'));
   app.useGlobalFilters(new AllExceptionsFilter(logService));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, validationError: { target: false } }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)), new ActionLogInterceptor(logService));

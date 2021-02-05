@@ -1,7 +1,7 @@
 import { IsArray, IsOptional, IsEnum, IsNotEmptyObject } from 'class-validator';
 import { validator } from '@core/messages/validator.message';
 import { ApiProperty } from '@nestjs/swagger';
-import { EnumEventType, schedulesKeys, TSchedule } from '@schedules/constants/schedule.costants';
+import { EnumEventType, schedulesKeys, TSchedule } from '@schedules/constants/schedule.constants';
 import { IsId } from '@core/decorators/id.decorator';
 
 export class CreateScheduleDto {

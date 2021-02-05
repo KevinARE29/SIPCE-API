@@ -25,40 +25,43 @@ API para el Sistema Informático para el control y seguimiento del historial con
 
 <center>
 
-| Environment Variable Key         | Environment Variable Value                                                   |
-| -------------------------------- | ---------------------------------------------------------------------------- |
-| PORT                             | 3000                                                                         |
-| API_URL                          | [The API URL]                                                                |
-| FRONT_URL                        | [The Frontend URL]                                                           |
-| JWT_SECRET_ACCESS_TOKEN          | [Your JWT_SECRET_ACCESS_TOKEN]                                               |
-| JWT_SECRET_REFRESH_TOKEN         | [Your JWT_SECRET_REFRESH_TOKEN]                                              |
-| JWT_SECRET_PASSWORD_RESET        | [Your JWT_SECRET_PASSWORD_RESET]                                             |
-| ACCESS_TOKEN_EXPIRATION          | [Your ACCESS_TOKEN_EXPIRATION]                                               |
-| REFRESH_TOKEN_EXPIRATION         | [Your REFRESH_TOKEN_EXPIRATION]                                              |
-| PASSWORD_RESET_EXPIRATION        | [Your PASSWORD_RESET_EXPIRATION]                                             |
-| TYPEORM_CONNECTION               | postgres                                                                     |
-| TYPEORM_HOST                     | ['db' for start with docker-compose or 'localhost' for start without docker] |
-| TYPEORM_USERNAME                 | [YOUR DB USERNAME]                                                           |
-| TYPEORM_PASSWORD                 | [YOUR DB PASSWORD]                                                           |
-| TYPEORM_DATABASE                 | [DATABASE NAME]                                                              |
-| TYPEORM_PORT                     | 5432                                                                         |
-| TYPEORM_SYNCHRONIZE              | false                                                                        |
-| TYPEORM_ENTITIES                 | src/**/entities/\*.js,dist/**/entities/\*.js                                 |
-| TYPEORM_MIGRATIONS_TABLE_NAME    | migration                                                                    |
-| TYPEORM_MIGRATIONS               | migrations/\*.js, dist/migrations/\_.js                                      |
-| TYPEORM_MIGRATIONS_DIR           | migrations                                                                   |
-| TYPEORM_MIGRATIONS_RUN           | true                                                                         |
-| TYPEORM_LOGGING                  | error                                                                        |
-| SENDGRID_API_KEY                 | [The Sendgrid API Key]                                                       |
-| RESET_PSW_SENDGRID_TEMPLATE_ID   | [Template ID for Reset Password]                                             |
-| GENERATE_CREDENTIALS_TEMPLATE_ID | [Template ID for Generate User Credentials]                                  |
-| EMAIL_USER                       | [The no reply email]                                                         |
-| CLOUDINARY_CLOUD_NAME            | [The Cloudinary Cloud Name]                                                  |
-| CLOUDINARY_API_KEY               | [The Cloudinary API KEY]                                                     |
-| CLOUDINARY_API_SECRET            | [The Cloudinary API SECRET]                                                  |
-| CLOUDINARY_ENVS                  | [dev, uat]                                                                   |
-| FILE_EXTENSION_WHITE_LIST        | jpg,jpeg,png,svg                                                             |
-| FILE_SIZE_LIMIT_IN_BYTES         | 5242880                                                                      |
+| Environment Variable Key      | Environment Variable Value                                                   |
+| ----------------------------- | ---------------------------------------------------------------------------- |
+| PORT                          | 3000                                                                         |
+| API_URL                       | [The API URL]                                                                |
+| FRONT_URL                     | [The Frontend URL]                                                           |
+| JWT_SECRET_ACCESS_TOKEN       | [Your JWT_SECRET_ACCESS_TOKEN]                                               |
+| JWT_SECRET_REFRESH_TOKEN      | [Your JWT_SECRET_REFRESH_TOKEN]                                              |
+| JWT_SECRET_PASSWORD_RESET     | [Your JWT_SECRET_PASSWORD_RESET]                                             |
+| JWT_SECRET_REPORT             | [Your JWT_SECRET_REPORT]                                                     |
+| ACCESS_TOKEN_EXPIRATION       | [Your ACCESS_TOKEN_EXPIRATION]                                               |
+| REFRESH_TOKEN_EXPIRATION      | [Your REFRESH_TOKEN_EXPIRATION]                                              |
+| PASSWORD_RESET_EXPIRATION     | [Your PASSWORD_RESET_EXPIRATION]                                             |
+| TYPEORM_CONNECTION            | postgres                                                                     |
+| TYPEORM_HOST                  | ['db' for start with docker-compose or 'localhost' for start without docker] |
+| TYPEORM_USERNAME              | [YOUR DB USERNAME]                                                           |
+| TYPEORM_PASSWORD              | [YOUR DB PASSWORD]                                                           |
+| TYPEORM_DATABASE              | [DATABASE NAME]                                                              |
+| TYPEORM_PORT                  | 5432                                                                         |
+| TYPEORM_SYNCHRONIZE           | false                                                                        |
+| TYPEORM_ENTITIES              | src/**/entities/\*.js,dist/**/entities/\*.js                                 |
+| TYPEORM_MIGRATIONS_TABLE_NAME | migration                                                                    |
+| TYPEORM_MIGRATIONS            | migrations/\*.js, dist/migrations/\_.js                                      |
+| TYPEORM_MIGRATIONS_DIR        | migrations                                                                   |
+| TYPEORM_MIGRATIONS_RUN        | true                                                                         |
+| TYPEORM_LOGGING               | error                                                                        |
+| TYPEORM_SEEDING_SEEDS         | dist/db/seeds/\*.js                                                          |
+| REDIS_HOST                    | [Redis host]                                                                 |
+| REDIS_PORT                    | [Redis port]                                                                 |
+| REDIS_PASSWORD                | [Redis password]                                                             |
+| EMAIL_USER                    | [Your Gmail User]                                                            |
+| EMAIL_PSW                     | [Your Gmail Password]                                                        |
+| CLOUDINARY_CLOUD_NAME         | [The Cloudinary Cloud Name]                                                  |
+| CLOUDINARY_API_KEY            | [The Cloudinary API KEY]                                                     |
+| CLOUDINARY_API_SECRET         | [The Cloudinary API SECRET]                                                  |
+| CLOUDINARY_ENVS               | [dev, uat]                                                                   |
+| FILE_EXTENSION_WHITE_LIST     | jpg,jpeg,png,svg                                                             |
+| FILE_SIZE_LIMIT_IN_BYTES      | 5242880                                                                      |
 
 </center>
 
@@ -80,6 +83,12 @@ API para el Sistema Informático para el control y seguimiento del historial con
 
 2. Execute the test coverage script:
    > \$ npm run test:cov
+
+## Seeder
+
+1. Execute all seeders:
+
+   > \$ npm run seed:run
 
 ## API Documentation
 

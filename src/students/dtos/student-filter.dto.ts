@@ -7,7 +7,7 @@ import { getSortOptions, getSortOptionsMap } from '@core/utils/sort.util';
 import { EStudentStatus, statusKeys, TStatus } from '@students/constants/student.constant';
 import { IsId } from '@core/decorators/id.decorator';
 
-const sortOptions = getSortOptions('code', 'firstname', 'lastname', 'email', 'status', 'currentGrade');
+const sortOptions = getSortOptions('code', 'firstname', 'lastname', 'email', 'status', 'currentGrade', 'currentShift');
 export const sortOptionsMap = getSortOptionsMap('student', sortOptions);
 
 export class StudentFilterDto {
@@ -37,6 +37,16 @@ export class StudentFilterDto {
   @Type(() => Number)
   readonly currentGrade?: number;
 
+  @IsOptional()
+  @IsId()
+  @Type(() => Number)
+  readonly currentShift?: number;
+
+  @IsOptional()
+  @IsId()
+  @Type(() => Number)
+  readonly currentSection?: number;
+
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @IsEnum(EStudentStatus, {
@@ -48,4 +58,8 @@ export class StudentFilterDto {
   @IsOptional()
   @IsIn(['true', 'false'], { message: validator.isIn })
   readonly active?: string;
+
+  @IsOptional()
+  @IsIn(['false'], { message: validator.isIn })
+  readonly paginate?: string;
 }

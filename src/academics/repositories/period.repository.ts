@@ -33,7 +33,7 @@ export class PeriodRepository extends Repository<Period> {
   }
 
   async getPeriodByIdOrThrow(periodId: number): Promise<Period> {
-    const period = await this.findOne(periodId);
+    const period = await this.findOne(periodId, { where: { active: true } });
     if (!period) {
       throw new NotFoundException('Periodo no encontrado');
     }

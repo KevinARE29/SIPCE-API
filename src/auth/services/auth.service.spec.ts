@@ -93,7 +93,7 @@ describe('Auth Service', () => {
     it('Should login an user', async () => {
       (tokenRepository.save as jest.Mock).mockResolvedValue(null);
       expect(tokenRepository.save).not.toHaveBeenCalled();
-      const result = await authService.login({ id: 1, username: 'user', email: 'user@email.com', permissions: [] });
+      const result = await authService.login({ id: 1, sub: 'user', email: 'user@email.com', permissions: [] });
       expect(result).toEqual({ data: mockTokens });
       expect(tokenRepository.save).toHaveBeenCalled();
     });

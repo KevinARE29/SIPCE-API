@@ -1,6 +1,6 @@
 export interface IEmail {
-  to: string;
-  from: string;
-  templateId: string;
-  dynamicTemplateData: object;
+  to: string | string[];
+  template: string;
+  subject: string;
+  context: object;
 }

@@ -1,0 +1,80 @@
+doctype html
+head
+  // Required meta tags
+  meta(charset='utf-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
+  // Bootstrap CSS
+  style(type='text/css').
+    ul {
+    padding: 0;
+    }
+    .list-group-flush>.list-group-item {
+    border-width: 0 0 1px;
+    }
+    .list-group-item {
+    position: relative;
+    display: block;
+    padding: .75rem 1.25rem;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.125);
+    }
+.card(style='margin: 0 auto; max-width: 600px; border: 1px solid rgba(0,0,0,.125);\
+border-radius: .25rem;')
+  .card-header(style='text-align: center; padding: .75rem 1.25rem;\
+  margin-bottom: 0;\
+  background-color: rgba(0,0,0,.03);\
+  border-bottom: 1px solid rgba(0,0,0,.125); border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;')
+    h3 #{subject}
+  .row.no-gutters(style='display: flex; box-sizing: border-box')
+    .col-md-2.col-4
+      img(src=`${apiUrl}/img/${calendarImgPath}` alt='calendar' style='padding: 1em; max-width: 150px;')
+    .col-md-10.col-12
+      .card-body(style='flex: 1 1 auto;\
+      min-height: 1px;\
+      padding: 1.25rem;\
+      padding-bottom: 0;')
+        h4.card-title #{jsonData.Subject}
+        if jsonData.Description
+          p.card-text
+            | #{jsonData.Description}
+      ul.list-group.list-group-flush(style='')
+        li.list-group-item
+          b
+            img(src=`${apiUrl}/img/calendar-plus-solid.png` style='height: 1em;')
+            |                         Fecha Inicio:
+          |                      #{jsonData.StartTime}
+        li.list-group-item
+          b
+            img(src=`${apiUrl}/img/calendar-minus-solid.png` style='height: 1em;')
+            |                         Fecha Fin:
+          |                      #{jsonData.EndTime}
+        
+        if jsonData.Location 
+          li.list-group-item
+            b
+              img(src=`${apiUrl}/img/marcador-de-posicion.png` style='height: 1em;')
+              |                         Lugar:
+            |                      #{jsonData.Location}
+        li.list-group-item
+          b
+            img(src=`${apiUrl}/img/usuarios.png` style='height: 1em;')
+            |                         Participantes:
+          ul(style='padding-inline-start: 40px;')
+            each participant in participants
+              li= participant.firstname + ' ' + participant.lastname  
+        if seriesData
+          li.list-group-item
+            b
+              img(src=`${apiUrl}/img/recurrent-event.png` style='height: 1em;')
+              |                         Evento repetitivo:
+            ul(style='padding-inline-start: 40px;')
+              each serie in seriesData
+                li= serie
+        if recurrenceExceptions
+          li.list-group-item
+            b
+              img(src=`${apiUrl}/img/recurrence-exception.png` style='height: 1em;')
+              |                Fechas canceladas en la serie de eventos:
+            ul(style='padding-inline-start: 40px;')
+              each exception in recurrenceExceptions
+                li= exception

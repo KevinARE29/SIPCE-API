@@ -7,6 +7,7 @@ import {
   ResponsibleController,
   StudentImageController,
   StudentAssignationController,
+  StudentYearResumeController,
 } from './controllers';
 import {
   StudentService,
@@ -14,6 +15,7 @@ import {
   ResponsibleService,
   StudentImageService,
   StudentAssignationService,
+  StudentYearResumeService,
 } from './services';
 import {
   StudentRepository,
@@ -21,6 +23,7 @@ import {
   ResponsibleStudentRepository,
   ImageRepository,
 } from './repositories';
+import { ImageSubscriber } from './subscribers/image.subscriber';
 
 @Module({
   imports: [
@@ -33,8 +36,17 @@ import {
     ResponsibleController,
     StudentImageController,
     StudentAssignationController,
+    StudentYearResumeController,
   ],
-  providers: [StudentService, StudentBulkService, ResponsibleService, StudentImageService, StudentAssignationService],
-  exports: [TypeOrmModule],
+  providers: [
+    StudentService,
+    StudentBulkService,
+    ResponsibleService,
+    StudentImageService,
+    StudentAssignationService,
+    ImageSubscriber,
+    StudentYearResumeService,
+  ],
+  exports: [TypeOrmModule, StudentService],
 })
 export class StudentModule {}

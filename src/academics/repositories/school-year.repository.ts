@@ -16,6 +16,7 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
       gradeId,
       sectionId,
       teacherId,
+      auxTeacherId,
       counselorId,
       cycleCoordinatorId,
       status,
@@ -44,6 +45,7 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
         'sectionDetail',
         'sectionDetail.gradeDetail = gradeDetail.id',
       )
+      .leftJoinAndSelect('sectionDetail.auxTeachers', 'auxTeachers')
       .leftJoinAndSelect('sectionDetail.section', 'section')
       .leftJoinAndSelect('sectionDetail.teacher', 'teacher')
       .leftJoinAndSelect('sectionDetail.students', 'student');
@@ -62,6 +64,11 @@ export class SchoolYearRepository extends Repository<SchoolYear> {
     }
     if (teacherId) {
       query.andWhere(`"teacher"."id" = ${teacherId}`);
+    }
+    if (auxTeacherId) {
+      query.andWhere(`"auxTeachers"."id" IN (:...auxTeacherId)`, {
+        auxTeacherId: [null, auxTeacherId],
+      });
     }
     if (counselorId) {
       query.andWhere(`"counselor"."id" = ${counselorId}`);

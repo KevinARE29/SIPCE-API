@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+/* eslint-disable no-console */
+import { Injectable } from '@nestjs/common';
 import { AccessLogsResponse } from '@logs/docs/access-logs-response.doc';
 import { AccessLogRepository } from '@logs/repositories/access-log.repository';
 import { PageDto } from '@core/dtos/page.dto';
@@ -23,45 +24,50 @@ export class LogService {
   ) {}
 
   async logAccess(context: HttpArgumentsHost, code?: number): Promise<void> {
-    const apiPrefix = this.configService.get('API_PREFIX') || 'api/v1';
-    const {
-      url,
-      headers,
-      body: { username },
-    } = context.getRequest();
-
-    if (url !== `/${apiPrefix}/auth/login`) {
-      return;
-    }
-
-    const statusCode = code || context.getResponse().statusCode;
-    const ip = headers['x-forwarded-for']?.split(',')[0];
     try {
+      const apiPrefix = this.configService.get('API_PREFIX') || 'api/v1';
+      const {
+        url,
+        headers,
+        body: { username },
+      } = context.getRequest();
+
+      if (url !== `/${apiPrefix}/auth/login`) {
+        return;
+      }
+
+      const statusCode = code || context.getResponse().statusCode;
+      const ip = headers['x-forwarded-for']?.split(',')[0];
       await this.accessLogRepository.save({ username, ip, statusCode });
-    } catch {
-      Logger.log('Error while creating the access log');
+    } catch (err) {
+      console.error(err);
     }
   }
 
   async logAction(context: HttpArgumentsHost, code?: number): Promise<void> {
-    const { method, user, url } = context.getRequest();
-    const apiPrefix = this.configService.get('API_PREFIX') || 'api/v1';
-    let endpoint = url.split(`/${apiPrefix}/`)[1].split('?')[0];
-
-    if (endpoint.slice(-1) === '/') {
-      endpoint = endpoint.slice(0, -1);
-    }
-
-    if (!user || excludedUrls.includes(endpoint)) {
-      return;
-    }
-
-    const statusCode = code || context.getResponse().statusCode;
     try {
+      const { method, user, url } = context.getRequest();
+      const apiPrefix = this.configService.get('API_PREFIX') || 'api/v1';
+
+      if (!url.includes(apiPrefix)) {
+        return;
+      }
+
+      let endpoint = url.split(`/${apiPrefix}/`)[1].split('?')[0];
+
+      if (endpoint.slice(-1) === '/') {
+        endpoint = endpoint.slice(0, -1);
+      }
+
+      if (!user || excludedUrls.includes(endpoint)) {
+        return;
+      }
+
+      const statusCode = code || context.getResponse().statusCode;
       const action = (EMethods[method as TMethods] as unknown) as EActions;
       await this.actionLogRepository.save({ endpoint: url, action, statusCode, user: user.id });
-    } catch {
-      Logger.log('Error while creating the action log');
+    } catch (err) {
+      console.error(err);
     }
   }
 

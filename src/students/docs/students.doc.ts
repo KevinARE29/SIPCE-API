@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { Grade } from '@academics/docs/grade.doc';
+import { Shift } from '@academics/docs/shift.doc';
 
 export class Students {
   @Expose()
@@ -26,4 +27,8 @@ export class Students {
   @Expose()
   @Type(() => Grade)
   currentGrade!: Grade;
+
+  @Expose()
+  @Type(() => Shift)
+  currentShift!: Shift;
 }

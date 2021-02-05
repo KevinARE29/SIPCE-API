@@ -1,6 +1,6 @@
 import { IsOptional, IsEnum } from 'class-validator';
 import { IsId } from '@core/decorators/id.decorator';
-import { ESchoolYearStatus, yearStatusValues, TYearStatus } from '@academics/constants/academic.constants';
+import { ESchoolYearStatus, TYearStatus, yearStatusKeys } from '@academics/constants/academic.constants';
 
 export class CurrentAssignationDto {
   @IsOptional()
@@ -25,6 +25,10 @@ export class CurrentAssignationDto {
 
   @IsOptional()
   @IsId()
+  readonly auxTeacherId?: number;
+
+  @IsOptional()
+  @IsId()
   readonly counselorId?: number;
 
   @IsOptional()
@@ -33,7 +37,7 @@ export class CurrentAssignationDto {
 
   @IsOptional()
   @IsEnum(ESchoolYearStatus, {
-    message: `status: Debe ser uno de los siguientes valores: ${yearStatusValues}`,
+    message: `status: Debe ser uno de los siguientes valores: ${yearStatusKeys}`,
   })
   readonly status?: TYearStatus;
 }

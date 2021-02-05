@@ -6,6 +6,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es2017",
+    "lib": ["ES2019.Array"],
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -21,7 +22,14 @@
       "@logs/*": ["src/logs/*"],
       "@academics/*": ["src/academics/*"],
       "@students/*": ["src/students/*"],
-      "@schedules/*": ["src/schedules/*"]
+      "@schedules/*": ["src/schedules/*"],
+      "@counseling/*": ["src/counseling/*"],
+      "@fouls/*": ["src/fouls/*"],
+      "@sanctions/*": ["src/sanctions/*"],
+      "@reporting/*": ["src/reporting/*"],
+      "@expedient/*": ["src/expedient/*"],
+      "@sociometrics/*": ["src/sociometrics/*"],
+      "@history/*": ["src/history/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

@@ -17,6 +17,10 @@ import { CycleDetail } from '@academics/entities/cycle-detail.entity';
 import { GradeDetail } from '@academics/entities/grade-detail.entity';
 import { SectionDetail } from '@academics/entities/section-detail.entity';
 import { Schedule } from '@schedules/entities/schedules.entity';
+import { InterventionProgram } from '@expedient/entities/intervention-program.entity';
+import { Session } from '@expedient/entities/session.entity';
+import { QuestionBank } from '@sociometrics/entities/quetion-bank.entity';
+import { ClassDiary } from '@history/entities/class-diary.entity';
 
 @Entity()
 export class User {
@@ -108,6 +112,17 @@ export class User {
   )
   sectionDetails!: SectionDetail[];
 
+  @ManyToMany(
+    () => SectionDetail,
+    auxSectionDetail => auxSectionDetail.auxTeachers,
+  )
+  @JoinTable({
+    name: 'aux_teacher_section_detail',
+    joinColumns: [{ name: 'aux_teacher_id' }],
+    inverseJoinColumns: [{ name: 'section_detail_id' }],
+  })
+  auxSectionDetails!: SectionDetail[];
+
   @OneToMany(
     () => Schedule,
     schedule => schedule.ownerSchedule,
@@ -119,4 +134,28 @@ export class User {
     schedule => schedule.employeesSchedule,
   )
   scheduleEmployees!: Schedule[];
+
+  @OneToMany(
+    () => InterventionProgram,
+    interventionProgram => interventionProgram.counselor,
+  )
+  interventionPrograms!: InterventionProgram[];
+
+  @ManyToMany(
+    () => Session,
+    session => session.counselor,
+  )
+  sessions!: Session[];
+
+  @OneToMany(
+    () => QuestionBank,
+    questionBank => questionBank.counselor,
+  )
+  questionBanks!: QuestionBank[];
+
+  @OneToMany(
+    () => ClassDiary,
+    classDiary => classDiary.reporterId,
+  )
+  classDiarys!: ClassDiary[];
 }

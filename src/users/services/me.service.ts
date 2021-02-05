@@ -25,21 +25,31 @@ export class MeService {
     const [
       user,
       teacherCurrentAssignation,
+      auxTeacherCurrentAssignation,
       counselorCurrentAssignation,
       cycleCoordinatorCurrentAssignation,
     ] = await Promise.all([
       this.userRepository.findByIdOrThrow(userId),
       this.schoolYearRepository.getCurrentAssignation({ teacherId: userId }),
+      this.schoolYearRepository.getCurrentAssignation({ auxTeacherId: userId }),
       this.schoolYearRepository.getCurrentAssignation({ counselorId: userId }),
       this.schoolYearRepository.getCurrentAssignation({ cycleCoordinatorId: userId }),
     ]);
 
     let teacherAssignation;
+    let auxTeacherAssignation;
     let counselorAssignation;
     let cycleCoordinatorAssignation;
 
     if (teacherCurrentAssignation && this.hasRole(user?.roles, 'docente')) {
       teacherAssignation = teacherCurrentAssignation.cycleDetails.reduce(
+        mapCycleDetails(MyTeacherAssignation),
+        {} as any,
+      );
+    }
+
+    if (auxTeacherCurrentAssignation && this.hasRole(user?.roles, 'docente auxiliar')) {
+      auxTeacherAssignation = auxTeacherCurrentAssignation.cycleDetails.reduce(
         mapCycleDetails(MyTeacherAssignation),
         {} as any,
       );
@@ -61,7 +71,7 @@ export class MeService {
     return {
       data: plainToClass(
         MyProfile,
-        { ...user, teacherAssignation, counselorAssignation, cycleCoordinatorAssignation },
+        { ...user, teacherAssignation, auxTeacherAssignation, counselorAssignation, cycleCoordinatorAssignation },
         { excludeExtraneousValues: true },
       ),
     };
