@@ -42,6 +42,7 @@ export class BehavioralHistoryRepository extends Repository<BehavioralHistory> {
       .leftJoinAndSelect('cycleDetail.schoolYear', 'schoolYear')
       .andWhere(`schoolYear.status = '${ESchoolYearStatus['En curso']}'`)
       .andWhere('student.id IN (:...studentIds)', { studentIds: [null, ...studentIds] })
+      .andWhere('behavioralHistory.finalConclusion is null')
       .getMany();
   }
 }
