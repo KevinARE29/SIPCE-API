@@ -24,6 +24,7 @@ import {
   ImageRepository,
 } from './repositories';
 import { ImageSubscriber } from './subscribers/image.subscriber';
+import { StudentSubscriber } from './subscribers/student.subscriber';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { ImageSubscriber } from './subscribers/image.subscriber';
     StudentImageService,
     StudentAssignationService,
     ImageSubscriber,
+    StudentSubscriber,
     StudentYearResumeService,
   ],
   exports: [TypeOrmModule, StudentService],
