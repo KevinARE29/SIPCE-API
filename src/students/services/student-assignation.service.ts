@@ -50,6 +50,7 @@ export class StudentAssignationService {
     const assignedStudents: StudentsAssignation[] = [];
     const myStudents: StudentsAssignation[] = [];
     studentsAssignation.forEach(student => {
+      student.sectionDetails.sort((a, b) => a.id - b.id);
       const mappedStudent: StudentsAssignation = {
         ...student,
         status: EStudentStatus[student.status],
