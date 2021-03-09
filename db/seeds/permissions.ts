@@ -41,6 +41,7 @@ const permissionsToInsert = [
   { id: 32, name: 'Generar Reportes de Pruebas Sociométricas', codename: 'generate_sociometric_tests_reports' },
   { id: 33, name: 'Manejar Expedientes', codename: 'manage_expedient' },
   { id: 34, name: 'Generar Reportes de Sesiones', codename: 'generate_sessions_reports' },
+  { id: 35, name: 'Generar Reporte de Historial', codename: 'generate_behavioral_history_report' },
   { id: 36, name: 'Agregar Anotación en Diario de Clases', codename: 'create_class_diary' },
   { id: 37, name: 'Actualizar Anotación en Diario de Clases', codename: 'update_class_diary' },
   { id: 38, name: 'Eliminar Anotación en Diario de Clases', codename: 'delete_class_diary' },
