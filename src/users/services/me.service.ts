@@ -6,7 +6,6 @@ import { mapCycleDetails } from '@academics/utils/school-year.util';
 import { MyProfile } from '@users/docs/my-profile/my-profile.doc';
 import { plainToClass } from 'class-transformer';
 import { MyProfileResponse } from '@users/docs/my-profile/my-profile-response.doc';
-import { MyCyclesAssignation } from '@users/docs/my-profile/my-cycles-assignation.doc';
 import { MyGradesAssignation } from '@users/docs/my-profile/my-grades-assignation.doc';
 import { MyTeacherAssignation } from '@users/docs/my-profile/my-teacher-assignation.doc';
 
@@ -64,7 +63,7 @@ export class MeService {
 
     if (cycleCoordinatorCurrentAssignation && this.hasRole(user?.roles, 'coordinador de ciclo')) {
       cycleCoordinatorAssignation = cycleCoordinatorCurrentAssignation.cycleDetails.reduce(
-        mapCycleDetails(MyCyclesAssignation),
+        mapCycleDetails(MyGradesAssignation),
         {} as any,
       );
     }
