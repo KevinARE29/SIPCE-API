@@ -23,7 +23,8 @@ export class StudentSubscriber implements EntitySubscriberInterface<Student> {
   async afterInsert(event: InsertEvent<Student>) {
     const { entity } = event;
     const schoolYear = await this.schoolYearRepository.getCurrentAssignation({});
-    if (!schoolYear || schoolYear.status !== ESchoolYearStatus['En curso']) {
+
+    if (!schoolYear || schoolYear.status !== ESchoolYearStatus['En curso'] || !entity.currentGrade.active) {
       entity.status = EStudentStatus.Aprobado;
       await event.manager.getRepository(Student).save(entity);
     } else {
