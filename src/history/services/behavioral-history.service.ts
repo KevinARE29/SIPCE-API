@@ -72,14 +72,12 @@ export class BehavioralHistoryService {
     const {
       data: { roles },
     } = await this.userService.getSingleUser(userId);
-    const administrative =
-      roles.map(role => role.name).includes('Director') ||
-      roles.map(role => role.name).includes('Coordinador de Ciclo');
+
     const [students, count] = await this.studentRepository.getStudentsBehavioralHistoryByCounselorId(
       userId,
       pageDto,
       studentsBehavioralHistoryFilterDto,
-      administrative,
+      roles,
     );
     const studentsToReturn = students.map(student => ({
       ...student,
