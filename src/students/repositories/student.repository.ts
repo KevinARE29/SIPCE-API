@@ -293,7 +293,7 @@ export class StudentRepository extends Repository<Student> {
     } else if (roleNames.includes('coordinador de ciclo')) {
       Logger.log('Filtering for cycle coordinator role');
       query.andWhere(`cycleCoordinator.id = ${userId}`);
-    } else if (roleNames.includes('orienrador')) {
+    } else if (roleNames.includes('orientador')) {
       Logger.log('Filtering for counselor role');
       query.andWhere(`counselor.id = ${userId}`);
     } else {
