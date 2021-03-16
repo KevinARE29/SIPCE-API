@@ -15,7 +15,7 @@ const permissionsToInsert = [
   { id: 10, name: 'Listar Bitácoras', codename: 'retrieve_logs' },
   { id: 11, name: 'Listar Usuarios', codename: 'retrieve_users' },
   { id: 12, name: 'Generar Credenciales de Usuarios', codename: 'generate_user_credentials' },
-  { id: 13, name: 'Gestionar Catálogos Académicos', codename: 'manage_academics_catalogues' },
+  { id: 13, name: 'Menú Catálogos Académicos', codename: 'academics_catalogues_menu' },
   { id: 14, name: 'Eliminar Usuario', codename: 'delete_user' },
   { id: 15, name: 'Actualizar Usuario', codename: 'update_user' },
   { id: 16, name: 'Ver Usuario', codename: 'view_user' },
@@ -54,6 +54,26 @@ const permissionsToInsert = [
     id: 47,
     name: 'Listar Historiales Académicos y Conductuales de Estudiantes',
     codename: 'retrieve_students_behavioral_history',
+  },
+  {
+    id: 48,
+    name: 'Cerrar Grado y Sección para Docente',
+    codename: 'close_grade_and_section',
+  },
+  {
+    id: 49,
+    name: 'Apertura y Cierre de Año Escolar',
+    codename: 'open_and_close_school_year',
+  },
+  {
+    id: 50,
+    name: 'Menú de Estudiantes',
+    codename: 'students_menu',
+  },
+  {
+    id: 51,
+    name: 'Gestionar Catálogos Académicos',
+    codename: 'manage_academics_catalogues',
   },
 ];
 
