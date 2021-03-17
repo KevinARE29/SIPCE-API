@@ -9,7 +9,7 @@ const rolesToInsert = [
   { id: 4, name: 'Orientador' },
   { id: 5, name: 'Docente' },
   { id: 6, name: 'Secretaria' },
-  { id: 7, name: 'Docente auxiliar' },
+  { id: 7, name: 'Docente Auxiliar' },
 ];
 
 export default class CreateRoles implements Seeder {

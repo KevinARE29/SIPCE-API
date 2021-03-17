@@ -3,7 +3,7 @@ import { Student } from '@students/entities/student.entity';
 import { PageDto } from '@core/dtos/page.dto';
 import { StudentFilterDto, sortOptionsMap } from '@students/dtos/student-filter.dto';
 import { EStudentStatus, activeStatuses, inactiveStatuses } from '@students/constants/student.constant';
-import { NotFoundException } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { Image } from '@students/entities/image.entity';
 import { ResponsibleStudent } from '@students/entities/responsible-student.entity';
 import { Responsible } from '@students/entities/responsible.entity';
@@ -23,6 +23,7 @@ import {
   StudentYearResumeFilterDto,
   sortOptionsMap as studentYearResumeSortOptionsMap,
 } from '@students/dtos/student-year-resume-filter.dto';
+import { UserRole } from '@users/docs/user-role.doc';
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> {
@@ -262,7 +263,7 @@ export class StudentRepository extends Repository<Student> {
     userId: number,
     pageDto: PageDto,
     studentsBehavioralHistoryFilterDto: StudentsBehavioralHistoryFilterDto,
-    adminstrative: boolean,
+    roles: UserRole[],
   ): Promise<[Student[], number]> {
     const { page, perPage } = pageDto;
     const { sort, code, firstname, lastname, currentShift, currentGrade, section } = studentsBehavioralHistoryFilterDto;
@@ -280,12 +281,23 @@ export class StudentRepository extends Repository<Student> {
       .leftJoin('gradeDetail.cycleDetail', 'cycleDetail')
       .leftJoin('gradeDetail.counselor', 'counselor')
       .leftJoin('cycleDetail.schoolYear', 'schoolYear')
+      .leftJoinAndSelect('cycleDetail.cycleCoordinator', 'cycleCoordinator')
       .andWhere(`"schoolYear"."status" = '${ESchoolYearStatus['En curso']}'`)
       .andWhere('student.deletedAt is null')
       .take(perPage)
       .skip((page - 1) * perPage);
 
-    if (!adminstrative) {
+    const roleNames = roles.map(role => role.name.toLocaleLowerCase());
+    if (roleNames.includes('director')) {
+      Logger.log('Skipping assignation filtering for director role');
+    } else if (roleNames.includes('coordinador de ciclo')) {
+      Logger.log('Filtering for cycle coordinator role');
+      query.andWhere(`cycleCoordinator.id = ${userId}`);
+    } else if (roleNames.includes('orientador')) {
+      Logger.log('Filtering for counselor role');
+      query.andWhere(`counselor.id = ${userId}`);
+    } else {
+      Logger.log('Filtering for teacher role');
       query.andWhere(`("teacher"."id" = ${userId} OR "auxTeachers"."id" IN (:...teachersIds))`, {
         teachersIds: [null, userId],
       });
