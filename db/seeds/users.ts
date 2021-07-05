@@ -6,7 +6,7 @@ const usersToInsert = [
   {
     id: 1,
     username: 'administrador',
-    password: '$2y$12$Ye2E/K7Yf4PtWuEVHwrU/.R3yojWyxuSElx/w/0M96LyRTGfdqMsm',
+    password: '$2b$10$aTL4ZvBBNV56cpgXy8Cr4eL.kababx9LZgliCebSMQgSqzOam0ZRO',
     email: 'administrador@gmail.com',
     firstname: 'Administrador',
     lastname: 'Sistema',
