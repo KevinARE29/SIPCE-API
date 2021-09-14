@@ -8,6 +8,9 @@ services:
       POSTGRES_DB: '${TYPEORM_DATABASE}'
     ports:
       - '5434:5432'
+    volumes:
+      - ./pg-init-scripts/:/docker-entrypoint-initdb.d/
+      - pg-data:/var/lib/postgresql/data
   redis:
     image: 'redis:alpine'
     container_name: redis
@@ -30,3 +33,6 @@ services:
       - siapce-api
     ports:
       - '80:80'
+
+volumes:
+  pg-data:

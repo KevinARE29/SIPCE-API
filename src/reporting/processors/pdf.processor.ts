@@ -31,7 +31,7 @@ export class PdfProcessor {
     this.logger.debug(`Generate Report ${reportName} PDF`);
 
     const token = sign({}, this.configService.get<string>('JWT_SECRET_REPORT', ''), { expiresIn: '1min' });
-    let reportUrl = `https://${this.frontendUrl}/${reportPath}?token=${token}`;
+    let reportUrl = `${this.frontendUrl}/${reportPath}?token=${token}`;
 
     if (filter) {
       reportUrl += `&filter=${filter}`;

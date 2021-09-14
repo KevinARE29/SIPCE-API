@@ -69,9 +69,9 @@ import { HistoryModule } from '@history/history.module';
         REDIS_PORT: Joi.number().default(6379),
         EMAIL_USER: Joi.string().required(),
         EMAIL_PSW: Joi.string().required(),
-        CLOUDINARY_CLOUD_NAME: Joi.string().required(),
-        CLOUDINARY_API_KEY: Joi.string().required(),
-        CLOUDINARY_API_SECRET: Joi.string().required(),
+        CLOUDINARY_CLOUD_NAME: Joi.string(),
+        CLOUDINARY_API_KEY: Joi.string(),
+        CLOUDINARY_API_SECRET: Joi.string(),
         CLOUDINARY_ENVS: Joi.string().default('dev,uat'),
         FILE_EXTENSION_WHITE_LIST: Joi.string().default('jpg,jpeg,png,svg'),
         FILE_SIZE_LIMIT_IN_BYTES: Joi.number().default(5242880), // 5MB
